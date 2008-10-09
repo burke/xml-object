@@ -1,0 +1,63 @@
+<!-- Invalid method name test -->
+<lorem id="root" name="ipsum dolor sit amet" _tempor="incididunt">
+
+  <_minim>veniam</_minim> <!-- Invalid method name test -->
+
+  <!-- unambiguous element/attribute access test -->
+  <sed do="eiusmod attributus">
+    <do>eiusmod elementus</do>
+  </sed>
+
+  <!-- Blank test -->
+  <ipsum></ipsum>
+  <dolor foo="bar"></dolor>
+  <sit><amet></amet></sit>
+  <ut>quis</ut>
+
+  <!-- To test the array folding feature, as well as the pluralization.
+       The attributes help test float, integer, and boolean recognition,
+       as well as method name clashing behaviour (id) -->
+  <consectetur id="1" capacity="2.13" enabled="yes"   />
+  <consectetur id="2" capacity="-1.9" enabled="No"    />
+  <consectetur id="3" capacity="13.0" enabled="True"  />
+  <consectetur id="4" capacity="0.00" enabled="false" />
+
+  <!-- Test boolean recognition -->
+  <brutus>true</brutus>
+
+  <consecteturs> <!-- To test that we can still reach this, even though
+                      the array of singular ones above will trap the call
+                      to this when using dot notation -->
+    <culpa>officia</culpa>
+  </consecteturs>
+
+  <cupidatats> <!-- Test for the empty element == single array child
+                    scenario, as well as date recognition -->
+    <cupidatat activated_at="2903-02-12">Aliqua</cupidatat>
+    <cupidatat activated_at="2903-02-13">Occaecat</cupidatat>
+    <cupidatat activated_at="2904-10-18">Cupidatat</cupidatat>
+    <cupidatat activated_at="2905-03-21">Mollit</cupidatat>
+  </cupidatats>
+
+  <!-- Non-empty element, should not be array proxy -->
+  <voluptate>
+    velit
+    <esse>cillum</esse>
+    <esse>cillum dolore</esse>
+  </voluptate>
+
+  <!-- Test for both text value and CDATA value -->
+  <ullamco>Laboris<![CDATA[nisi]]></ullamco>
+
+  <!-- Test for multiple CDATA values -->
+  <deserunt><![CDATA[mollit]]><![CDATA[anim]]></deserunt>
+
+  <!-- Test for whitespace preservation / squishing -->
+  <irure metadata="  
+    	dolor  ">  
+			reprehenderit  </irure>
+
+<!-- CDATA whitespace preservation test -->
+<![CDATA[	 foo
+]]>
+</lorem>
