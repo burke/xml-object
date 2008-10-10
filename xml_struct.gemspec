@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'xml_struct'
-  s.version     = '0.1.1'
+  s.version     = '0.1.2'
   s.date        = '2008-10-09'
 
   s.author      = 'Jordi Bunster'
@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
                       README.markdown
                       Rakefile
                       WHATSNEW
+                      TODO
                       lib
                       lib/jordi-xml_struct.rb
                       lib/xml_struct.rb
