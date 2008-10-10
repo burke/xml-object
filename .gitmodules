@@ -1,0 +1,3 @@
+[submodule "test/vendor/shoulda"]
+	path = test/vendor/shoulda
+	url = git://github.com/thoughtbot/shoulda-gem.git
