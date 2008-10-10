@@ -1,3 +1,5 @@
+Documentation pending. For now:
+
 # Example usage:
 
     <recipe name="bread" prep_time="5 mins" cook_time="3 hours">
@@ -20,7 +22,7 @@
     recipe = XMLStruct.new recipe_xml_shown_above
 
     recipe.name                      => "bread"
-    recipe.title == "Basic Bread"    => true
+    recipe.title == "Basic bread"    => true
 
     recipe.ingredients.is_a?(Array)  => true
     recipe.ingredients.first.amount  => 8

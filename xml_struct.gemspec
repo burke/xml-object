@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'xml_struct'
-  s.version     = '0.1.0'
+  s.version     = '0.1.1'
   s.date        = '2008-10-09'
 
   s.author      = 'Jordi Bunster'
@@ -17,8 +17,20 @@ Gem::Specification.new do |s|
                      It is slow and not devoid of caveats, but has a very
                      pleasant, Ruby-like syntax. }.strip!.gsub! /\s+/, ' '
 
-  s.test_files  = %w[]
-  s.files       = %w[]
+  s.test_files  = %w[ test
+                      test/samples
+                      test/samples/lorem.xml
+                      test/test_helper.rb
+                      test/xml_struct_test.rb ]
+
+  s.files       = %w[ MIT-LICENSE
+                      README.markdown
+                      Rakefile
+                      WHATSNEW
+                      lib
+                      lib/jordi-xml_struct.rb
+                      lib/xml_struct.rb
+                      xml_struct.gemspec ]
 
   s.has_rdoc         = true
   s.extra_rdoc_files = %w[ README.markdown        ]
