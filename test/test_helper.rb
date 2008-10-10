@@ -1,10 +1,18 @@
 require 'test/unit'
 require 'rubygems'
+require File.join(File.dirname(__FILE__),
+  'vendor', 'shoulda', 'lib', 'shoulda')
 
 begin
   require 'redgreen'
 rescue LoadError
   puts "Install the 'redgreen' gem to get color output"
+end
+
+begin
+  require 'ruby-prof'
+rescue LoadError
+  puts "Install the 'ruby-prof' gem (>= 0.6.1) to get profiling information"
 end
 
 require File.join(File.dirname(__FILE__), '..', 'lib', 'xml_struct')
@@ -23,14 +31,6 @@ require 'digest/md5'
 end
 
 class Test::Unit::TestCase
-  def self.should(do_stuff_that_is_true, &block)
-
-    object = to_s.split('Test').first
-    method = "test that #{object} should #{do_stuff_that_is_true}"
-
-    define_method(method.intern) { assert block.bind(self).call }
-  end
-
   def debug
     require 'ruby-debug'; debugger
   end
