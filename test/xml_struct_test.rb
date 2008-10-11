@@ -26,20 +26,20 @@ describe 'XML Struct' do
     @lorem['_tempor'].should == 'incididunt'
   end
 
-  xit 'should allow access to elements named like invalid methods' do
-    @lorem['_minim'].should == 'veniam'
+  it 'should allow access to elements named like invalid methods' do
+    'veniam'.should == @lorem['_minim']
   end
 
-  xit 'should provide unambiguous access to elements named like attributes' do
-    @lorem.sed[:element => 'do'].should == 'eiusmod elementus'
+  it 'should provide unambiguous access to elements named like attributes' do
+    'eiusmod elementus'.should == @lorem.sed[:element => 'do']
   end
 
   it 'should provide unambiguous access to attributes named like elements' do
     @lorem.sed[:attribute => 'do'].should == 'eiusmod attributus'
   end
 
-  xit 'should return elements first when using dot notation' do
-    @lorem.sed.do.should == @lorem.sed[:element => 'do']
+  it 'should return elements first when using dot notation' do
+    @lorem.sed[:element => 'do'].should == @lorem.sed.do
   end
 
   it 'should return elements first when using array notation and string key' do
@@ -95,24 +95,24 @@ describe 'XML Struct' do
     @lorem.voluptate.slice(0).should.not.be @lorem.voluptate.esse.slice(0)
   end
 
-  xit 'should be valued as its text when text first and CDATA exist' do
-    @lorem.ullamco.should == 'Laboris'
+  it 'should be valued as its text when text first and CDATA exist' do
+    'Laboris'.should == @lorem.ullamco
   end
 
-  xit 'should have the value of its first CDATA when multiple exist' do
-    @lorem.deserunt.should == 'mollit'
+  it 'should have the value of its first CDATA when multiple exist' do
+    'mollit'.should == @lorem.deserunt
   end
 
   it 'should squish whitespace in string attribute values' do
-    @lorem.irure.metadata.should == 'dolor'
+    'dolor'.should == @lorem.irure.metadata
   end
 
-  xit 'should not squish whitespace in string element values' do
-    @lorem.irure.should == "  \n\t\t\treprehenderit  "
+  it 'should not squish whitespace in string element values' do
+    "  \n\t\t\treprehenderit  ".should == @lorem.irure
   end
 
-  xit 'should not squish whitespace in CDATA values' do
-    @lorem.should == "\t foo\n"
+  it 'should not squish whitespace in CDATA values' do
+    "\t foo\n".should == @lorem
   end
 
   it 'should have a working inspect function' do

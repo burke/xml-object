@@ -121,11 +121,25 @@ all methods it doesn't contain to the collection below, so you get:
 
     student.courses.collect { |c| c.downcase.to_sym } => [:math, :biology]
 
-### Auto "type-casting"
+### Attribute auto "type-casting"
 
-  Strings that look like integers are promoted via `to_i`, and similarly
-floats via `to_f`. Strings that look like booleans are also promoted, but
-only if called by their question mark names (such as `enabled?`.)
+  Attribute strings that look like integers are promoted via `to_i`, and
+similarly floats via `to_f`. Strings that look like booleans are also
+promoted, but only if called by their question mark names (such as
+`enabled?`.)
+
+  At first, elements appear to do the same, but they don't, really. (I'd like
+to, but one can't define methods on, say `5`, or `-1.2`.) So in the case of
+the following XML:
+
+    <thing><name>Foo</name></thing>
+
+  While `thing.name == 'Foo'` is `true`, `thing.name => <XMLStruct ...>`. The
+consequence is that you can call `String` methods on `thing.name` (such as
+`upcase`, or `==`), but if you assign it to a new variable, you will not get
+a `String` object. To do that, call `thing.name.to_obj`, which will return
+you the auto type-casted (see above) version of `thing.name`, in this case
+`"Foo"`.
 
 ### Slow
 

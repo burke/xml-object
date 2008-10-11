@@ -21,17 +21,27 @@ class XMLStruct
     @raw.attributes.each { |n, v| __set_attribute n, v                    }
   end
 
+  # Returns the raw REXML::Element object used to build this XMLStruct
+  def to_raw_xml
+    @raw
+  end
+
+  # Returns the Ruby value to which we pass missing methods
+  def to_obj
+    @value
+  end
+
   # An XMLStruct is blank when it has a blank value, no child elements,
   # and no attributes. For example:
   #
   #    <blank_element></blank_element>
   def blank?
-    @value.blank? && @children.blank? && @attributes.blank?
+    to_obj.blank? && @children.blank? && @attributes.blank?
   end
 
   # XMLStruct objects are compared according to their values
   def <=>(other)
-    @value <=> other
+    to_obj <=> other
   end
 
   # Array-notation access to elements and attributes. It comes handy when
@@ -80,17 +90,17 @@ class XMLStruct
 
       %w[ true yes t y ].include? boolish.downcase
 
-    elsif @value.blank? && (@children.size == 1) &&
+    elsif to_obj.blank? && (@children.size == 1) &&
       (single_child = @children.values.first).respond_to?(method)
 
       single_child.send method, *args, &block
     else
-      @value.send method, *args, &block
+      to_obj.send method, *args, &block
     end
   end
 
   def inspect # :nodoc:
-    %{ #<#{self.class.to_s} value=#{@value.inspect} (#{@value.class.to_s})
+    %{ #<#{self.class.to_s} value=#{to_obj.inspect} (#{to_obj.class.to_s})
          attributes=[#{@attributes.keys.map(&:to_s).join(', ') }]
          children=[#{@children.keys.map(&:to_s).join(', ')     }]> }.squish
   end

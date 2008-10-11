@@ -1,5 +1,8 @@
-* 0.x.x (unreleased):
+* 0.1.3 (2008-10-10):
   - Switched tests to use test/spec
+  - Added XMLStruct#to_obj to return the corresponding Ruby object value
+  - Added XMLStruct#to_raw_xml to return the REXML object
+  - Added documentation on auto-typecasting behaviour caveat
 
 * 0.1.2 (2008-10-10):
   - Documentation
