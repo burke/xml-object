@@ -1,5 +1,5 @@
 * 0.x.x (unreleased):
-  - ??
+  - Switched tests to use test/spec
 
 * 0.1.2 (2008-10-10):
   - Documentation
