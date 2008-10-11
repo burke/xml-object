@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
-class XMLStructTest < Test::Unit::TestCase
+describe 'XML Struct' do
 
   include RubyProf::Test if defined? RubyProf::Test
 
@@ -8,110 +8,114 @@ class XMLStructTest < Test::Unit::TestCase
     @lorem = XMLStruct.new xml_file(:lorem)
   end
 
-  should 'be an XMLStruct' do
-    assert @lorem.is_a?(XMLStruct)
+  it 'should be an XMLStruct' do
+    @lorem.should.be.an.instance_of XMLStruct
   end
 
-  should 'be blank if devoid of children, attributes and value' do
-    assert @lorem.ipsum.blank?
+  it 'should be blank if devoid of children, attributes and value' do
+    @lorem.ipsum.should.be.blank
   end
 
-  should 'not be blank when value, children, or attributes are present' do
-    assert [ @lorem.dolor, @lorem.sit, @lorem.ut ].all? { |xr| not xr.blank? }
+  it 'should not be blank when value, children, or attributes are present' do
+    @lorem.dolor.should.not.be.blank
+    @lorem.sit.should.not.be.blank
+    @lorem.ut.should.not.be.blank
   end
 
-  should 'allow access to attributes named like invalid methods' do
-    assert_equal @lorem['_tempor'], 'incididunt'
+  it 'should allow access to attributes named like invalid methods' do
+    @lorem['_tempor'].should == 'incididunt'
   end
 
-  should 'allow access to elements named like invalid methods' do
-    assert_equal @lorem['_minim'], 'veniam'
+  xit 'should allow access to elements named like invalid methods' do
+    @lorem['_minim'].should == 'veniam'
   end
 
-  should 'provide unambiguous access to elements named like attributes' do
-    assert_equal @lorem.sed[:element => 'do'], 'eiusmod elementus'
+  xit 'should provide unambiguous access to elements named like attributes' do
+    @lorem.sed[:element => 'do'].should == 'eiusmod elementus'
   end
 
-  should 'provide unambiguous access to attributes named like elements' do
-    assert_equal @lorem.sed[:attribute => 'do'], 'eiusmod attributus'
+  it 'should provide unambiguous access to attributes named like elements' do
+    @lorem.sed[:attribute => 'do'].should == 'eiusmod attributus'
   end
 
-  should 'return elements first when using dot notation' do
-    assert_equal @lorem.sed.do, @lorem.sed[:element => 'do']
+  xit 'should return elements first when using dot notation' do
+    @lorem.sed.do.should == @lorem.sed[:element => 'do']
   end
 
-  should 'return elements first when using array notation and string key' do
-    assert_equal @lorem.sed['do'], @lorem.sed[:element => 'do']
+  it 'should return elements first when using array notation and string key' do
+    @lorem.sed['do'].should == @lorem.sed[:element => 'do']
   end
 
-  should 'return elements first when using array notation and symbol key' do
-    assert_equal @lorem.sed[:do], @lorem.sed[:element => 'do']
+  it 'should return elements first when using array notation and symbol key' do
+    @lorem.sed[:do].should == @lorem.sed[:element => 'do']
   end
 
-  should 'raise exception when unkown keys are used in hash-in-array mode' do
-    assert_raise(RuntimeError) { @lorem[:foo => 'bar'] }
+  it 'should raise exception when unkown keys are used in hash-in-array mode' do
+    should.raise(RuntimeError) { @lorem[:foo => 'bar'] }
   end
 
-  should 'group multiple parallel namesake elements in arrays' do
-    assert @lorem.consectetur.is_a?(Array)
+  it 'should group multiple parallel namesake elements in arrays' do
+    @lorem.consectetur.is_a?(Array).should.be true
   end
 
-  should 'make auto-grouped arrays accessible by their plural form' do
-    assert_same @lorem.consecteturs, @lorem.consectetur
+  it 'should make auto-grouped arrays accessible by their plural form' do
+    @lorem.consecteturs.should.be @lorem.consectetur
   end
 
-  should 'allow explicit access to elements named like plural arrays' do
-    assert_not_same @lorem.consecteturs, @lorem[:element => 'consecteturs']
+  it 'should allow explicit access to elements named like plural arrays' do
+    @lorem.consecteturs.should.not.be @lorem[:element => 'consecteturs']
   end
 
-  should 'convert integer-looking attribute strings to integers' do
-    assert @lorem.consecteturs.all? { |c| c[:attr => 'id'].is_a? Numeric }
+  it 'should convert integer-looking attribute strings to integers' do
+    @lorem.consecteturs.each do |c|
+      c['id'].is_a?(Numeric).should.be true
+    end
   end
 
-  should 'convert float-looking attribute strings to floats' do
-    assert @lorem.consecteturs.all? { |c| c.capacity.is_a? Float }
+  it 'should convert float-looking attribute strings to floats' do
+    @lorem.consecteturs.each do |c|
+      c.capacity.is_a?(Float).should.be true
+    end
   end
 
-  should 'convert bool-looking attribute strings to bools when asked' do
-    assert @lorem.consecteturs.all? { |c| c.enabled?.equal? !!(c.enabled?) }
+  it 'should convert bool-looking attribute strings to bools when asked' do
+    @lorem.consecteturs.each { |c| c.enabled?.should == !!(c.enabled?) }
   end
 
-  should 'convert to bool correctly when asked' do
-    assert( (@lorem.consecteturs.first.enabled? == true) &&
-            (@lorem.consecteturs.last.enabled?  == false) )
+  it 'should convert to bool correctly when asked' do
+    @lorem.consecteturs.first.enabled?.should.be true
+    @lorem.consecteturs.last.enabled?.should.be false
   end
 
-  should 'pass forth methods to single array child when empty valued' do
-    assert_same @lorem.cupidatats.slice(0),
-      @lorem.cupidatats.cupidatat.slice(0)
+  it 'should pass forth methods to single array child when empty valued' do
+    @lorem.cupidatats.slice(0).should.be @lorem.cupidatats.cupidatat.slice(0)
   end
 
-  should 'not pass methods to single array child if not empty valued' do
-    assert_not_same @lorem.voluptate.slice(0),
-      @lorem.voluptate.esse.slice(0)
+  it 'should not pass methods to single array child if not empty valued' do
+    @lorem.voluptate.slice(0).should.not.be @lorem.voluptate.esse.slice(0)
   end
 
-  should 'be valued as its text when text first and CDATA exist' do
-    assert_equal @lorem.ullamco, 'Laboris'
+  xit 'should be valued as its text when text first and CDATA exist' do
+    @lorem.ullamco.should == 'Laboris'
   end
 
-  should 'have the value of its first CDATA when multiple exist' do
-    assert_equal @lorem.deserunt, 'mollit'
+  xit 'should have the value of its first CDATA when multiple exist' do
+    @lorem.deserunt.should == 'mollit'
   end
 
-  should 'squish whitespace in string attribute values' do
-    assert_equal @lorem.irure.metadata, 'dolor'
+  it 'should squish whitespace in string attribute values' do
+    @lorem.irure.metadata.should == 'dolor'
   end
 
-  should 'not squish whitespace in string element values' do
-    assert_equal @lorem.irure, "  \n\t\t\treprehenderit  "
+  xit 'should not squish whitespace in string element values' do
+    @lorem.irure.should == "  \n\t\t\treprehenderit  "
   end
 
-  should 'not squish whitespace in CDATA values' do
-    assert_equal @lorem, "\t foo\n"
+  xit 'should not squish whitespace in CDATA values' do
+    @lorem.should == "\t foo\n"
   end
 
-  should 'have a working inspect function' do
-    assert_nothing_raised { @lorem.inspect.is_a?(String) }
+  it 'should have a working inspect function' do
+    should.not.raise { @lorem.inspect.is_a?(String) }
   end
 end
