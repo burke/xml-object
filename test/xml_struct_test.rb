@@ -1,5 +1,29 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
+describe 'README Recipe' do
+
+  def setup
+    @recipe = XMLStruct.new xml_file(:recipe)
+  end
+
+  it 'should have name and title as "bread" and "Basic bread"' do
+    @recipe.name.should  == "bread"
+    @recipe.title.should == "Basic bread"
+  end
+
+  it 'should treat "recipe.ingredients" as an Array' do
+    @recipe.ingredients.is_a?(Array).should.be true
+    @recipe.ingredients.first.amount.to_i.should == 8
+  end
+
+  it 'should have 7 easy instructions' do
+    @recipe.instructions.easy?.should.be true
+    @recipe.instructions.steps.size.should == 7
+    @recipe.instructions.first.upcase.should ==
+      "MIX ALL INGREDIENTS TOGETHER."
+  end
+end
+
 describe 'XML Struct' do
 
   include RubyProf::Test if defined? RubyProf::Test
