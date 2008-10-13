@@ -48,15 +48,6 @@ module XMLStruct
 
   private ##################################################################
 
-  def self.add_inquisitive(obj, name, str_value)
-    # Detect an existing method being called in question form:
-    if method.to_s.match(/\?$/) && args.empty? && block.nil?
-      boolish = send(method.to_s.chomp('?').to_sym).to_s
-
-      %w[ true yes t y ].include? boolish.downcase
-    end
-  end
-
   # Decorates the given object 'obj' with a method 'name' that returns the
   # given 'element'. If 'name' is already taken, takes care of the array
   # folding behaviour.
