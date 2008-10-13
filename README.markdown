@@ -4,13 +4,12 @@
 
   XML Struct attempts to make accessing small, well-formed XML structures
 convenient, by using dot notation (`foo.bar`) to represent both attributes
-and child elements whenever possible, as well as by converting string values
-onto native objects (`Fixnum`, `Float`, etc).
+and child elements whenever possible.
 
   XML parsing libraries (in general) have interfaces that are useful when
 one is using XML for its intended purpose, but cumbersome when one always
 sends the same XML structure, and always process all of it in the same
-way. This one is a bit different.
+way. This one aims to be a bit different.
 
 ## Example usage
 
@@ -35,10 +34,10 @@ way. This one is a bit different.
     recipe = XMLStruct.new io_with_recipe_xml_shown_above
 
     recipe.name                      => "bread"
-    recipe.title == "Basic bread"    => true
+    recipe.title                     => "Basic bread"
 
     recipe.ingredients.is_a?(Array)  => true
-    recipe.ingredients.first.amount  => 8
+    recipe.ingredients.first.amount  => "8" # Not a Fixnum. Too hard. :(
 
     recipe.instructions.easy?        => true
 
@@ -101,9 +100,9 @@ level. For example:
   With the same file from the `Collection auto-folding` section above, you
 also get this (courtesy of `ActiveSupport`'s `Inflector`):
 
-    student.courses == student.course => true
+    student.courses.first == student.course.first => true
 
-### Collection proxy:
+### Collection proxy
 
   Sometimes, collections are expressed with a container element in XML:
 
@@ -121,25 +120,10 @@ all methods it doesn't contain to the collection below, so you get:
 
     student.courses.collect { |c| c.downcase.to_sym } => [:math, :biology]
 
-### Attribute "auto-typecasting"
+### Question mark notation
 
-  Attribute strings that look like integers are promoted via `to_i`, and
-similarly floats via `to_f`. Strings that look like booleans are also
-promoted, but only if called by their question mark names (such as
-`enabled?`.)
-
-  At first, elements appear to do the same, but they don't, really. (I'd like
-to, but one can't define methods on, say `5`, or `-1.2`.) So in the case of
-the following XML:
-
-    <thing><name>Foo</name></thing>
-
-  While `thing.name == 'Foo'` is `true`, `thing.name => <XMLStruct ...>`. The
-consequence is that you can call `String` methods on `thing.name` (such as
-`upcase`, or `==`), but if you assign it to a new variable, you will not get
-a `String` object. To do that, call `thing.name.to_obj`, which will return
-you the auto-typecasted (see above) version of `thing.name`, in this case
-`"Foo"`.
+  Strings that look like booleans are "booleanized" if called by their
+question mark names (such as `enabled?`)
 
 ### Slow
 
