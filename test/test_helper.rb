@@ -23,7 +23,7 @@ def xml_file(name_symbol)
 end
 
 require 'digest/md5'
-{ :lorem  => '6dc88e269000db3be599fca3367e2aa5',
+{ :lorem  => '9062c0f294383435d5b04ce6d67b6d61',
   :recipe => '6087ab42049273d123d473093b04ab12' }.each do |file_key, md5|
 
   unless Digest::MD5.hexdigest(xml_file(file_key).read) == md5

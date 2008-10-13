@@ -5,7 +5,7 @@
 
   <!-- unambiguous element/attribute access test -->
   <sed do="eiusmod attributus">
-    <do>eiusmod elementus</do>
+    <do price="$8">eiusmod elementus</do>
   </sed>
 
   <!-- Blank test -->

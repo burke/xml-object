@@ -1,5 +1,26 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
+describe 'The XML Struct module' do
+
+  def setup
+    @filename = File.join(File.dirname(__FILE__), 'samples', 'recipe.xml')
+    @file     = File.open @filename
+    @recipe   = XMLStruct.new xml_file(:recipe)
+  end
+
+  it 'should know how to run "new" with a filename given' do
+    XMLStruct.new(@filename).name.should == @recipe.name
+  end
+
+  it 'should know how to run "new" with a file given' do
+    XMLStruct.new(@file).name.should == @recipe.name
+  end
+
+  it 'should raise an exception when given something else to "new"' do
+    should.raise(RuntimeError) { XMLStruct.new(8) }
+  end
+end
+
 describe 'README Recipe' do
 
   def setup
@@ -36,16 +57,26 @@ describe 'XML Struct' do
     @lorem.should.be.an.instance_of ::String
   end
 
+  it 'be blank if devoid of children, attributes and value' do
+    @lorem.ipsum.should.be.blank
+  end
+
+  it 'not be blank when value, children, or attributes are present' do
+    [ @lorem.dolor, @lorem.sit, @lorem.ut ].each do |xr|
+      xr.should.not.be.blank
+    end
+  end
+
   it 'should allow access to attributes named like invalid methods' do
     @lorem['_tempor'].should == 'incididunt'
   end
 
   it 'should allow access to elements named like invalid methods' do
-    'veniam'.should == @lorem['_minim']
+    @lorem['_minim'].should == 'veniam'
   end
 
   it 'should provide unambiguous access to elements named like attributes' do
-    'eiusmod elementus'.should == @lorem.sed[:element => 'do']
+    @lorem.sed[:element => 'do'].should == 'eiusmod elementus'
   end
 
   it 'should provide unambiguous access to attributes named like elements' do
@@ -92,6 +123,11 @@ describe 'XML Struct' do
     end
   end
 
+  it 'should not convert strings with more than numbers to Fixnum' do
+    @lorem.sed.do.price.rb.should == @lorem.sed.do.price
+    @lorem.sed.do.price.rb.should.not == 8
+  end
+
   it 'should convert bool-looking attribute strings to bools when asked' do
     @lorem.consecteturs.each { |c| c.enabled?.should == !!(c.enabled?) }
   end
@@ -110,23 +146,23 @@ describe 'XML Struct' do
   end
 
   it 'should be valued as its text when text first and CDATA exist' do
-    'Laboris'.should == @lorem.ullamco
+    @lorem.ullamco.should == 'Laboris'
   end
 
   it 'should have the value of its first CDATA when multiple exist' do
-    'mollit'.should == @lorem.deserunt
+    @lorem.deserunt.should == 'mollit'
   end
 
   it 'should squish whitespace in string attribute values' do
-    'dolor'.should == @lorem.irure.metadata
+    @lorem.irure.metadata.should == 'dolor'
   end
 
   it 'should not squish whitespace in string element values' do
-    "  \n\t\t\treprehenderit  ".should == @lorem.irure
+    @lorem.irure.should == "  \n\t\t\treprehenderit  "
   end
 
   it 'should not squish whitespace in CDATA values' do
-    "\t foo\n".should == @lorem
+    @lorem.should == "\t foo\n"
   end
 
   it 'should have a working inspect function' do

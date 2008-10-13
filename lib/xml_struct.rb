@@ -15,10 +15,10 @@ module XMLStruct
   # with methods to access attributes and/or child elements.
   def self.new(duck)
     case duck
-      when String          : new(File.open(duck))
-      when IO              : new(REXML::Document.new(duck).root)
-      when REXML::Elements : duck.map { |dee| new_decorated_obj(dee) }
-      when REXML::Element  : new_decorated_obj(duck)
+      when ::String        : return new(File.open(duck))
+      when ::IO            : return new(REXML::Document.new(duck).root)
+      when REXML::Element  : return new_decorated_obj(duck)
+      when REXML::Elements : return duck.map { |dee| new_decorated_obj(dee) }
       else raise "Don't know how to start from '#{duck.class}' object."
     end
   end
