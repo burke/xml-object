@@ -58,16 +58,24 @@ module XMLStruct
     children[key] = if children[key]
 
       unless obj.respond_to?((plural_key = key.to_s.pluralize).to_sym)
-        obj.instance_eval %{
-          def #{plural_key}; @__children[:#{key.to_s}]; end }
+          begin
+            obj.instance_eval %{
+              def #{plural_key}; @__children[%s|#{key.to_s}|]; end }
+          rescue SyntaxError
+            nil
+          end
       end
 
       children[key] = [ children[key] ] unless children[key].is_a? Array
       children[key] << element
     else
       unless obj.respond_to? key
-        obj.instance_eval %{
-          def #{key.to_s}; @__children[:#{key.to_s}]; end }
+        begin
+          obj.instance_eval %{
+            def #{key.to_s}; @__children[%s|#{key.to_s}|]; end }
+        rescue SyntaxError
+          nil
+        end
       end
 
       element
@@ -85,8 +93,12 @@ module XMLStruct
     attributes[(key = name.to_sym)] = attr_value.squish.extend String
 
     unless obj.respond_to? key
-      obj.instance_eval %{
-        def #{key.to_s}; @__attributes[:#{key.to_s}]; end }
+      begin
+        obj.instance_eval %{
+          def #{key.to_s}; @__attributes[%s|#{key.to_s}|]; end }
+      rescue SyntaxError
+        nil
+      end
     end
 
     obj.instance_variable_set :@__attributes, attributes

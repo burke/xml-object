@@ -1,3 +1,6 @@
+* 0.2.1 (2008-10-13):
+  - Fixed a bug where attributes with dashes would crash the party
+
 * 0.2.0 (2008-10-13):
   - Broke backwards compatibility
   - XMLRecord.new now returns decorated String or Array objects, so that

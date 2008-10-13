@@ -1,5 +1,19 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
+describe 'An XML file with weird characters' do
+
+  it 'should not raise exceptions' do
+    should.not.raise(Exception) do
+      @xml = XMLStruct.new xml_file(:weird_characters)
+    end
+  end
+
+  it 'should allow access to attributes with dashes in the name' do
+    XMLStruct.new(
+      xml_file(:weird_characters))['attr-with-dashes'].should == 'lame'
+  end
+end
+
 describe 'The XML Struct module' do
 
   def setup

@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'xml_struct'
-  s.version     = '0.2.0'
+  s.version     = '0.2.1'
   s.date        = '2008-10-13'
 
   s.author      = 'Jordi Bunster'
@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
                       test/samples
                       test/samples/lorem.xml
                       test/samples/recipe.xml
+                      test/samples/weird_characters.xml
                       test/test_helper.rb
                       test/vendor
                       test/vendor/test-spec
