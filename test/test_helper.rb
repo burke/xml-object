@@ -24,6 +24,7 @@ end
 
 require 'digest/md5'
 { :lorem  => '9062c0f294383435d5b04ce6d67b6d61',
+  :weird_characters => 'cdcbd9b89b261487fa98c11d856f50fe',
   :recipe => '6087ab42049273d123d473093b04ab12' }.each do |file_key, md5|
 
   unless Digest::MD5.hexdigest(xml_file(file_key).read) == md5
