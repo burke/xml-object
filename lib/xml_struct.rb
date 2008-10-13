@@ -2,10 +2,12 @@ require 'rubygems'
 require 'activesupport'
 require 'rexml/document'
 
-require 'xml_struct/array_notation'
-require 'xml_struct/blankish_slate'
-require 'xml_struct/collection_proxy'
-require 'xml_struct/string'
+module XMLStruct; end
+
+require File.join(File.dirname(__FILE__), 'xml_struct', 'blankish_slate')
+require File.join(File.dirname(__FILE__), 'xml_struct', 'collection_proxy')
+require File.join(File.dirname(__FILE__), 'xml_struct', 'string')
+require File.join(File.dirname(__FILE__), 'xml_struct', 'common_behaviours')
 
 module XMLStruct
 
@@ -41,10 +43,19 @@ module XMLStruct
     xml.each_element    { |child| add_child(obj, child.name, new(child)) }
     xml.attributes.each { |name, value|  add_attribute(obj, name, value) }
 
-    obj.extend ArrayNotation
+    obj.extend CommonBehaviours
   end
 
   private ##################################################################
+
+  def self.add_inquisitive(obj, name, str_value)
+    # Detect an existing method being called in question form:
+    if method.to_s.match(/\?$/) && args.empty? && block.nil?
+      boolish = send(method.to_s.chomp('?').to_sym).to_s
+
+      %w[ true yes t y ].include? boolish.downcase
+    end
+  end
 
   # Decorates the given object 'obj' with a method 'name' that returns the
   # given 'element'. If 'name' is already taken, takes care of the array
