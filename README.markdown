@@ -121,7 +121,7 @@ all methods it doesn't contain to the collection below, so you get:
 
     student.courses.collect { |c| c.downcase.to_sym } => [:math, :biology]
 
-### Attribute auto "type-casting"
+### Attribute "auto-typecasting"
 
   Attribute strings that look like integers are promoted via `to_i`, and
 similarly floats via `to_f`. Strings that look like booleans are also
@@ -138,7 +138,7 @@ the following XML:
 consequence is that you can call `String` methods on `thing.name` (such as
 `upcase`, or `==`), but if you assign it to a new variable, you will not get
 a `String` object. To do that, call `thing.name.to_obj`, which will return
-you the auto type-casted (see above) version of `thing.name`, in this case
+you the auto-typecasted (see above) version of `thing.name`, in this case
 `"Foo"`.
 
 ### Slow

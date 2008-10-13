@@ -6,9 +6,17 @@ class XMLStruct
 
   include Comparable
 
-  # Returns an XMLStruct object
+  # Returns a decorated String object
   def self.new(duck)
-    duck.is_a?(REXML::Element) ? super : new(REXML::Document.new(duck).root)
+    case duck
+      when String         : new(File.open(duck))
+      when IO             : new(REXML::Document.new(duck).root)
+      when REXML::Element : new_decorated_obj(duck)
+      else raise "Don't know how to start from '#{duck.class}' object."
+    end
+  end
+
+  def self.new_decorated_obj(xml)
   end
 
   # Takes any REXML::Element object, and converts it recursively into
@@ -41,7 +49,7 @@ class XMLStruct
 
   # XMLStruct objects are compared according to their values
   def <=>(other)
-    to_obj <=> other
+    rb <=> other.rb
   end
 
   # Array-notation access to elements and attributes. It comes handy when
