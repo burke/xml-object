@@ -1,8 +1,12 @@
-* 0.2.0 (2008-10-??):
+* 0.2.0 (2008-10-13):
   - Broke backwards compatibility
   - XMLRecord.new now returns decorated String or Array objects, so that
     access to elements, attributes, and "collection" values is consistent
-  - Added #rb to the decorated objects, which attempts to typecast
+  - While Strings are no longer auto-typecast to float or int, they now
+    have, whenever possible, a question-mark form, which attemps to
+    returns booleans for strings like "Yes" and "false"
+  - XMLRecord.new can now take a filename or a file object
+  - Added more tests
 
 * 0.1.3 (2008-10-10):
   - Switched tests to use test/spec
