@@ -1,3 +1,6 @@
+* 0.?.? (2008-10-??):
+  - Added experimental support for plug-able backends
+
 * 0.2.1 (2008-10-13):
   - Fixed a bug where attributes with dashes would crash the party
 
