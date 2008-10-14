@@ -18,8 +18,8 @@ end
 require File.join(File.dirname(__FILE__), '..', 'lib', 'xml_struct')
 
 def xml_file(name_symbol)
-  File.open File.join(File.dirname(__FILE__), 'samples',
-    "#{name_symbol.to_s}.xml")
+  File.expand_path(File.join(File.dirname(__FILE__),
+    'samples', "#{name_symbol.to_s}.xml"))
 end
 
 require 'digest/md5'
@@ -27,7 +27,7 @@ require 'digest/md5'
   :weird_characters => 'cdcbd9b89b261487fa98c11d856f50fe',
   :recipe => '6087ab42049273d123d473093b04ab12' }.each do |file_key, md5|
 
-  unless Digest::MD5.hexdigest(xml_file(file_key).read) == md5
+  unless Digest::MD5.hexdigest(File.open(xml_file(file_key)).read) == md5
     raise "Sample test file #{file_key.to_s}.xml doesn't match expected MD5"
   end
 end

@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'activesupport'
-require 'rexml/document'
 
 module XMLStruct; end
 
@@ -8,39 +7,35 @@ require File.join(File.dirname(__FILE__), 'xml_struct', 'blankish_slate')
 require File.join(File.dirname(__FILE__), 'xml_struct', 'collection_proxy')
 require File.join(File.dirname(__FILE__), 'xml_struct', 'string')
 require File.join(File.dirname(__FILE__), 'xml_struct', 'common_behaviours')
+require File.join(File.dirname(__FILE__), 'xml_struct', 'backends', 'rexml')
 
 module XMLStruct
-
   # Returns a String or Array object representing the given XML, decorated
   # with methods to access attributes and/or child elements.
   def self.new(duck)
+    @backend ||= ::XMLStruct::Backends::REXML
+
     case duck
-      when ::String        : return new(File.open(duck))
-      when ::IO            : return new(REXML::Document.new(duck).root)
-      when REXML::Element  : return new_decorated_obj(duck)
-      when REXML::Elements : return duck.map { |dee| new_decorated_obj(dee) }
-      else raise "Don't know how to start from '#{duck.class}' object."
+      when @backend::Element : new_decorated_obj(duck)
+      when Array             : duck.map { |d| new_decorated_obj(d) }
+      else new @backend.new(duck)
     end
   end
 
   # Takes any REXML::Element object, and converts it recursively into
   # the corresponding tree of decorated objects.
   def self.new_decorated_obj(xml)
-    obj = if xml.text.blank? &&
-             xml.elements.map { |e| e.name }.uniq.size == 1
+    obj = if xml.value.blank? &&
+             xml.children.collect { |e| e.name }.uniq.size == 1
 
-      CollectionProxy.new new(xml.elements)
+      CollectionProxy.new new(xml.children)
     else
-      case
-        when (not xml.text.blank?)  : xml.text.to_s
-        when (xml.cdatas.size >= 1) : xml.cdatas.first.to_s
-        else ''
-      end.extend String
+      xml.value.extend String
     end
 
     obj.instance_variable_set :@__raw_xml, xml
 
-    xml.each_element    { |child| add_child(obj, child.name, new(child)) }
+    xml.children.each   { |child| add_child(obj, child.name, new(child)) }
     xml.attributes.each { |name, value|  add_attribute(obj, name, value) }
 
     obj.extend CommonBehaviours
