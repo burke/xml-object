@@ -1,8 +1,12 @@
-* 0.?.? (2008-10-??):
-  - Added experimental support for plug-able adapters
-  - Backported REXML code as an adapter
-  - Added Hpricot adapter
-  - XMLStruct uses the Hpricot adapter if possible, otherwise REXML
+* 0.9.0 (2008-10-15):
+  - Added support for plug-able adapters
+  - Backported REXML code as an adapter, added Hpricot adapter
+  - Performance: XMLStruct now decorates objects lazily
+  - Performance: XMLStruct uses the Hpricot adapter if possible, otherwise
+    REXML as a fallback
+  - API Change: XMLStruct.new is mostly delegated to the adapter, and both
+    included adapters behave the same: a String is considered to be
+    XML data, anything else is probed for #read and then #to_s
 
 * 0.2.1 (2008-10-13):
   - Fixed a bug where attributes with dashes would crash the party

@@ -1,6 +1,5 @@
 require 'rake'
 require 'rake/testtask'
-require 'rake/rdoctask'
 require File.join(File.dirname(__FILE__), 'lib', 'xml_struct')
 
 desc 'Default: run unit tests.'
@@ -14,12 +13,21 @@ Rake::TestTask.new(:test) do |t|
 end
 
 desc 'Generate documentation'
-Rake::RDocTask.new(:rdoc) do |rdoc|
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title    = 'XMLStruct'
-  rdoc.options << '--line-numbers' << '--inline-source'
-  rdoc.rdoc_files.include 'README.markdown'
-  rdoc.rdoc_files.include 'lib/**/*.rb'
+task :rdoc do
+  hanna = File.expand_path File.join(
+    File.dirname(__FILE__), 'vendor', 'hanna', 'bin', 'hanna')
+
+  options = %{ --inline-source
+               --main README.rdoc
+               --title "XMLStruct"
+               README.rdoc
+               lib/xml_struct.rb
+               lib/xml_struct/*.rb
+               lib/xml_struct/adapters/*.rb }.strip.gsub(/\s+/, ' ')
+
+  ruby_files = File.join File.dirname(__FILE__)
+
+  system "#{hanna} #{options}"
 end
 
 desc 'Measures test coverage using rcov'
@@ -79,13 +87,15 @@ task :benchmark do
       n.times { recipe = REXML::Document.new(File.open(xml_file)) }
     end
 
+    require File.join(File.dirname(__FILE__), 'lib', 'xml_struct',
+      'adapters', 'rexml')
     XMLStruct.adapter = XMLStruct::Adapters::REXML
     x.report("XMLStruct (REXML):") do
       n.times { recipe = XMLStruct.new(File.open(xml_file)) }
     end
 
     if defined?(Hpricot)
-      require File.join(File.dirname(__FILE__), 'xml_struct',
+      require File.join(File.dirname(__FILE__), 'lib', 'xml_struct',
         'adapters', 'hpricot')
       XMLStruct.adapter = XMLStruct::Adapters::Hpricot
       x.report("XMLStruct (Hpricot):") do

@@ -1,6 +1,7 @@
-module XMLStruct::MethodMissingDispatchers
+module XMLStruct::MethodMissingDispatchers # :nodoc:
 
-  # Detect an existing method being called in question form:
+  private ##################################################################
+
   def __question_dispatch(meth, *args, &block)
     return unless meth.to_s.match(/\?$/) && args.empty? && block.nil?
 

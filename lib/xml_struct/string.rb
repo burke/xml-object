@@ -25,6 +25,8 @@ module XMLStruct::String
     (self !~ /\S/) && @__children.blank? && @__attributes.blank?
   end
 
+  private ##################################################################
+
   def method_missing(m, *a, &b) # :nodoc:
     dp = __question_dispatch(m, *a, &b)
     dp = __dot_notation_dispatch(m, *a, &b) if dp.nil?

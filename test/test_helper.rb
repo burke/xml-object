@@ -1,7 +1,7 @@
 require 'test/unit'
 require 'rubygems'
 require File.join(File.dirname(__FILE__),
-  'vendor', 'test-spec', 'lib', 'test', 'spec')
+  '..', 'vendor', 'test-spec', 'lib', 'test', 'spec')
 
 begin
   require 'redgreen'
