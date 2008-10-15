@@ -1,7 +1,8 @@
 * 0.?.? (2008-10-??):
-  - Added experimental support for plug-able backends
-  - Backported REXML code as a backend
-  - Added experimental Hpricot backend
+  - Added experimental support for plug-able adapters
+  - Backported REXML code as an adapter
+  - Added Hpricot adapter
+  - XMLStruct uses the Hpricot adapter if possible, otherwise REXML
 
 * 0.2.1 (2008-10-13):
   - Fixed a bug where attributes with dashes would crash the party

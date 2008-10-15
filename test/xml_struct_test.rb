@@ -14,27 +14,6 @@ describe 'An XML file with weird characters' do
   end
 end
 
-describe 'The XML Struct module' do
-
-  def setup
-    @filename = File.join(File.dirname(__FILE__), 'samples', 'recipe.xml')
-    @file     = File.open @filename
-    @recipe   = XMLStruct.new xml_file(:recipe)
-  end
-
-  it 'should know how to run "new" with a filename given' do
-    XMLStruct.new(@filename).name.should == @recipe.name
-  end
-
-  it 'should know how to run "new" with a file given' do
-    XMLStruct.new(@file).name.should == @recipe.name
-  end
-
-  it 'should raise an exception when given something else to "new"' do
-    should.raise(RuntimeError) { XMLStruct.new(8) }
-  end
-end
-
 describe 'README Recipe' do
 
   def setup
