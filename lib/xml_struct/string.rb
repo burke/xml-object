@@ -9,7 +9,7 @@ module XMLStruct::String
   # and returns accordingly. If not, just returns the string.
   def rb
     @__rb ||= case
-      when (self !~ /\S/)                          : nil
+      when (self !~ /\S/)                          : ''
       when match(/[a-zA-Z]/)                       : ::String.new(self)
       when match(/^[+-]?\d+$/)                     : self.to_i
       when match(/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/) : self.to_f
@@ -26,6 +26,8 @@ module XMLStruct::String
   end
 
   def method_missing(m, *a, &b) # :nodoc:
-    __question_answer(m, *a, &b)
+    dp = __question_dispatch(m, *a, &b)
+    dp = __dot_notation_dispatch(m, *a, &b) if dp.nil?
+    dp
   end
 end
