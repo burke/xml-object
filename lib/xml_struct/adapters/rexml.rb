@@ -1,6 +1,8 @@
 module XMLStruct::Adapters::REXML
   require 'rexml/document'
 
+  # Can take a String of XML data, or anything that responds to
+  # either +read+ or +to_s+.
   def self.new(duck)
     case
       when duck.is_a?(::REXML::Element) : Element.new(duck)
@@ -11,7 +13,9 @@ module XMLStruct::Adapters::REXML
     end
   end
 
-  class Element
+  private ##################################################################
+
+  class Element # :nodoc:
     attr_reader :raw, :name, :value, :attributes, :children
 
     def initialize(xml)

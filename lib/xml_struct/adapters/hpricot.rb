@@ -1,5 +1,7 @@
 module XMLStruct::Adapters::Hpricot
 
+  # Can take a String of XML data, or anything that responds to
+  # either +read+ or +to_s+.
   def self.new(duck)
     case
       when duck.is_a?(::Hpricot::Elem) : Element.new(duck)
@@ -10,7 +12,9 @@ module XMLStruct::Adapters::Hpricot
     end
   end
 
-  class Element
+  private ##################################################################
+
+  class Element # :nodoc:
     attr_reader :raw, :name, :value, :attributes, :children
 
     def text_value(raw)

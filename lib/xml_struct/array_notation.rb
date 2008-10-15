@@ -1,13 +1,13 @@
 module XMLStruct::ArrayNotation
-  # Array-notation access to elements and attributes. It comes handy when
-  # the element or attribute you need to reach is not reachable via dot
+  # Array-bracket (+[]+) notation access to elements and attributes. Use
+  # when the element or attribute you need to reach is not reachable via dot
   # notation (because it's not a valid method name, or because the method
-  # exists, such as 'id' or 'class').
+  # exists, such as +id+ or +class+).
   #
-  # It also supports hash keys, which are useful to reach attributes named
-  # the same as elements in the same level (which otherwise go first)
+  # It also supports a hash key, which is used to reach attributes named
+  # the same as elements in the same depth level (which otherwise go first)
   #
-  # All of this is a lot easier to exampling by example:
+  # All of this is a lot easier to explain by example:
   #
   #   <article id="main_article" author="j-random">
   #     <author>J. Random Hacker</author>
@@ -18,8 +18,8 @@ module XMLStruct::ArrayNotation
   #   article[:author]           => "J. Random Hacker" # <author> element
   #   article[:attr => 'author'] => "j-random"         # author attribute
   #
-  # Valid keys for the hash notation in the example above are :attr,
-  # :attribute, :child, and :element.
+  # Valid keys for the hash notation in the example above are +:attr+,
+  # +:attribute+, +:child+, and +:element+.
   def [](name)
     return @__target[name] if @__target && name.is_a?(Numeric)
 

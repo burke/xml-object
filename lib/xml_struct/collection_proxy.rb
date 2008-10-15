@@ -1,7 +1,9 @@
-class XMLStruct::CollectionProxy < XMLStruct::BlankishSlate
+class XMLStruct::CollectionProxy < XMLStruct::BlankishSlate # :nodoc:
   def initialize(target)
     @__children, @__attributes, @__target = {}, {}, target
   end
+
+  private ##################################################################
 
   def method_missing(m, *a, &b) # :nodoc:
     dp = __question_dispatch(m, *a, &b)

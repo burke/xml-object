@@ -2,7 +2,10 @@ require 'rubygems'
 require 'activesupport'
 
 module XMLStruct
-  BASE_DIR = File.join(File.dirname(__FILE__), 'xml_struct')
+
+  unless defined?(BASE_DIR) # Slow call
+    BASE_DIR = File.join(File.dirname(__FILE__), 'xml_struct')
+  end
 
   require File.join(BASE_DIR, 'default_adapter')
   require File.join(BASE_DIR, 'method_missing_dispatchers')
@@ -10,10 +13,6 @@ module XMLStruct
   require File.join(BASE_DIR, 'blankish_slate')
   require File.join(BASE_DIR, 'collection_proxy')
   require File.join(BASE_DIR, 'string')
-
-end unless defined?(XMLStruct)
-
-module XMLStruct
 
   def self.adapter=(adapter_module)
     @adapter = adapter_module
@@ -32,6 +31,8 @@ module XMLStruct
       else new adapter.new(duck)
     end
   end
+
+  private ##################################################################
 
   # Takes any Element object, and converts it recursively into
   # the corresponding tree of decorated objects.
@@ -52,8 +53,6 @@ module XMLStruct
     # Let's teach our object some new tricks:
     obj.extend(ArrayNotation).extend(MethodMissingDispatchers)
   end
-
-  private ##################################################################
 
   # Decorates the given object 'obj' with a method 'name' that returns the
   # given 'element'. If 'name' is already taken, takes care of the array

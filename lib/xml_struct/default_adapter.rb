@@ -1,5 +1,5 @@
-module XMLStruct
-  module Adapters
+module XMLStruct # :nodoc:
+  module Adapters # :nodoc:
     ADAPTERS_PATH = File.join(File.dirname(__FILE__), 'adapters')
 
     Default = begin
