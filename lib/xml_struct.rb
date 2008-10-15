@@ -5,7 +5,8 @@ module XMLStruct
   BASE_DIR = File.join(File.dirname(__FILE__), 'xml_struct')
 
   require File.join(BASE_DIR, 'default_adapter')
-  require File.join(BASE_DIR, 'common_behaviours')
+  require File.join(BASE_DIR, 'method_missing_dispatchers')
+  require File.join(BASE_DIR, 'array_notation')
   require File.join(BASE_DIR, 'blankish_slate')
   require File.join(BASE_DIR, 'collection_proxy')
   require File.join(BASE_DIR, 'string')
@@ -48,7 +49,8 @@ module XMLStruct
     xml.children.each   { |child| add_child(obj, child.name, new(child)) }
     xml.attributes.each { |name, value|  add_attribute(obj, name, value) }
 
-    obj.extend CommonBehaviours
+    # Let's teach our object some new tricks:
+    obj.extend(ArrayNotation).extend(MethodMissingDispatchers)
   end
 
   private ##################################################################
@@ -62,27 +64,9 @@ module XMLStruct
 
     children[key] = if children[key]
 
-      unless obj.respond_to?((plural_key = key.to_s.pluralize).to_sym)
-          begin
-            obj.instance_eval %{
-              def #{plural_key}; @__children[%s|#{key.to_s}|]; end }
-          rescue SyntaxError
-            nil
-          end
-      end
-
       children[key] = [ children[key] ] unless children[key].is_a? Array
       children[key] << element
     else
-      unless obj.respond_to? key
-        begin
-          obj.instance_eval %{
-            def #{key.to_s}; @__children[%s|#{key.to_s}|]; end }
-        rescue SyntaxError
-          nil
-        end
-      end
-
       element
     end
 
@@ -96,15 +80,6 @@ module XMLStruct
 
     attributes = obj.instance_variable_get :@__attributes
     attributes[(key = name.to_sym)] = attr_value.squish.extend String
-
-    unless obj.respond_to? key
-      begin
-        obj.instance_eval %{
-          def #{key.to_s}; @__attributes[%s|#{key.to_s}|]; end }
-      rescue SyntaxError
-        nil
-      end
-    end
 
     obj.instance_variable_set :@__attributes, attributes
     attr_value
