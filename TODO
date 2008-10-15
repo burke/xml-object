@@ -1,3 +1,4 @@
 * Make use of libxml if it's available, then fallback to REXML
 * Refactor so as to not do things recursively
+* Handle methods in method_missing, create them on first hit
 * Remove ActiveSupport dependency
