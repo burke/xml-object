@@ -1,16 +1,12 @@
-module XMLStruct
-  module Backends
-  end
-end
-
-class XMLStruct::Backends::REXML
+module XMLStruct::Adapters::REXML
   require 'rexml/document'
 
   def self.new(duck)
-    case duck
-      when ::REXML::Element : Element.new(duck)
-      when ::String         : new(File.open(duck))
-      when ::File           : new(::REXML::Document.new(duck).root)
+    case
+      when duck.is_a?(::REXML::Element) : Element.new(duck)
+      when duck.is_a?(::String)    : new(::REXML::Document.new(duck).root)
+      when duck.respond_to?(:read) : new(duck.read)
+      when duck.respond_to?(:to_s) : new(duck.to_s)
       else raise "Don't know how to deal with '#{duck.class}' object"
     end
   end

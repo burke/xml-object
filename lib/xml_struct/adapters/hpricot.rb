@@ -1,16 +1,11 @@
-module XMLStruct
-  module Backends
-  end
-end
-
-class XMLStruct::Backends::Hpricot
-  require 'hpricot'
+module XMLStruct::Adapters::Hpricot
 
   def self.new(duck)
-    case duck
-      when ::Hpricot::Elem : Element.new(duck)
-      when ::String        : new(File.open(duck))
-      when ::File          : new(::Hpricot::XML(duck).root)
+    case
+      when duck.is_a?(::Hpricot::Elem) : Element.new(duck)
+      when duck.is_a?(::String)        : new(::Hpricot::XML(duck).root)
+      when duck.respond_to?(:read)     : new(duck.read)
+      when duck.respond_to?(:to_s)     : new(duck.to_s)
       else raise "Don't know how to deal with '#{duck.class}' object"
     end
   end

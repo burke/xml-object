@@ -1,28 +1,38 @@
 require 'rubygems'
 require 'activesupport'
 
-module XMLStruct; end
+module XMLStruct
+  BASE_DIR = File.join(File.dirname(__FILE__), 'xml_struct')
 
-require File.join(File.dirname(__FILE__), 'xml_struct', 'blankish_slate')
-require File.join(File.dirname(__FILE__), 'xml_struct', 'collection_proxy')
-require File.join(File.dirname(__FILE__), 'xml_struct', 'string')
-require File.join(File.dirname(__FILE__), 'xml_struct', 'common_behaviours')
-require File.join(File.dirname(__FILE__), 'xml_struct', 'backends', 'rexml')
+  require File.join(BASE_DIR, 'default_adapter')
+  require File.join(BASE_DIR, 'common_behaviours')
+  require File.join(BASE_DIR, 'blankish_slate')
+  require File.join(BASE_DIR, 'collection_proxy')
+  require File.join(BASE_DIR, 'string')
+
+end unless defined?(XMLStruct)
 
 module XMLStruct
+
+  def self.adapter=(adapter_module)
+    @adapter = adapter_module
+  end
+
+  def self.adapter
+    @adapter ||= Adapters::Default
+  end
+
   # Returns a String or Array object representing the given XML, decorated
   # with methods to access attributes and/or child elements.
   def self.new(duck)
-    @backend ||= ::XMLStruct::Backends::REXML
-
     case duck
-      when @backend::Element : new_decorated_obj(duck)
-      when Array             : duck.map { |d| new_decorated_obj(d) }
-      else new @backend.new(duck)
+      when adapter::Element : new_decorated_obj(duck)
+      when Array            : duck.map { |d| new_decorated_obj(d) }
+      else new adapter.new(duck)
     end
   end
 
-  # Takes any REXML::Element object, and converts it recursively into
+  # Takes any Element object, and converts it recursively into
   # the corresponding tree of decorated objects.
   def self.new_decorated_obj(xml)
     obj = if xml.value.blank? &&
@@ -30,7 +40,7 @@ module XMLStruct
 
       CollectionProxy.new new(xml.children)
     else
-      xml.value.extend String
+      xml.value.extend String # Teach our string to behave like XML
     end
 
     obj.instance_variable_set :@__raw_xml, xml
