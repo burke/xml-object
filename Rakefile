@@ -1,6 +1,7 @@
 require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
+require File.join(File.dirname(__FILE__), 'lib', 'xml_struct')
 
 desc 'Default: run unit tests.'
 task :default => :test
@@ -33,4 +34,20 @@ task :rcov do
 
   system("#{rcov} --html #{Dir.glob('test/**/*_test.rb').join(' ')}")
   system('open coverage/index.html') if PLATFORM['darwin']
+end
+
+desc 'Profiling'
+task :profile do
+  require 'ruby-prof'
+
+  xml_file = File.join(File.dirname(__FILE__),
+    'test', 'samples', 'lorem.xml')
+
+  result = RubyProf.profile do
+    XMLStruct.new(File.open(xml_file))
+  end
+
+  printer = RubyProf::GraphHtmlPrinter.new(result)
+  printer.print(File.open('profile.html', 'w'), :min_percent=>0)
+  system('open profile.html') if PLATFORM['darwin']
 end
