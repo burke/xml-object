@@ -36,8 +36,8 @@ Gem::Specification.new do |gem|
     xml-object.gemspec
   ]
 
-  gem.has_rdoc     = true
-  gem.rdoc_options = [ '--inline-source', '--main README.rdoc',
-    '--title "XMLObject"', 'README.rdoc', 'lib/xml-object.rb',
-    'lib/xml-object/*.rb', 'lib/xml-object/adapters/*.rb' ]
+  gem.has_rdoc = !!(gem.extra_rdoc_files = %w[ README.rdoc ])
+  gem.rdoc_options << '--title' << 'XMLObject'   <<
+                      '--main'  << 'README.rdoc' <<
+                      '--inline-source'
 end
