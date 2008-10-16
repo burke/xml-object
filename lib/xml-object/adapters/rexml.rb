@@ -1,4 +1,4 @@
-module XMLStruct::Adapters::REXML
+module XMLObject::Adapters::REXML
   require 'rexml/document'
 
   # Can take a String of XML data, or anything that responds to

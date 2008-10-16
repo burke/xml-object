@@ -1,10 +1,10 @@
 require 'rubygems'
 require 'activesupport'
 
-module XMLStruct
+module XMLObject
 
   unless defined?(BASE_DIR) # Slow call
-    BASE_DIR = File.join(File.dirname(__FILE__), 'xml_struct')
+    BASE_DIR = File.join(File.dirname(__FILE__), 'xml-object')
   end
 
   require File.join(BASE_DIR, 'default_adapter')

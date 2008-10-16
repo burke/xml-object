@@ -1,4 +1,4 @@
-module XMLStruct # :nodoc:
+module XMLObject # :nodoc:
   module Adapters # :nodoc:
     ADAPTERS_PATH = File.join(File.dirname(__FILE__), 'adapters')
 

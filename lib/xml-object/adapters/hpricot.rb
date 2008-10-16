@@ -1,4 +1,4 @@
-module XMLStruct::Adapters::Hpricot
+module XMLObject::Adapters::Hpricot
 
   # Can take a String of XML data, or anything that responds to
   # either +read+ or +to_s+.

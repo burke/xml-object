@@ -4,12 +4,12 @@ describe 'An XML file with weird characters' do
 
   it 'should not raise exceptions' do
     should.not.raise(Exception) do
-      @xml = XMLStruct.new xml_file(:weird_characters)
+      @xml = XMLObject.new xml_file(:weird_characters)
     end
   end
 
   it 'should allow access to attributes with dashes in the name' do
-    XMLStruct.new(
+    XMLObject.new(
       xml_file(:weird_characters))['attr-with-dashes'].should == 'lame'
   end
 end
@@ -17,7 +17,7 @@ end
 describe 'README Recipe' do
 
   def setup
-    @recipe = XMLStruct.new xml_file(:recipe)
+    @recipe = XMLObject.new xml_file(:recipe)
   end
 
   it 'should have name and title as "bread" and "Basic bread"' do
@@ -43,10 +43,10 @@ describe 'XML Struct' do
   include RubyProf::Test if defined? RubyProf::Test
 
   def setup
-    @lorem = XMLStruct.new xml_file(:lorem)
+    @lorem = XMLObject.new xml_file(:lorem)
   end
 
-  it 'should be an instance of XMLStruct::String' do
+  it 'should be an instance of XMLObject::String' do
     @lorem.should.be.an.instance_of ::String
   end
 

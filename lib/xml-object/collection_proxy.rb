@@ -1,4 +1,4 @@
-class XMLStruct::CollectionProxy < XMLStruct::BlankishSlate # :nodoc:
+class XMLObject::CollectionProxy < XMLObject::BlankishSlate # :nodoc:
   def initialize(target)
     @__children, @__attributes, @__target = {}, {}, target
   end

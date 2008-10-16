@@ -1,6 +1,6 @@
 require 'rake'
 require 'rake/testtask'
-require File.join(File.dirname(__FILE__), 'lib', 'xml_struct')
+require File.join(File.dirname(__FILE__), 'lib', 'xml-object')
 
 desc 'Default: run unit tests.'
 task :default => :test
@@ -17,17 +17,17 @@ task :rdoc do
   hanna = File.expand_path File.join(
     File.dirname(__FILE__), 'vendor', 'hanna', 'bin', 'hanna')
 
-  options = %{ --inline-source
-               --main README.rdoc
-               --title "XMLStruct"
-               README.rdoc
-               lib/xml_struct.rb
-               lib/xml_struct/*.rb
-               lib/xml_struct/adapters/*.rb }.strip.gsub(/\s+/, ' ')
+  options = [ '--inline-source',
+              '--main README.rdoc',
+              '--title "XMLObject"',
+              'README.rdoc',
+              'lib/xml-object.rb',
+              'lib/xml-object/*.rb',
+              'lib/xml-object/adapters/*.rb' ]
 
   ruby_files = File.join File.dirname(__FILE__)
 
-  system "#{hanna} #{options}"
+  system "#{hanna} #{options.join(' ')}"
 end
 
 desc 'Measures test coverage using rcov'
@@ -52,7 +52,7 @@ task :profile do
     'test', 'samples', 'lorem.xml')
 
   result = RubyProf.profile do
-    XMLStruct.new(File.open(xml_file))
+    XMLObject.new(File.open(xml_file))
   end
 
   printer = RubyProf::GraphHtmlPrinter.new(result)
@@ -87,19 +87,19 @@ task :benchmark do
       n.times { recipe = REXML::Document.new(File.open(xml_file)) }
     end
 
-    require File.join(File.dirname(__FILE__), 'lib', 'xml_struct',
+    require File.join(File.dirname(__FILE__), 'lib', 'xml-object',
       'adapters', 'rexml')
-    XMLStruct.adapter = XMLStruct::Adapters::REXML
-    x.report("XMLStruct (REXML):") do
-      n.times { recipe = XMLStruct.new(File.open(xml_file)) }
+    XMLObject.adapter = XMLObject::Adapters::REXML
+    x.report("XMLObject (REXML):") do
+      n.times { recipe = XMLObject.new(File.open(xml_file)) }
     end
 
     if defined?(Hpricot)
-      require File.join(File.dirname(__FILE__), 'lib', 'xml_struct',
+      require File.join(File.dirname(__FILE__), 'lib', 'xml-object',
         'adapters', 'hpricot')
-      XMLStruct.adapter = XMLStruct::Adapters::Hpricot
-      x.report("XMLStruct (Hpricot):") do
-        n.times { recipe = XMLStruct.new(File.open(xml_file)) }
+      XMLObject.adapter = XMLObject::Adapters::Hpricot
+      x.report("XMLObject (Hpricot):") do
+        n.times { recipe = XMLObject.new(File.open(xml_file)) }
       end
     end
 

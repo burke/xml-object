@@ -1,4 +1,4 @@
-module XMLStruct::String
+module XMLObject::String
   def self.extended(obj) # :nodoc:
     obj.instance_variable_set :@__children,   {}
     obj.instance_variable_set :@__attributes, {}
