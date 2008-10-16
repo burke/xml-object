@@ -8,13 +8,15 @@ module XMLObject::String
   # Attempts to detect wether this String is really an integer or float,
   # and returns accordingly. If not, just returns the string.
   def rb
-    @__rb ||= case
+    result = case
       when (self !~ /\S/)                          : ''
       when match(/[a-zA-Z]/)                       : ::String.new(self)
       when match(/^[+-]?\d+$/)                     : self.to_i
       when match(/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/) : self.to_f
       else ::String.new(self)
     end
+
+    @__rb ||= result
   end
 
   # A decorated String is blank when it has a blank value, no child
