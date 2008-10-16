@@ -33,15 +33,8 @@ end
 desc 'Measures test coverage using rcov'
 task :rcov do
   rm_f 'coverage'
-  rm_f 'coverage.data'
-
-  rcov = %{ rcov --aggregate coverage.data --text-summary
-    --include lib
-    --exclude /Library/Ruby
-  }.strip!.gsub! /\s+/, ' '
-
-  system("#{rcov} --html #{Dir.glob('test/**/*_test.rb').join(' ')}")
-  system('open coverage/index.html') if PLATFORM['darwin']
+  rcov = 'rcov --include lib --exclude /Library/Ruby'
+  system "#{rcov} -T #{Dir.glob('test/**/*_test.rb').join(' ')}"
 end
 
 desc 'Profiling'
@@ -57,7 +50,7 @@ task :profile do
 
   printer = RubyProf::GraphHtmlPrinter.new(result)
   printer.print(File.open('profile.html', 'w'), :min_percent=>0)
-  system('open profile.html') if PLATFORM['darwin']
+  system 'open profile.html' if PLATFORM['darwin']
 end
 
 desc 'Silly benchmarks'
