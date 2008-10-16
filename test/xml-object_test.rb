@@ -1,5 +1,62 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
+describe 'XMLObject' do
+  before do
+    $FAKE_HPRICOT_LOAD_ERROR = true
+    load_it!
+  end
+
+  it "should fallback to REXML even if Hpricot doesn't load" do
+    should.not.raise do
+      @foo = XMLObject.new '<foo bar="true"><baz>Boo</baz></foo>'
+    end
+
+    @foo.bar?.should.be true
+    @foo.baz.should == 'Boo'
+  end
+
+  after do
+    $FAKE_HPRICOT_LOAD_ERROR = false
+    load_it!
+  end
+end
+
+describe_shared 'All built-in XMLObject Adapters' do
+  it 'should know how start with something that knows #to_s' do
+    should.not.raise do
+      @foo = XMLObject.new '<foo bar="true"><baz>Boo</baz></foo>'
+    end
+
+    @foo.bar?.should.be true
+    @foo.baz.should == 'Boo'
+  end
+
+  it 'should know how start with something that knows #read' do
+    should.not.raise do
+
+      knows_read = StringIO.new('<foo bar="true"><baz>Boo</baz></foo>')
+      class << knows_read
+        undef_method :to_s
+      end
+
+      @foo = XMLObject.new(knows_read)
+    end
+
+    @foo.bar?.should.be true
+    @foo.baz.should == 'Boo'
+  end
+
+  it 'should raise hell at something that does not know #read or #to_s' do
+    dumb = lambda {}
+    class << dumb
+      undef_method(:to_s) rescue nil
+      undef_method(:read) rescue nil
+    end
+
+    should.raise { XMLObject.new(dumb) }
+  end
+end
+
 describe_shared 'All XMLObject Adapters' do
   describe 'An XML file with weird characters' do
 
@@ -39,7 +96,7 @@ describe_shared 'All XMLObject Adapters' do
     end
   end
 
-  describe 'XML Struct' do
+  describe 'XMLObject' do
 
     before(:each) do
       @lorem = XMLObject.new xml_file(:lorem)
@@ -120,6 +177,11 @@ describe_shared 'All XMLObject Adapters' do
       @lorem.sed.do.price.rb.should.not == 8
     end
 
+    it 'should not return bools when asked for non-boolish strings' do
+      @lorem.dolor.foo?.should.not.be true
+      @lorem.dolor.foo?.should.not.be false
+    end
+
     it 'should convert bool-looking attribute strings to bools when asked' do
       @lorem.consecteturs.each { |c| c.enabled?.should == !!(c.enabled?) }
     end
@@ -171,6 +233,7 @@ describe 'REXML Adapter' do
   end
 
   it_should_behave_like 'All XMLObject Adapters'
+  it_should_behave_like 'All built-in XMLObject Adapters'
 end
 
 describe 'Hpricot Adapter' do
@@ -181,4 +244,5 @@ describe 'Hpricot Adapter' do
   end
 
   it_should_behave_like 'All XMLObject Adapters'
+  it_should_behave_like 'All built-in XMLObject Adapters'
 end
