@@ -2,8 +2,8 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'activesupport'
 
   gem.name    = 'xml-object'
-  gem.version = '0.9.0'
-  gem.date    = '2008-10-13'
+  gem.version = '0.9.5'
+  gem.date    = '2008-10-15'
 
   gem.author   = 'Jordi Bunster'
   gem.email    = 'jordi@bunster.org'
