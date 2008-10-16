@@ -1,3 +1,5 @@
 coverage.data
 coverage/*
 doc/*
+profile.html
+xml-object-*.gem
