@@ -17,17 +17,15 @@ task :rdoc do
   hanna = File.expand_path File.join(
     File.dirname(__FILE__), 'vendor', 'hanna', 'bin', 'hanna')
 
-  options = [ '--inline-source',
-              '--main=README.rdoc',
-              '--title="XMLObject"',
-              'README.rdoc',
-              'lib/xml-object.rb',
-              'lib/xml-object/*.rb',
-              'lib/xml-object/adapters/*.rb' ]
+  options = %{ --inline-source
+               --main=README.rdoc
+               --title="XMLObject"
+               README.rdoc
+               lib/xml-object.rb
+               lib/xml-object/*.rb
+               lib/xml-object/adapters/*.rb }.strip!.gsub! /\s+/, ' '
 
-  ruby_files = File.join File.dirname(__FILE__)
-
-  system "#{hanna} #{options.join(' ')}"
+  system "#{hanna} #{options}"
 end
 
 desc 'Measures test coverage using rcov'
