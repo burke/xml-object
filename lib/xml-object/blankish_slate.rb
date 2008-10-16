@@ -1,4 +1,4 @@
-class XMLStruct::BlankishSlate # :nodoc:
+class XMLObject::BlankishSlate # :nodoc:
 
   instance_methods.each do |m|
     undef_method m unless m =~ /^__/         ||

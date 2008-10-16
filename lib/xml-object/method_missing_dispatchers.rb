@@ -1,4 +1,4 @@
-module XMLStruct::MethodMissingDispatchers # :nodoc:
+module XMLObject::MethodMissingDispatchers # :nodoc:
 
   private ##################################################################
 

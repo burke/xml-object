@@ -1,8 +1,8 @@
-= XMLStruct
+= XMLObject
 
 (This is inspired by Python's +xml_objectify+)
 
-XMLStruct attempts to make the accessing of small, well-formed XML structures
+XMLObject attempts to make the accessing of small, well-formed XML structures
 convenient, by using dot notation to represent both attributes and child
 elements whenever possible.
 
@@ -30,8 +30,8 @@ way. This one aims to be a bit different.
     </instructions>
   </recipe>
 
-  require 'xml_struct'
-  recipe = XMLStruct.new io_with_recipe_xml_shown_above
+  require 'xml-object'
+  recipe = XMLObject.new io_with_recipe_xml_shown_above
 
   recipe.name                      => "bread"
   recipe.title                     => "Basic bread"
@@ -46,7 +46,7 @@ way. This one aims to be a bit different.
 
 == Installation instructions
 
-    sudo gem install jordi-xml_struct --source http://gems.github.com
+    sudo gem install jordi-xml-object --source http://gems.github.com
 
 == Motivation
 
@@ -80,7 +80,7 @@ ambiguity.
 
 === Collection auto-folding
 
-Similar to XmlSimple, XMLStruct folds same named elements at the same
+Similar to XmlSimple, XMLObject folds same named elements at the same
 level. For example:
 
     <student>
@@ -89,7 +89,7 @@ level. For example:
       <course>Biology</course>
     </student>
 
-    student = XMLStruct.new(xml_file)
+    student = XMLObject.new(xml_file)
 
     student.course.is_a? Array       => true
     student.course.first == 'Math'   => true
@@ -127,7 +127,7 @@ question mark names (such as +enabled?+)
 
 === Adapters
 
-XMLStruct supports different adapters to do the actual XML parsing. It ships
+XMLObject supports different adapters to do the actual XML parsing. It ships
 with +REXML+ and +Hpricot+ adapters. If +Hpricot+ is detected it gets used,
 otherwise +REXML+ is used as a fallback.
 
