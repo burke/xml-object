@@ -18,8 +18,8 @@ task :rdoc do
     File.dirname(__FILE__), 'vendor', 'hanna', 'bin', 'hanna')
 
   options = [ '--inline-source',
-              '--main README.rdoc',
-              '--title "XMLObject"',
+              '--main=README.rdoc',
+              '--title="XMLObject"',
               'README.rdoc',
               'lib/xml-object.rb',
               'lib/xml-object/*.rb',
