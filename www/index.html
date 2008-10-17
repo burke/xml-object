@@ -7,7 +7,6 @@
       body {
         background-color: #fff;
         color:       #222;
-        max-width:   400px;
         margin:      2em auto;
         font-family: Verdana, sans-serif;
         line-height: 1.35em;
@@ -15,33 +14,44 @@
         padding:     1.4em;
       }
 
+      .center { text-align: center; }
+
+      div  { max-width: 400px; margin-right: auto; margin-left: auto; }
+
       p    { text-align :justify; }
-      h1   { font-size: 400%; text-align: center; }
-      code { font-size: 200%; font-weight: bold;  }
+      h1   { font-size: 400%; font-family: monospace; padding: 40px 0; }
+      code { font-size: 200%; font-weight: bold;      }
     </style>
   </head>
   <body>
-    <h1>XMLObject</h1>
+    <h1 class="center">&lt;XMLObject /&gt; (.rb)</h1>
 
-    <p>XMLObject is a library for reading (not writing) XML. It is 
-    particularly suited for cases where one is dealing with small documents
-    of a known structure. While not devoid of caveats, it does have a very
-    pleasant, idiomatic Ruby syntax.</p>
+    <div>
+      <p>XMLObject is a library for reading (not writing) XML. It is
+      particularly suited for cases where one is dealing with small
+      documents of a known structure. While not devoid of caveats, it
+      does have a very pleasant, idiomatic Ruby syntax.</p>
 
-    <p>Install from RubyGems as <code>xml-object</code>.
+      <p><a href="/doc">Download, installation, and usage 
+      instructions</a>.</p>
 
-    <ul>
-      <li><a href="/doc">Documentation (RDOC)</a></li>
-      <li><a href="/rcov">Test coverage report</a></li>
-      <li>Git repository mirrors:
-        <a href="http://rubyforge.org/scm/?group_id=7156">Rubyforge</a>,
-        <a href="http://github.com/jordi/xml-object">Github</a>
-      </li>
-    </ul>
+      <hr>
 
-    <p>&copy;
-      <a href="http://bunster.org/">Jordi Bunster</a>
-      <a href="mailto:jordi&#64;bunster.org">&lt;jordi&#64;bunster.org&gt;</a>
-    </p>
+      <ul>
+        <li><a href="/rcov">Test coverage report</a></li>
+        <li>Git repository mirrors:
+          <a href="http://rubyforge.org/scm/?group_id=7156">Rubyforge</a>,
+          <a href="http://github.com/jordi/xml-object">Github</a>
+        </li>
+      </ul>
+
+      <hr>
+
+      <p class="center">&copy;
+        <a href="http://bunster.org/">Jordi Bunster</a>
+        <a
+        href="mailto:jordi&#64;bunster.org">&lt;jordi&#64;bunster.org&gt;</a>
+      </p>
+    </div>
   </body>
 </html>

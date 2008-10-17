@@ -11,6 +11,18 @@ one is using XML for its intended purpose, but cumbersome when one always
 sends the same XML structure, and always process all of it in the same
 way. This one aims to be a bit different.
 
+== Installation instructions
+
+  gem install xml-object
+
+Or from Github's gem server:
+
+  gem install jordi-xml-object --source http://gems.github.com
+
+Both are the same, and are loaded the same way:
+
+  require 'xml-object'
+
 == Example usage
 
   <recipe name="bread" prep_time="5 mins" cook_time="3 hours">
@@ -43,10 +55,6 @@ way. This one aims to be a bit different.
 
   recipe.instructions.first.upcase => "MIX ALL INGREDIENTS TOGETHER."
   recipe.instructions.steps.size   => 7
-
-== Installation instructions
-
-    sudo gem install jordi-xml-object --source http://gems.github.com
 
 == Motivation
 
