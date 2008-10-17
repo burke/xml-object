@@ -15,7 +15,6 @@ namespace :test do
 
     rcov = "rcov -o #{output_path} -I #{includes} -x #{excludes}"
     sh "#{rcov} -T #{Dir["#{PROJECT_DIR}/test/*_test.rb"].join(' ')}"
-    system "open #{output_path}/index.html" if PLATFORM['darwin']
   end
 
   desc 'Publish test coverage to RubyForge'
