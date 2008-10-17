@@ -15,7 +15,7 @@ rescue LoadError
   puts "Install the 'ruby-prof' gem (>= 0.6.1) to get profiling information"
 end
 
-def load_it!
+def load_XMLObject!
   load File.join(File.dirname(__FILE__), '..', 'lib', 'xml-object.rb')
 end
 
