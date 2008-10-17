@@ -2,8 +2,16 @@ require File.join(File.dirname(__FILE__), 'test_helper')
 
 describe 'XMLObject' do
   before do
-    $FAKE_HPRICOT_LOAD_ERROR = true
-    load_it!
+    module Kernel
+      def require_that_hates_hpricot(*args)
+        (args.first == 'hpricot') ? raise(LoadError) : real_require(*args)
+      end
+
+      alias_method :real_require, :require
+      alias_method :require, :require_that_hates_hpricot
+    end
+
+    load_XMLObject!
   end
 
   it "should fallback to REXML even if Hpricot doesn't load" do
@@ -11,13 +19,18 @@ describe 'XMLObject' do
       @foo = XMLObject.new '<foo bar="true"><baz>Boo</baz></foo>'
     end
 
+    XMLObject.adapter.should.be XMLObject::Adapters::REXML
+
     @foo.bar?.should.be true
     @foo.baz.should == 'Boo'
   end
 
   after do
-    $FAKE_HPRICOT_LOAD_ERROR = false
-    load_it!
+    module Kernel
+      alias_method :require, :real_require
+    end
+    require 'hpricot'
+    load_XMLObject!
   end
 end
 

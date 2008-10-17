@@ -5,7 +5,7 @@ module XMLObject # :nodoc:
     Default = begin
       require 'hpricot'
       require File.join(ADAPTERS_PATH, 'hpricot')
-      $FAKE_HPRICOT_LOAD_ERROR ? raise(LoadError) : Hpricot
+      Hpricot
     rescue LoadError
       require File.join(ADAPTERS_PATH, 'rexml')
       REXML
