@@ -13,7 +13,6 @@ namespace :perf do
 
     printer = RubyProf::GraphHtmlPrinter.new(result)
     printer.print(File.open(result_filename, 'w'), :min_percent=>0)
-    system "open #{result_filename}" if PLATFORM['darwin']
   end
 
   desc 'Silly benchmarks'
