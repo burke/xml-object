@@ -26,8 +26,8 @@ module XMLObject
   # with methods to access attributes and/or child elements.
   def self.new(duck)
     case duck
-      when adapter::Element : new_decorated_obj(duck)
-      when Array            : duck.map { |d| new_decorated_obj(d) }
+      when adapter::Element then new_decorated_obj(duck)
+      when Array            then duck.map { |d| new_decorated_obj(d) }
       else new adapter.new(duck)
     end
   end
