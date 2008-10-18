@@ -9,10 +9,10 @@ module XMLObject::String
   # and returns accordingly. If not, just returns the string.
   def rb
     result = case
-      when (self !~ /\S/)                          : ''
-      when match(/[a-zA-Z]/)                       : ::String.new(self)
-      when match(/^[+-]?\d+$/)                     : self.to_i
-      when match(/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/) : self.to_f
+      when (self !~ /\S/)                          then ''
+      when match(/[a-zA-Z]/)                       then ::String.new(self)
+      when match(/^[+-]?\d+$/)                     then self.to_i
+      when match(/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/) then self.to_f
       else ::String.new(self)
     end
 

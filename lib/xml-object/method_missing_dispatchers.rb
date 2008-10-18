@@ -9,8 +9,8 @@ module XMLObject::MethodMissingDispatchers # :nodoc:
 
     if boolish = __send__(method_sans_question).downcase
       bool = case
-        when %w[ true yes t y ].include?(boolish) : true
-        when %w[ false no f n ].include?(boolish) : false
+        when %w[ true yes t y ].include?(boolish) then true
+        when %w[ false no f n ].include?(boolish) then false
         else nil
       end
 

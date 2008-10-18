@@ -1,8 +1,10 @@
-namespace :test do
+require 'rake/testtask'
 
-  desc 'Run the specification tests'
-  task :run do
-    sh "ruby #{PROJECT_DIR}/test/*_test.rb"
+namespace :test do
+  Rake::TestTask.new('XMLObject') do |t|
+    t.libs << 'test'
+    t.test_files = FileList["#{PROJECT_DIR}/test/*_test.rb"]
+    t.verbose    = true
   end
 
   desc 'Reports test coverage'
