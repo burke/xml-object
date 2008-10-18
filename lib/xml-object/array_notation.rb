@@ -24,7 +24,7 @@ module XMLObject::ArrayNotation
     return @__target[name] if @__target && name.is_a?(Numeric)
 
     unless name.is_a? Hash
-      key = name.to_sym
+      key = name.to_s.to_sym
 
       return @__children[key]   if @__children.has_key?(key)
       return @__attributes[key] if @__attributes.has_key?(key)
@@ -33,10 +33,10 @@ module XMLObject::ArrayNotation
     raise 'one and only one key allowed' if name.size != 1
 
     case (param = name.keys.first.to_sym)
-      when :element   : @__children[name.values.first.to_sym]
-      when :child     : @__children[name.values.first.to_sym]
-      when :attr      : @__attributes[name.values.first.to_sym]
-      when :attribute : @__attributes[name.values.first.to_sym]
+      when :element   then @__children[name.values.first.to_sym]
+      when :child     then @__children[name.values.first.to_sym]
+      when :attr      then @__attributes[name.values.first.to_sym]
+      when :attribute then @__attributes[name.values.first.to_sym]
       else raise %{ Invalid key :#{param.to_s}.
         Use one of :element, :child, :attr, or :attribute }.squish!
     end
