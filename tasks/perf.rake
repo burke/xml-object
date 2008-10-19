@@ -4,15 +4,17 @@ namespace :perf do
   task :profile do
     require 'ruby-prof'
 
-    xml_file = File.join(PROJECT_ROOT, 'spec', 'samples', 'lorem.xml')
+    xml_file = File.join(PROJECT_DIR, 'test', 'samples', 'lorem.xml')
     result   = RubyProf.profile do
       XMLObject.new(File.open(xml_file))
     end
 
-    result_filename = File.join(PROJECT_ROOT, 'profile.html')
+    result_filename = File.join(PROJECT_DIR, 'profile.html')
 
     printer = RubyProf::GraphHtmlPrinter.new(result)
-    printer.print(File.open(result_filename, 'w'), :min_percent=>0)
+    printer.print(File.open(result_filename, 'w'), :min_percent => 0)
+    puts "Dumped in #{result_filename}"
+    system "open #{result_filename}" if PLATFORM.match('darwin')
   end
 
   desc 'Silly benchmarks'
@@ -31,7 +33,7 @@ namespace :perf do
       puts 'Hpricot not found'
     end
 
-    xml_file = File.join(PROJECT_ROOT, 'spec', 'samples', 'recipe.xml')
+    xml_file = File.join(PROJECT_DIR, 'test', 'samples', 'recipe.xml')
 
     puts "Reading whole file:"
     n = 500
@@ -40,7 +42,7 @@ namespace :perf do
         n.times { recipe = REXML::Document.new(File.open(xml_file)) }
       end
 
-      require File.join(PROJECT_ROOT, 'lib', 'xml-object',
+      require File.join(PROJECT_DIR, 'lib', 'xml-object',
         'adapters', 'rexml')
       XMLObject.adapter = XMLObject::Adapters::REXML
       x.report("XMLObject (REXML):") do
@@ -48,7 +50,7 @@ namespace :perf do
       end
 
       if defined?(Hpricot)
-        require File.join(PROJECT_ROOT, 'lib', 'xml-object',
+        require File.join(PROJECT_DIR, 'lib', 'xml-object',
           'adapters', 'hpricot')
         XMLObject.adapter = XMLObject::Adapters::Hpricot
         x.report("XMLObject (Hpricot):") do
