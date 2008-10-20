@@ -1,10 +1,9 @@
 Gem::Specification.new do |gem|
-  gem.add_dependency 'activesupport'
+  gem.rubyforge_project = 'xml-object'
 
-  gem.name    = 'xml-object'
-  gem.version = '0.9.5'
-  gem.date    = '2008-10-15'
-
+  gem.name     = 'xml-object'
+  gem.version  = '0.9.6'
+  gem.date     = '2008-10-19'
   gem.author   = 'Jordi Bunster'
   gem.email    = 'jordi@bunster.org'
   gem.homepage = 'http://github.com/jordi/xml-object'
@@ -26,10 +25,16 @@ Gem::Specification.new do |gem|
     lib/xml-object/adapters
     lib/xml-object/adapters/hpricot.rb
     lib/xml-object/adapters/rexml.rb
+    lib/xml-object/adapters.rb
     lib/xml-object/array_notation.rb
     lib/xml-object/blankish_slate.rb
     lib/xml-object/collection_proxy.rb
-    lib/xml-object/default_adapter.rb
+    lib/xml-object/core_ext
+    lib/xml-object/core_ext/hash.rb
+    lib/xml-object/core_ext/nil_class.rb
+    lib/xml-object/core_ext/string.rb
+    lib/xml-object/core_ext.rb
+    lib/xml-object/element.rb
     lib/xml-object/method_missing_dispatchers.rb
     lib/xml-object/string.rb
     lib/xml-object.rb
