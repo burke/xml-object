@@ -36,7 +36,7 @@ module XMLObject
       CollectionProxy.new new(xml.children)
     else
       # Teach our string to behave like and XML Element
-      xml.value.extend(String).extend(Element)
+      xml.value.extend String, Element
     end
 
     obj.instance_variable_set :@__adapted_element, xml
@@ -45,7 +45,7 @@ module XMLObject
     xml.attributes.each { |name, value|  add_attribute(obj, name, value) }
 
     # Let's teach our object some new tricks:
-    obj.extend(ArrayNotation).extend(MethodMissingDispatchers)
+    obj.extend ArrayNotation, MethodMissingDispatchers
   end
 
   # Decorates the given object 'obj' with a method 'name' that returns the
@@ -72,7 +72,7 @@ module XMLObject
   def self.add_attribute(obj, name, attr_value) # :nodoc:
 
     attributes = obj.instance_variable_get :@__attributes
-    attributes[(key = name.to_sym)] = attr_value.squish.extend(String)
+    attributes[(key = name.to_sym)] = attr_value.squish.extend String
 
     obj.instance_variable_set :@__attributes, attributes
     attr_value
