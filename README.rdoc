@@ -11,6 +11,13 @@ is using XML for its intended purpose, but cumbersome when one always sends
 the same XML structure, and always process all of it in the same way. This
 one aims to be a bit different.
 
+At the moment, I aim for compatibility with Ruby 1.8, 1.9, and JRuby 1.1.
+
+== Dependencies
+
+None outside of Ruby, though some optional gems add additional features. See
+below on "Adapters" and "Collection pluralization".
+
 == Installation instructions
 
   gem install xml-object
