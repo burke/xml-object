@@ -1,4 +1,5 @@
 test/coverage/*
 doc/*
+pkg/*
 profile_with_*.html
 xml-object-*.gem
