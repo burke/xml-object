@@ -28,8 +28,13 @@ begin_require_rescue 'redgreen',      'to get color output'
 begin_require_rescue 'ruby-prof',     'to get profiling information'
 begin_require_rescue 'ruby-debug',    'to use the debugger during tests'
 begin_require_rescue 'activesupport', 'to test auto array pluralization'
-begin_require_rescue 'hpricot',       'to test Hpricot adapter'
-begin_require_rescue 'libxml',        'to test LibXML adapter'
+begin_require_rescue 'hpricot',       'to test the Hpricot adapter'
+
+if RUBY_PLATFORM =~ /java/
+  begin_require_rescue 'jrexml', 'to test the JREXML adapter'
+else
+  begin_require_rescue 'libxml', 'to test the LibXML adapter'
+end
 
 { :lorem      => '61cd24e2959669c3719fbebf6c948cd3',
   :characters => 'cdcbd9b89b261487fa98c11d856f50fe',

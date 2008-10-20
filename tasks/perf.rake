@@ -53,10 +53,18 @@ namespace :perf do
       puts 'Hpricot not found'
     end
 
-    begin
-      require 'libxml'
-    rescue LoadError
-      puts 'LibXML not found'
+    if RUBY_PLATFORM =~ /java/
+      begin
+        require 'jrexml'
+      rescue LoadError
+        puts 'LibXML not found'
+      end
+    else
+      begin
+        require 'libxml'
+      rescue LoadError
+        puts 'LibXML not found'
+      end
     end
 
     xml_file = File.join(PROJECT_DIR, 'test', 'samples', 'recipe.xml')
@@ -89,6 +97,13 @@ namespace :perf do
       if defined?(LibXML)
         require 'adapters/libxml'
         x.report('XMLObject (LibXML):') do
+          n.times { recipe = XMLObject.new(File.open(xml_file)) }
+        end
+      end
+
+      if defined?(JREXML)
+        require 'adapters/jrexml'
+        x.report('XMLObject (JREXML):') do
           n.times { recipe = XMLObject.new(File.open(xml_file)) }
         end
       end
