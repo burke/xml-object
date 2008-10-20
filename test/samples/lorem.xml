@@ -25,11 +25,9 @@
   <!-- Test boolean recognition -->
   <brutus>true</brutus>
 
-  <consecteturs> <!-- To test that we can still reach this, even though
-                      the array of singular ones above will trap the call
-                      to this when using dot notation -->
+  <culpas> <!-- To test the one-item collection -->
     <culpa>officia</culpa>
-  </consecteturs>
+  </culpas>
 
   <cupidatats> <!-- Test for the empty element == single array child
                     scenario, as well as date recognition -->

@@ -37,6 +37,30 @@ describe_shared 'All built-in XMLObject Adapters' do
 end
 
 describe_shared 'All XMLObject Adapters' do
+
+  describe 'An XML "Array"' do
+    before(:each) { @plurals = XMLObject.new(xml_file(:plurals)) }
+
+    it 'should be an Array' do
+      @plurals.octopus.is_a?(Array).should.be true
+      @plurals.people.is_a?(Array).should.be true
+      @plurals.cat.is_a?(Array).should.be true
+    end
+
+    it 'should allow regular plural form access to collections' do
+      @plurals.cats.should == @plurals.cat
+    end
+
+    if defined?(ActiveSupport::Inflector)
+      it 'should allow irregular plural form access to collections' do
+        @plurals.octopi.should == @plurals.octopus
+        @plurals.people.people.should == @plurals.people.person
+      end
+    else
+      xit 'should allow irregular plural form access to collections'
+    end
+  end
+
   describe 'An XML file with weird characters' do
 
     it 'should not raise exceptions' do
@@ -60,14 +84,14 @@ describe_shared 'All XMLObject Adapters' do
       @recipe.title.should == "Basic bread"
     end
 
-    it 'should treat "recipe.ingredients" as an Array' do
-      @recipe.ingredients.is_a?(Array).should.be true
-      @recipe.ingredients.first.amount.to_i.should == 8
+    it 'should treat "recipe.ingredient" as an Array' do
+      @recipe.ingredient.is_a?(Array).should.be true
+      @recipe.ingredient.first.amount.to_i.should == 8
     end
 
     it 'should have 7 easy instructions' do
       @recipe.instructions.easy?.should.be true
-      @recipe.instructions.steps.size.should == 7
+      @recipe.instructions.step.size.should == 7
       @recipe.instructions.first.upcase.should ==
         "MIX ALL INGREDIENTS TOGETHER."
     end
@@ -86,9 +110,9 @@ describe_shared 'All XMLObject Adapters' do
     end
 
     it 'not be blank when value, children, or attributes are present' do
-      [ @lorem.dolor, @lorem.sit, @lorem.ut ].each do |xr|
-        xr.should.not.be.blank?
-      end
+      @lorem.dolor.blank?.should.not.be true
+      @lorem.sit.blank?.should.not.be true
+      @lorem.ut.blank?.should.not.be true
     end
 
     it 'should allow access to attributes named like invalid methods' do
@@ -127,22 +151,18 @@ describe_shared 'All XMLObject Adapters' do
       @lorem.consectetur.is_a?(Array).should.be true
     end
 
-    it 'should make auto-grouped arrays accessible by their plural form' do
-      @lorem.consecteturs.should.be @lorem.consectetur
-    end
-
-    it 'should allow explicit access to elements named like plural arrays' do
-      @lorem.consecteturs.should.not.be @lorem[:element => 'consecteturs']
+    it 'should treat single-item collections as Array' do
+      @lorem.culpas.is_a?(Array).should.be true
     end
 
     it 'should convert integer-looking attribute strings to integers' do
-      @lorem.consecteturs.each do |c|
+      @lorem.consectetur.each do |c|
         c['id'].rb.is_a?(Numeric).should.be true
       end
     end
 
     it 'should convert float-looking attribute strings to floats' do
-      @lorem.consecteturs.each do |c|
+      @lorem.consectetur.each do |c|
         c.capacity.rb.is_a?(Float).should.be true
       end
     end
@@ -158,12 +178,12 @@ describe_shared 'All XMLObject Adapters' do
     end
 
     it 'should convert bool-looking attribute strings to bools when asked' do
-      @lorem.consecteturs.each { |c| c.enabled?.should == !!(c.enabled?) }
+      @lorem.consectetur.each { |c| c.enabled?.should == !!(c.enabled?) }
     end
 
     it 'should convert to bool correctly when asked' do
-      @lorem.consecteturs.first.enabled?.should.be true
-      @lorem.consecteturs.last.enabled?.should.be false
+      @lorem.consectetur.first.enabled?.should.be true
+      @lorem.consectetur.last.enabled?.should.be false
     end
 
     it 'should pass forth methods to single array child when empty valued' do

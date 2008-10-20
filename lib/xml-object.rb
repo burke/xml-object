@@ -1,17 +1,19 @@
-require 'rubygems'
-require 'activesupport'
+begin; require 'rubygems';      rescue Exception, StandardError; nil; end
+begin; require 'activesupport'; rescue Exception, StandardError; nil; end
 
 module XMLObject # :nodoc:
   VERSION = '0.9.5'
 end
+
+require 'core_ext'
 
 require 'adapters'
 require 'adapters/rexml'
 require 'array_notation'
 require 'blankish_slate'
 require 'collection_proxy'
-require 'method_missing_dispatchers'
 require 'element'
+require 'method_missing_dispatchers'
 require 'string'
 
 module XMLObject
