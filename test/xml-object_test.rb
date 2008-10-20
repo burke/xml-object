@@ -194,12 +194,12 @@ describe_shared 'All XMLObject Adapters' do
       should.raise(RuntimeError) { @lorem.voluptate[0] }
     end
 
-    it 'should be valued as its text when text first and CDATA exist' do
+    it 'should be valued as its text when text and CDATA exist' do
       @lorem.ullamco.should == 'Laboris'
     end
 
-    it 'should have the value of its first CDATA when multiple exist' do
-      @lorem.deserunt.should == 'mollit'
+    it 'should have the value of its joined CDATAs when multiple exist' do
+      @lorem.deserunt.should == 'mollitanim'
     end
 
     it 'should squish whitespace in string attribute values' do

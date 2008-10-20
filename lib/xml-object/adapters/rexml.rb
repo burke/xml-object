@@ -18,14 +18,19 @@ module XMLObject::Adapters::REXML
 
   class Element < XMLObject::Adapters::Base::Element # :nodoc:
     def initialize(xml)
-      self.raw, self.name, self.attributes = xml, xml.name, xml.attributes
-      self.children = xml.elements.map { |raw_xml| self.class.new(raw_xml) }
+      @raw, @name, @attributes = xml, xml.name, xml.attributes
 
-      self.value = case
-        when (not xml.text.blank?) then xml.text.to_s
-        when (xml.cdatas.any?)     then xml.cdatas.first.to_s
-        else ''
-      end
+      @element_nodes = xml.elements
+
+      @text_nodes = xml.children.select do |child|
+        child.class == ::REXML::Text
+      end.collect { |child| child.to_s }
+
+      @cdata_nodes = xml.children.select do |child|
+        child.class == ::REXML::CData
+      end.collect { |child| child.to_s }
+
+      super
     end
   end
 end
