@@ -48,7 +48,6 @@ end
   :recipe     => '6087ab42049273d123d473093b04ab12' }.each do |sample, md5|
 
   unless Digest::MD5.hexdigest(xml_file(sample).read) == md5
-    puts "Sample file #{sample.to_s}.xml doesn't match expected MD5"
-    exit(1)
+    puts "Warning: Sample file #{sample.to_s}.xml doesn't match expected MD5"
   end
 end
