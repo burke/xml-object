@@ -1,41 +1,38 @@
+require 'setup'
+
+# Include the "lib" folder of each test vendor:
+Dir[File.join(PROJECT_DIR, 'test', 'vendor', '*')].each do |vendor|
+
+  lib = File.join(vendor, 'lib')
+  $:.unshift lib if File.directory?(lib)
+end
+
 require 'test/unit'
-require 'rubygems'
-require File.join(File.dirname(__FILE__),
-  '..', 'vendor', 'test-spec', 'lib', 'test', 'spec')
-
-begin
-  require 'redgreen'
-rescue LoadError
-  puts "Install the 'redgreen' gem to get color output"
-end
-
-begin
-  require 'ruby-prof'
-rescue LoadError
-  puts "Install the 'ruby-prof' gem (>= 0.6.1) to get profiling information"
-end
-
-def load_XMLObject!
-  load File.join(File.dirname(__FILE__), '..', 'lib', 'xml-object.rb')
-end
+require 'test/spec'
+require 'digest/md5'
 
 def xml_file(name_symbol)
-  File.open(File.expand_path(File.join(File.dirname(__FILE__),
-    'samples', "#{name_symbol.to_s}.xml")))
+  File.open File.join(PROJECT_DIR,
+    'test', 'samples', "#{name_symbol.to_s}.xml")
 end
 
-require 'digest/md5'
-{ :lorem  => '9062c0f294383435d5b04ce6d67b6d61',
-  :weird_characters => 'cdcbd9b89b261487fa98c11d856f50fe',
-  :recipe => '6087ab42049273d123d473093b04ab12' }.each do |file_key, md5|
+def begin_require_rescue(gem, reason = nil)
 
-  unless Digest::MD5.hexdigest(xml_file(file_key).read) == md5
-    raise "Sample file #{file_key.to_s}.xml doesn't match expected MD5"
+  begin; require gem; rescue
+    puts "Install the '#{gem}' gem #{reason.squish!}" unless reason.nil?
   end
 end
 
-class Test::Unit::TestCase
-  def debug
-    require 'ruby-debug'; debugger
+begin_require_rescue 'redgreen',   'to get color output'
+begin_require_rescue 'ruby-prof',  'to get profiling information'
+begin_require_rescue 'ruby-debug', 'to use the debugger during tests'
+
+{ :lorem      => '9062c0f294383435d5b04ce6d67b6d61',
+  :characters => 'cdcbd9b89b261487fa98c11d856f50fe',
+  :recipe     => '6087ab42049273d123d473093b04ab12' }.each do |sample, md5|
+
+  unless Digest::MD5.hexdigest(xml_file(sample).read) == md5
+    puts "Sample file #{sample.to_s}.xml doesn't match expected MD5"
+    exit(1)
   end
 end

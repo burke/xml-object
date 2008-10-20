@@ -2,26 +2,18 @@ require 'rubygems'
 require 'activesupport'
 
 module XMLObject
+  VERSION = '0.9.5'
+end
 
-  unless defined?(BASE_DIR) # Slow call
-    BASE_DIR = File.join(File.dirname(__FILE__), 'xml-object')
-  end
+require 'adapters'
+require 'adapters/rexml'
+require 'array_notation'
+require 'blankish_slate'
+require 'collection_proxy'
+require 'method_missing_dispatchers'
+require 'string'
 
-  require File.join(BASE_DIR, 'default_adapter')
-  require File.join(BASE_DIR, 'method_missing_dispatchers')
-  require File.join(BASE_DIR, 'array_notation')
-  require File.join(BASE_DIR, 'blankish_slate')
-  require File.join(BASE_DIR, 'collection_proxy')
-  require File.join(BASE_DIR, 'string')
-
-  def self.adapter=(adapter_module)
-    @adapter = adapter_module
-  end
-
-  def self.adapter
-    @adapter ||= Adapters::Default
-  end
-
+module XMLObject
   # Returns a String or Array object representing the given XML, decorated
   # with methods to access attributes and/or child elements.
   def self.new(duck)

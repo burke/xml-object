@@ -4,6 +4,7 @@ desc '=> test:run'
 task :default => :'test:XMLObject'
 
 task :bench   => :'perf:benchmark'
+task :profile => :'perf:profile:rexml'
 
 task :doc     => :'rdoc:generate'
 task :rdoc    => :'rdoc:generate'
