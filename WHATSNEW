@@ -4,7 +4,6 @@
     values no longer report their value as their first CDATA element. They
     report all of their CDATA nodes joined together, a-la LibXML.
 
-
 * 0.9.6 (2008-10-19):
   - Ruby 1.9 compatibility
   - XMLObject no longer requires ActiveSupport. Note that proper array
