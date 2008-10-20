@@ -18,7 +18,7 @@ end
 
 def begin_require_rescue(gem, reason = nil)
 
-  begin; require gem; rescue
+  begin; require gem; rescue LoadError, MissingSourceFile
     puts "Install the '#{gem}' gem #{reason.squish!}" unless reason.nil?
   end
 end
