@@ -91,42 +91,42 @@ ambiguity.
 Similar to XmlSimple, XMLObject folds same named elements at the same
 level. For example:
 
-    <student>
-      <name>Bob</name>
-      <course>Math</course>
-      <course>Biology</course>
-    </student>
+  <student>
+    <name>Bob</name>
+    <course>Math</course>
+    <course>Biology</course>
+  </student>
 
-    student = XMLObject.new(xml_file)
+  student = XMLObject.new(xml_file)
 
-    student.course.is_a? Array       => true
-    student.course.first == 'Math'   => true
-    student.course.last  == 'Biology => true
+  student.course.is_a? Array       => true
+  student.course.first == 'Math'   => true
+  student.course.last  == 'Biology => true
 
 === Collection pluralization
 
 With the same file from the +Collection auto-folding+ section above, you
 also get this (courtesy of +ActiveSupport+'s +Inflector+):
 
-    student.courses.first == student.course.first => true
+  student.courses.first == student.course.first => true
 
 === Collection proxy
 
-  Sometimes, collections are expressed with a container element in XML:
+Sometimes, collections are expressed with a container element in XML:
 
-    <student>
-      <name>Bob</name>
-      <courses>
-        <course>Math</course>
-        <course>Biology</course>
-      </courses>
-    </student>
+  <student>
+    <name>Bob</name>
+    <courses>
+      <course>Math</course>
+      <course>Biology</course>
+    </courses>
+  </student>
 
 In this case, since the container element +courses+ has no text element
 of its own, and it only has elements of one name under it, it delegates
 all methods it doesn't contain to the collection below, so you get:
 
-    student.courses.collect { |c| c.downcase.to_sym } => [:math, :biology]
+  student.courses.collect { |c| c.downcase.to_sym } => [:math, :biology]
 
 === Question mark notation
 
@@ -136,8 +136,10 @@ question mark names (such as +enabled?+)
 === Adapters
 
 XMLObject supports different adapters to do the actual XML parsing. It ships
-with +REXML+ and +Hpricot+ adapters. If +Hpricot+ is detected it gets used,
-otherwise +REXML+ is used as a fallback.
+with +REXML+ and +Hpricot+ adapters. By default, the +REXML+ adapter is
+used. To use the +Hpricot+ adapter:
+
+  require 'xml-object/adapters/hpricot'
 
 === Recursive
 
@@ -155,6 +157,3 @@ usage more complex. As usual, patches welcome.
 == Legal
 
 Copyright (c) 2008 Jordi Bunster, released under the MIT license
-
-
-

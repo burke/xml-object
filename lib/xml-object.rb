@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'activesupport'
 
-module XMLObject
+module XMLObject # :nodoc:
   VERSION = '0.9.5'
 end
 
@@ -28,7 +28,7 @@ module XMLObject
 
   # Takes any Element object, and converts it recursively into
   # the corresponding tree of decorated objects.
-  def self.new_decorated_obj(xml)
+  def self.new_decorated_obj(xml) # :nodoc:
     obj = if xml.value.blank? &&
              xml.children.collect { |e| e.name }.uniq.size == 1
 
@@ -49,7 +49,7 @@ module XMLObject
   # Decorates the given object 'obj' with a method 'name' that returns the
   # given 'element'. If 'name' is already taken, takes care of the array
   # folding behaviour.
-  def self.add_child(obj, name, element)
+  def self.add_child(obj, name, element) # :nodoc:
     key      = name.to_sym
     children = obj.instance_variable_get :@__children
 

@@ -1,8 +1,8 @@
-module XMLObject
-  module Adapters
-    module Base
-      class Element
-        attr_accessor :raw, :name, :value, :attributes, :children
+module XMLObject # :nodoc:
+  module Adapters # :nodoc:
+    module Base # :nodoc:
+      class Element # :nodoc:
+        attr_accessor :raw, :name, :value, :attributes, :children # :nodoc:
       end
     end
   end
