@@ -86,6 +86,22 @@ ambiguity.
 
 == Features & Problems
 
+=== Adapters
+
+XMLObject supports different adapters to do the actual XML parsing. It ships
+with +REXML+, +Hpricot+, and +LibXML+ adapters. By default, the +REXML+
+adapter is used.
+
+To use the +Hpricot+ adapter:
+
+  require 'xml-object'
+  require 'xml-object/adapters/hpricot'
+
+And the +LibXML+ adapter:
+
+  require 'xml-object'
+  require 'xml-object/adapters/libxml'
+
 === Collection auto-folding
 
 Similar to XmlSimple, XMLObject folds same named elements at the same level.
@@ -137,14 +153,6 @@ methods it doesn't contain to the collection below, so you get:
 
 Strings that look like booleans are "booleanized" if called by their question
 mark names (such as +enabled?+)
-
-=== Adapters
-
-XMLObject supports different adapters to do the actual XML parsing. It ships
-with +REXML+ and +Hpricot+ adapters. By default, the +REXML+ adapter is used.
-To use the +Hpricot+ adapter:
-
-  require 'xml-object/adapters/hpricot'
 
 === Recursive
 
