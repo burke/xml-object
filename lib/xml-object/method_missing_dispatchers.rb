@@ -26,7 +26,7 @@ module XMLObject::MethodMissingDispatchers # :nodoc:
     return unless args.empty? && block.nil?
 
     if @__children.has_key?(singular = meth.to_s.singularize.to_sym) &&
-          @__children[singular].is_a?(Array)
+       @__children[singular].is_a?(Array)
 
       instance_eval %{ def #{meth}; @__children[%s|#{singular}|]; end }
       @__children[singular]
