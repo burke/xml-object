@@ -1,8 +1,30 @@
 * 0.9.6 (2008-10-??):
   - Ruby 1.9 compatibility
+  - XMLObject no longer requires ActiveSupport. Note that proper array
+    pluralization still depends on ActiveSupport's Inflector, so if it's not
+    there, we just pluralize things by tacking 's' at the end.
   - XMLObject no longer tries to load Hpricot by default (too cumbersome
     to test). Use "require 'xml-object/adapters/hpricot'" to enable the
     Hpricot adapter.
+  - Backwards compatible change. For the following XML:
+
+      <foo>
+        <bar>
+        <bez>
+      </foo>
+
+      <foos>Yipes!</foos>
+
+    before:
+
+      xml.foos => # The <foo> "array"
+
+    now:
+
+      xml.foos => # The <foos> element
+
+    It proved too expensive to support that edge case, and for no good
+    reason.
 
 * 0.9.5 (2008-10-15):
   - Project renamed to XMLObject, to match project name at Rubyforge.

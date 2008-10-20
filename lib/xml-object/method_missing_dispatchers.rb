@@ -7,10 +7,10 @@ module XMLObject::MethodMissingDispatchers # :nodoc:
 
     method_sans_question = meth.to_s.chomp('?').to_sym
 
-    if boolish = __send__(method_sans_question).downcase
+    if boolish = __send__(method_sans_question)
       bool = case
-        when %w[ true yes t y ].include?(boolish) then true
-        when %w[ false no f n ].include?(boolish) then false
+        when %w[ true yes t y ].include?(boolish.downcase) then true
+        when %w[ false no f n ].include?(boolish.downcase) then false
         else nil
       end
 
@@ -25,19 +25,19 @@ module XMLObject::MethodMissingDispatchers # :nodoc:
   def __dot_notation_dispatch(meth, *args, &block)
     return unless args.empty? && block.nil?
 
-    if @__children.has_key?(singular = meth.to_s.singularize.to_sym) &&
-       @__children[singular].is_a?(Array)
-
-      instance_eval %{ def #{meth}; @__children[%s|#{singular}|]; end }
-      @__children[singular]
-
-    elsif @__children.has_key?(meth)
+    if @__children.has_key?(meth)
       instance_eval %{ def #{meth}; @__children[%s|#{meth}|]; end }
       @__children[meth]
 
     elsif @__attributes.has_key?(meth)
       instance_eval %{ def #{meth}; @__attributes[%s|#{meth}|]; end }
       @__attributes[meth]
+
+    elsif @__children.has_key?(singular = meth.to_s.singularize.to_sym) &&
+          @__children[singular].is_a?(Array)
+
+      instance_eval %{ def #{meth}; @__children[%s|#{singular}|]; end }
+      @__children[singular]
     end
   end
 end

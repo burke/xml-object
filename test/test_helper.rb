@@ -17,18 +17,19 @@ def xml_file(name_symbol)
 end
 
 def begin_require_rescue(gem, reason = nil)
-
-  begin; require gem; rescue LoadError, MissingSourceFile
+  begin; require gem; rescue Exception, StandardError
     puts "Install the '#{gem}' gem #{reason.squish!}" unless reason.nil?
   end
 end
 
-begin_require_rescue 'redgreen',   'to get color output'
-begin_require_rescue 'ruby-prof',  'to get profiling information'
-begin_require_rescue 'ruby-debug', 'to use the debugger during tests'
+begin_require_rescue 'redgreen',      'to get color output'
+begin_require_rescue 'ruby-prof',     'to get profiling information'
+begin_require_rescue 'ruby-debug',    'to use the debugger during tests'
+begin_require_rescue 'activesupport', 'to test auto array pluralization'
 
-{ :lorem      => '9062c0f294383435d5b04ce6d67b6d61',
+{ :lorem      => '61cd24e2959669c3719fbebf6c948cd3',
   :characters => 'cdcbd9b89b261487fa98c11d856f50fe',
+  :plurals    => '1c22f96d00bc2277cece4d93154ad974',
   :recipe     => '6087ab42049273d123d473093b04ab12' }.each do |sample, md5|
 
   unless Digest::MD5.hexdigest(xml_file(sample).read) == md5

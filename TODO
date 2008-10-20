@@ -1,3 +1,2 @@
-* Make use of libxml if it's available, then fallback to REXML
 * Refactor so as to not do things recursively
-* Remove ActiveSupport dependency
+* Write LibXML2 adapter
