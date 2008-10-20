@@ -2,7 +2,7 @@ begin; require 'rubygems';      rescue Exception, StandardError; nil; end
 begin; require 'activesupport'; rescue Exception, StandardError; nil; end
 
 module XMLObject # :nodoc:
-  VERSION = '0.9.5'
+  VERSION = '0.9.6'
 end
 
 require 'core_ext'
