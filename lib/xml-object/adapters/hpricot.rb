@@ -32,19 +32,20 @@ module XMLObject::Adapters::Hpricot
 
     private ################################################################
 
-    def text_value(raw)
-      raw.children.select do |e|
+    def text_value(xml)
+      xml.children.select do |e|
         (e.class == ::Hpricot::Text) && !e.to_s.blank?
       end.join.to_s
     end
 
-    def cdata_value(raw)
-      raw.children.select do |e|
+    def cdata_value(xml)
+      xml.children.select do |e|
         (e.class == ::Hpricot::CData) && !e.to_s.blank?
       end.first.to_s
     end
   end
 end
 
-# Set the adapter:
-def XMLObject.adapter; XMLObject::Adapters::Hpricot; end
+def XMLObject.adapter # :nodoc:
+  XMLObject::Adapters::Hpricot
+end

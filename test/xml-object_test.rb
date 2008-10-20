@@ -53,9 +53,7 @@ describe_shared 'All XMLObject Adapters' do
 
   describe 'README Recipe' do
 
-    before(:each) do
-      @recipe = XMLObject.new xml_file(:recipe)
-    end
+    before(:each) { @recipe = XMLObject.new(xml_file(:recipe)) }
 
     it 'should have name and title as "bread" and "Basic bread"' do
       @recipe.name.should  == "bread"
@@ -77,9 +75,7 @@ describe_shared 'All XMLObject Adapters' do
 
   describe 'XMLObject' do
 
-    before(:each) do
-      @lorem = XMLObject.new xml_file(:lorem)
-    end
+    before(:each) { @lorem = XMLObject.new(xml_file(:lorem)) }
 
     it 'should be an instance of XMLObject::String' do
       @lorem.should.be.an.instance_of ::String
