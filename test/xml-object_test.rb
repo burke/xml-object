@@ -241,17 +241,34 @@ describe 'Hpricot Adapter' do
   end
 end
 
-describe 'LibXML Adapter' do
-  if defined?(LibXML)
-    before(:all) { require('adapters/libxml') }
+if RUBY_PLATFORM =~ /java/
+  describe 'JREXML Adapter' do
+    if defined?(JREXML)
+      before(:all) { require('adapters/jrexml') }
 
-    it_should_behave_like 'An XMLObject Adapter'
+      it_should_behave_like 'An XMLObject Adapter'
 
-    it 'should return LibXML::XML::Node objects when #raw_xml is called' do
-      @libxml_recipe = XMLObject.new(xml_file(:recipe))
-      @libxml_recipe.raw_xml.is_a?(::LibXML::XML::Node).should.be true
+      it 'should return REXML::Element objects when #raw_xml is called' do
+        @jrexml_recipe = XMLObject.new(xml_file(:recipe))
+        @jrexml_recipe.raw_xml.is_a?(::REXML::Element).should.be true
+      end
+    else
+      xit "'jrexml' not found, JREXML adapter testing"
     end
-  else
-    xit "'libxml' not found, LibXML adapter testing"
+  end
+else
+  describe 'LibXML Adapter' do
+    if defined?(LibXML)
+      before(:all) { require('adapters/libxml') }
+
+      it_should_behave_like 'An XMLObject Adapter'
+
+      it 'should return LibXML::XML::Node objects when #raw_xml is called' do
+        @libxml_recipe = XMLObject.new(xml_file(:recipe))
+        @libxml_recipe.raw_xml.is_a?(::LibXML::XML::Node).should.be true
+      end
+    else
+      xit "'libxml' not found, LibXML adapter testing"
+    end
   end
 end
