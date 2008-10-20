@@ -89,18 +89,15 @@ ambiguity.
 === Adapters
 
 XMLObject supports different adapters to do the actual XML parsing. It ships
-with +REXML+, +Hpricot+, and +LibXML+ adapters. By default, the +REXML+
-adapter is used.
+with +REXML+, +Hpricot+, +JREXML+, and +LibXML+ adapters. By default, the
++REXML+ adapter is used.
 
-To use the +Hpricot+ adapter:
+To use a different adapter than the +REXML+ default:
 
-  require 'xml-object'
-  require 'xml-object/adapters/hpricot'
-
-And the +LibXML+ adapter:
-
-  require 'xml-object'
-  require 'xml-object/adapters/libxml'
+  require 'xml-object'                  # Require XMLObject first
+  require 'xml-object/adapters/hpricot' # (Under MRI or JRuby)
+  require 'xml-object/adapters/libxml'  # (Under MRI only)
+  require 'xml-object/adapters/jrexml'  # (Under Jruby only)
 
 === Collection auto-folding
 
