@@ -30,5 +30,6 @@ module XMLObject::Adapters::REXML
   end
 end
 
-# Set the adapter:
-def XMLObject.adapter; XMLObject::Adapters::REXML; end
+def XMLObject.adapter # :nodoc:
+  XMLObject::Adapters::REXML
+end
