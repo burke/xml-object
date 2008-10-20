@@ -11,6 +11,7 @@ require 'array_notation'
 require 'blankish_slate'
 require 'collection_proxy'
 require 'method_missing_dispatchers'
+require 'element'
 require 'string'
 
 module XMLObject
@@ -34,10 +35,11 @@ module XMLObject
 
       CollectionProxy.new new(xml.children)
     else
-      xml.value.extend String # Teach our string to behave like XML
+      # Teach our string to behave like and XML Element
+      xml.value.extend(String).extend(Element)
     end
 
-    obj.instance_variable_set :@__raw_xml, xml
+    obj.instance_variable_set :@__adapted_element, xml
 
     xml.children.each   { |child| add_child(obj, child.name, new(child)) }
     xml.attributes.each { |name, value|  add_attribute(obj, name, value) }
@@ -70,7 +72,7 @@ module XMLObject
   def self.add_attribute(obj, name, attr_value) # :nodoc:
 
     attributes = obj.instance_variable_get :@__attributes
-    attributes[(key = name.to_sym)] = attr_value.squish.extend String
+    attributes[(key = name.to_sym)] = attr_value.squish.extend(String)
 
     obj.instance_variable_set :@__attributes, attributes
     attr_value
