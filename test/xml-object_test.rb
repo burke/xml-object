@@ -203,6 +203,11 @@ end
 describe 'REXML Adapter' do
   it_should_behave_like 'All XMLObject Adapters'
   it_should_behave_like 'All built-in XMLObject Adapters'
+
+  it 'should return REXML::Element objects when #raw_xml is called' do
+    @rexml_recipe = XMLObject.new(xml_file(:recipe))
+    @rexml_recipe.raw_xml.is_a?(::REXML::Element).should.be true
+  end
 end
 
 describe 'Hpricot Adapter' do
@@ -210,4 +215,9 @@ describe 'Hpricot Adapter' do
 
   it_should_behave_like 'All XMLObject Adapters'
   it_should_behave_like 'All built-in XMLObject Adapters'
+
+  it 'should return Hpricot::Elem objects when #raw_xml is called' do
+    @hpricot_recipe = XMLObject.new(xml_file(:recipe))
+    @hpricot_recipe.raw_xml.is_a?(::Hpricot::Elem).should.be true
+  end
 end
