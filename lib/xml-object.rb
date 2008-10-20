@@ -5,8 +5,9 @@ module XMLObject # :nodoc:
   VERSION = '0.9.6'
 end
 
-require 'core_ext'
+$:.unshift File.dirname(__FILE__)
 
+require 'core_ext'
 require 'adapters'
 require 'adapters/rexml'
 require 'array_notation'
