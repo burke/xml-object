@@ -1,20 +1,36 @@
 namespace :perf do
 
-  desc 'Profiles the opening of lorem.xml'
-  task :profile do
-    require 'ruby-prof'
+  namespace :profile do
+    task(:load_hpricot) { require('adapters/hpricot') }
 
-    xml_file = File.join(PROJECT_DIR, 'test', 'samples', 'lorem.xml')
-    result   = RubyProf.profile do
-      XMLObject.new(File.open(xml_file))
+    task :run do
+      require 'ruby-prof'
+
+      xml_file = File.join(PROJECT_DIR, 'test', 'samples', 'lorem.xml')
+
+      result = RubyProf.profile do
+        xml_obj = XMLObject.new(File.open(xml_file))
+
+        xml_obj.consecteturs.collect { |c| c.capacity }
+        xml_obj.name.upcase
+        xml_obj.sed.do.price
+      end
+
+      adapter  = XMLObject.adapter.to_s.split('::').last.downcase
+      filename = File.join(PROJECT_DIR, "profile_with_#{adapter}.html")
+      printer  = RubyProf::GraphHtmlPrinter.new(result)
+
+      printer.print(File.open(filename, 'w'), :min_percent => 10)
+      system "open #{filename}" if PLATFORM.match('darwin')
+
+      puts "Dumped in #{filename}"
     end
 
-    result_filename = File.join(PROJECT_DIR, 'profile.html')
+    desc 'Profiles the opening of lorem.xml using REXML'
+    task :rexml => :run
 
-    printer = RubyProf::GraphHtmlPrinter.new(result)
-    printer.print(File.open(result_filename, 'w'), :min_percent => 0)
-    puts "Dumped in #{result_filename}"
-    system "open #{result_filename}" if PLATFORM.match('darwin')
+    desc 'Profiles the opening of lorem.xml using Hpricot'
+    task :hpricot => [ :load_hpricot, :run ]
   end
 
   desc 'Silly benchmarks'
@@ -42,16 +58,14 @@ namespace :perf do
         n.times { recipe = REXML::Document.new(File.open(xml_file)) }
       end
 
-      require File.join(PROJECT_DIR, 'lib', 'xml-object',
-        'adapters', 'rexml')
+      require 'xml-object/adapters/rexml'
       XMLObject.adapter = XMLObject::Adapters::REXML
       x.report("XMLObject (REXML):") do
         n.times { recipe = XMLObject.new(File.open(xml_file)) }
       end
 
       if defined?(Hpricot)
-        require File.join(PROJECT_DIR, 'lib', 'xml-object',
-          'adapters', 'hpricot')
+        require 'adapters/hpricot'
         XMLObject.adapter = XMLObject::Adapters::Hpricot
         x.report("XMLObject (Hpricot):") do
           n.times { recipe = XMLObject.new(File.open(xml_file)) }

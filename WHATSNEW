@@ -1,3 +1,8 @@
+* 0.9.6 (2008-10-??):
+  - XMLObject no longer tries to load Hpricot by default (too cumbersome
+    to test). Use "require 'xml-object/adapters/hpricot'" to enable the
+    Hpricot adapter.
+
 * 0.9.5 (2008-10-15):
   - Project renamed to XMLObject, to match project name at Rubyforge.
     The other names were taken. :(

@@ -1,8 +1,5 @@
+require 'setup'
 require 'rake'
-PROJECT_DIR = File.expand_path(File.dirname(__FILE__)).chomp('/')
-require File.join(PROJECT_DIR, 'lib', 'xml-object')
 
-Dir[File.join(PROJECT_DIR, 'tasks', '*.rake')].sort.each do |rf|
-  import rf
-end
-
+# Import all of the rake task files:
+Dir[File.join(PROJECT_DIR, 'tasks', '*.rake')].each { |tf| import(tf) }

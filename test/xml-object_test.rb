@@ -1,39 +1,5 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
-describe 'XMLObject' do
-  before do
-    module Kernel
-      def require_that_hates_hpricot(*args)
-        (args.first == 'hpricot') ? raise(LoadError) : real_require(*args)
-      end
-
-      alias_method :real_require, :require
-      alias_method :require, :require_that_hates_hpricot
-    end
-
-    load_XMLObject!
-  end
-
-  it "should fallback to REXML even if Hpricot doesn't load" do
-    should.not.raise do
-      @foo = XMLObject.new '<foo bar="true"><baz>Boo</baz></foo>'
-    end
-
-    XMLObject.adapter.should.be XMLObject::Adapters::REXML
-
-    @foo.bar?.should.be true
-    @foo.baz.should == 'Boo'
-  end
-
-  after do
-    module Kernel
-      alias_method :require, :real_require
-    end
-    require 'hpricot'
-    load_XMLObject!
-  end
-end
-
 describe_shared 'All built-in XMLObject Adapters' do
   it 'should know how start with something that knows #to_s' do
     should.not.raise do
@@ -75,13 +41,13 @@ describe_shared 'All XMLObject Adapters' do
 
     it 'should not raise exceptions' do
       should.not.raise(Exception) do
-        @xml = XMLObject.new xml_file(:weird_characters)
+        @xml = XMLObject.new xml_file(:characters)
       end
     end
 
     it 'should allow access to attributes with dashes in the name' do
       XMLObject.new(
-        xml_file(:weird_characters))['attr-with-dashes'].should == 'lame'
+        xml_file(:characters))['attr-with-dashes'].should == 'lame'
     end
   end
 
@@ -120,12 +86,12 @@ describe_shared 'All XMLObject Adapters' do
     end
 
     it 'be blank if devoid of children, attributes and value' do
-      @lorem.ipsum.should.be.blank
+      @lorem.ipsum.should.be.blank?
     end
 
     it 'not be blank when value, children, or attributes are present' do
       [ @lorem.dolor, @lorem.sit, @lorem.ut ].each do |xr|
-        xr.should.not.be.blank
+        xr.should.not.be.blank?
       end
     end
 
@@ -239,22 +205,12 @@ describe_shared 'All XMLObject Adapters' do
 end
 
 describe 'REXML Adapter' do
-  before(:all) do
-    require File.join(File.dirname(__FILE__),
-      '..', 'lib', 'xml-object', 'adapters', 'rexml')
-    XMLObject.adapter = XMLObject::Adapters::REXML
-  end
-
   it_should_behave_like 'All XMLObject Adapters'
   it_should_behave_like 'All built-in XMLObject Adapters'
 end
 
 describe 'Hpricot Adapter' do
-  before(:all) do
-    require File.join(File.dirname(__FILE__),
-      '..', 'lib', 'xml-object', 'adapters', 'hpricot')
-    XMLObject.adapter = XMLObject::Adapters::Hpricot
-  end
+  before(:all) { require('adapters/hpricot') }
 
   it_should_behave_like 'All XMLObject Adapters'
   it_should_behave_like 'All built-in XMLObject Adapters'
