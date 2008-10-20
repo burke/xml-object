@@ -70,6 +70,13 @@ namespace :perf do
     xml_file = File.join(PROJECT_DIR, 'test', 'samples', 'recipe.xml')
 
     n = 500
+    platform = if RUBY_PLATFORM =~ /java/
+      "Ruby #{RUBY_VERSION} (JRuby #{JRUBY_VERSION})"
+    else
+      "Ruby #{RUBY_VERSION} (MRI)"
+    end
+
+    puts "XMLObject benchmark under #{platform}"
     puts "Reading whole file, #{n} times:"
     Benchmark.bm(20) do |x|
       x.report 'REXML (alone):' do
