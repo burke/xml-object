@@ -10,6 +10,7 @@ end
 require 'test/unit'
 require 'test/spec'
 require 'digest/md5'
+require 'stringio'
 
 def xml_file(name_symbol)
   File.open File.join(PROJECT_DIR,
