@@ -106,9 +106,14 @@ For example:
 === Collection pluralization
 
 With the same file from the +Collection auto-folding+ section above, you also
-get this (courtesy of +ActiveSupport+'s +Inflector+):
+get this:
 
   student.courses.first == student.course.first => true
+
+Note that the pluralization algorithm is just tacking an 's' at the end of
+the singular, unless +ActiveSupport+ is installed, in which case you get
+irregular plurals, as well as the ability to teach the +Inflector+ about
+new ones.
 
 === Collection proxy
 
