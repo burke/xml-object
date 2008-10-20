@@ -241,3 +241,15 @@ describe 'Hpricot Adapter' do
     @hpricot_recipe.raw_xml.is_a?(::Hpricot::Elem).should.be true
   end
 end
+
+describe 'LibXML Adapter' do
+  before(:all) { require('adapters/libxml') }
+
+  it_should_behave_like 'All XMLObject Adapters'
+  it_should_behave_like 'All built-in XMLObject Adapters'
+
+  it 'should return LibXML::XML::Node objects when #raw_xml is called' do
+    @libxml_recipe = XMLObject.new(xml_file(:recipe))
+    @libxml_recipe.raw_xml.is_a?(::LibXML::XML::Node).should.be true
+  end
+end

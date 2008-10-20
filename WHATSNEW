@@ -1,4 +1,11 @@
-* 0.9.6 (2008-10-??):
+* 0.9.7 (2008-10-??):
+  - LibXML adapter added
+  - Backwards incompatible change: Elements with no text and multiple CDATA
+    values no longer report their value as their first CDATA element. They
+    report all of their CDATA nodes joined together, a-la LibXML.
+
+
+* 0.9.6 (2008-10-19):
   - Ruby 1.9 compatibility
   - XMLObject no longer requires ActiveSupport. Note that proper array
     pluralization still depends on ActiveSupport's Inflector, so if it's not
@@ -6,7 +13,7 @@
   - XMLObject no longer tries to load Hpricot by default (too cumbersome
     to test). Use "require 'xml-object/adapters/hpricot'" to enable the
     Hpricot adapter.
-  - Backwards compatible change. For the following XML:
+  - Backwards incompatible change. For the following XML:
 
       <foo>
         <bar>

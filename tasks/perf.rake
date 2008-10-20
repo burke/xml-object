@@ -2,6 +2,7 @@ namespace :perf do
 
   namespace :profile do
     task(:load_hpricot) { require('adapters/hpricot') }
+    task(:load_libxml)  { require('adapters/libxml')  }
 
     task :run do
       require 'ruby-prof'
@@ -31,6 +32,9 @@ namespace :perf do
 
     desc 'Profiles the opening of lorem.xml using Hpricot'
     task :hpricot => [ :load_hpricot, :run ]
+
+    desc 'Profiles the opening of lorem.xml using LibXML'
+    task :libxml => [ :load_libxml, :run ]
   end
 
   desc 'Silly benchmarks'
@@ -49,13 +53,25 @@ namespace :perf do
       puts 'Hpricot not found'
     end
 
+    begin
+      require 'libxml'
+    rescue LoadError
+      puts 'LibXML not found'
+    end
+
     xml_file = File.join(PROJECT_DIR, 'test', 'samples', 'recipe.xml')
 
-    puts 'Reading whole file:'
     n = 500
+    puts "Reading whole file, #{n} times:"
     Benchmark.bm(20) do |x|
-      x.report 'REXML:' do
+      x.report 'REXML (alone):' do
         n.times { recipe = REXML::Document.new(File.open(xml_file)) }
+      end
+
+      if defined?(XmlSimple)
+        x.report 'XmlSimple:' do
+          n.times { recipe = XmlSimple.xml_in(File.open(xml_file)) }
+        end
       end
 
       require 'xml-object/adapters/rexml'
@@ -70,9 +86,10 @@ namespace :perf do
         end
       end
 
-      if defined?(XmlSimple)
-        x.report 'XmlSimple:' do
-          n.times { recipe = XmlSimple.xml_in(File.open(xml_file)) }
+      if defined?(LibXML)
+        require 'adapters/libxml'
+        x.report('XMLObject (LibXML):') do
+          n.times { recipe = XMLObject.new(File.open(xml_file)) }
         end
       end
     end
