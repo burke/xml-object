@@ -6,8 +6,9 @@ namespace :rubyforge do
   task :release do |t|
     gemspec = eval(File.open("#{PROJECT_DIR}/xml-object.gemspec").read)
     gemfile = "#{gemspec.rubyforge_project}-#{gemspec.version}.gem"
+    gemfile = "#{PROJECT_DIR}/pkg/#{gemfile}"
 
-    unless File.exist?("#{PROJECT_DIR}/pkg/#{gemfile}")
+    unless File.exist?(gemfile)
       puts "File #{gemfile} not there. Build package first"
       exit(1)
     end
@@ -21,7 +22,7 @@ namespace :rubyforge do
     c['release_notes'] = gemspec.description
     c['preformatted']  = true
 
-    puts "Releasing #{gemspec.rubyforge_project} v.#{gemspec.version}"
+    puts "Releasing #{gemspec.rubyforge_project} #{gemspec.version}"
     rf.add_release(
       gemspec.rubyforge_project, gemspec.name, gemspec.version, gemfile)
   end
