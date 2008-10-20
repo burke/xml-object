@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
-describe_shared 'All built-in XMLObject Adapters' do
+describe_shared 'An XMLObject Adapter' do
   it 'should know how start with something that knows #to_s' do
     should.not.raise do
       @foo = XMLObject.new '<foo bar="true"><baz>Boo</baz></foo>'
@@ -34,9 +34,6 @@ describe_shared 'All built-in XMLObject Adapters' do
 
     should.raise { XMLObject.new(dumb) }
   end
-end
-
-describe_shared 'All XMLObject Adapters' do
 
   describe 'An XML "Array"' do
     before(:each) { @plurals = XMLObject.new(xml_file(:plurals)) }
@@ -57,7 +54,7 @@ describe_shared 'All XMLObject Adapters' do
         @plurals.people.people.should == @plurals.people.person
       end
     else
-      xit 'should allow irregular plural form access to collections'
+      xit "'activesupport' not found, irregular plural form testing"
     end
   end
 
@@ -221,8 +218,7 @@ describe_shared 'All XMLObject Adapters' do
 end
 
 describe 'REXML Adapter' do
-  it_should_behave_like 'All XMLObject Adapters'
-  it_should_behave_like 'All built-in XMLObject Adapters'
+  it_should_behave_like 'An XMLObject Adapter'
 
   it 'should return REXML::Element objects when #raw_xml is called' do
     @rexml_recipe = XMLObject.new(xml_file(:recipe))
@@ -231,25 +227,31 @@ describe 'REXML Adapter' do
 end
 
 describe 'Hpricot Adapter' do
-  before(:all) { require('adapters/hpricot') }
+  if defined?(Hpricot)
+    before(:all) { require('adapters/hpricot') }
 
-  it_should_behave_like 'All XMLObject Adapters'
-  it_should_behave_like 'All built-in XMLObject Adapters'
+    it_should_behave_like 'An XMLObject Adapter'
 
-  it 'should return Hpricot::Elem objects when #raw_xml is called' do
-    @hpricot_recipe = XMLObject.new(xml_file(:recipe))
-    @hpricot_recipe.raw_xml.is_a?(::Hpricot::Elem).should.be true
+    it 'should return Hpricot::Elem objects when #raw_xml is called' do
+      @hpricot_recipe = XMLObject.new(xml_file(:recipe))
+      @hpricot_recipe.raw_xml.is_a?(::Hpricot::Elem).should.be true
+    end
+  else
+    xit "'hpricot' not found, Hpricot adapter testing"
   end
 end
 
 describe 'LibXML Adapter' do
-  before(:all) { require('adapters/libxml') }
+  if defined?(LibXML)
+    before(:all) { require('adapters/libxml') }
 
-  it_should_behave_like 'All XMLObject Adapters'
-  it_should_behave_like 'All built-in XMLObject Adapters'
+    it_should_behave_like 'An XMLObject Adapter'
 
-  it 'should return LibXML::XML::Node objects when #raw_xml is called' do
-    @libxml_recipe = XMLObject.new(xml_file(:recipe))
-    @libxml_recipe.raw_xml.is_a?(::LibXML::XML::Node).should.be true
+    it 'should return LibXML::XML::Node objects when #raw_xml is called' do
+      @libxml_recipe = XMLObject.new(xml_file(:recipe))
+      @libxml_recipe.raw_xml.is_a?(::LibXML::XML::Node).should.be true
+    end
+  else
+    xit "'libxml' not found, LibXML adapter testing"
   end
 end
