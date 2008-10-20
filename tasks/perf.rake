@@ -51,29 +51,27 @@ namespace :perf do
 
     xml_file = File.join(PROJECT_DIR, 'test', 'samples', 'recipe.xml')
 
-    puts "Reading whole file:"
+    puts 'Reading whole file:'
     n = 500
     Benchmark.bm(20) do |x|
-      x.report "REXML:" do
+      x.report 'REXML:' do
         n.times { recipe = REXML::Document.new(File.open(xml_file)) }
       end
 
       require 'xml-object/adapters/rexml'
-      XMLObject.adapter = XMLObject::Adapters::REXML
-      x.report("XMLObject (REXML):") do
+      x.report('XMLObject (REXML):') do
         n.times { recipe = XMLObject.new(File.open(xml_file)) }
       end
 
       if defined?(Hpricot)
         require 'adapters/hpricot'
-        XMLObject.adapter = XMLObject::Adapters::Hpricot
-        x.report("XMLObject (Hpricot):") do
+        x.report('XMLObject (Hpricot):') do
           n.times { recipe = XMLObject.new(File.open(xml_file)) }
         end
       end
 
       if defined?(XmlSimple)
-        x.report "XmlSimple:" do
+        x.report 'XmlSimple:' do
           n.times { recipe = XmlSimple.xml_in(File.open(xml_file)) }
         end
       end
