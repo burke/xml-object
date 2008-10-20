@@ -1,4 +1,4 @@
-* 0.9.7 (2008-10-??):
+* 0.9.7 (2008-10-20):
   - LibXML adapter added
   - JREXML "adapter" added, as well as JREXML support during tests and
     benchmark tasks, but only when running under JRuby

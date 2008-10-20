@@ -2,8 +2,8 @@ Gem::Specification.new do |gem|
   gem.rubyforge_project = 'xml-object'
 
   gem.name     = 'xml-object'
-  gem.version  = '0.9.6'
-  gem.date     = '2008-10-19'
+  gem.version  = '0.9.7'
+  gem.date     = '2008-10-20'
   gem.author   = 'Jordi Bunster'
   gem.email    = 'jordi@bunster.org'
   gem.homepage = 'http://github.com/jordi/xml-object'
@@ -24,6 +24,8 @@ Gem::Specification.new do |gem|
     lib/xml-object
     lib/xml-object/adapters
     lib/xml-object/adapters/hpricot.rb
+    lib/xml-object/adapters/jrexml.rb
+    lib/xml-object/adapters/libxml.rb
     lib/xml-object/adapters/rexml.rb
     lib/xml-object/adapters.rb
     lib/xml-object/array_notation.rb

@@ -1,11 +1,7 @@
 begin; require 'rubygems';      rescue Exception, StandardError; nil; end
 begin; require 'activesupport'; rescue Exception, StandardError; nil; end
 
-module XMLObject # :nodoc:
-  VERSION = '0.9.6'
-end
-
-$:.unshift File.dirname(__FILE__)
+$:.unshift File.join(File.dirname(__FILE__), 'xml-object')
 
 require 'core_ext'
 require 'adapters'
