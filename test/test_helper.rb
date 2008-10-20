@@ -23,6 +23,12 @@ def begin_require_rescue(gem, reason = nil)
   end
 end
 
+puts ":: Testing XMLObject under " + platform = if RUBY_PLATFORM =~ /java/
+  "Ruby #{RUBY_VERSION} (JRuby #{JRUBY_VERSION})"
+else
+  "Ruby #{RUBY_VERSION} (MRI)"
+end
+
 begin_require_rescue 'rubygems',      'to load additional gems'
 begin_require_rescue 'redgreen',      'to get color output'
 begin_require_rescue 'ruby-prof',     'to get profiling information'
