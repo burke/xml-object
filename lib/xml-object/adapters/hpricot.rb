@@ -19,30 +19,19 @@ module XMLObject::Adapters::Hpricot
 
   class Element < XMLObject::Adapters::Base::Element # :nodoc:
     def initialize(xml)
-      self.raw, self.name, self.attributes = xml, xml.name, xml.attributes
-      self.children = xml.children.select { |e| e.elem? }.map do |raw_xml|
-        self.class.new(raw_xml)
-      end
+      @raw, @name, @attributes = xml, xml.name, xml.attributes
 
-      self.value = case
-        when (not text_value(xml).blank?)  then text_value(xml)
-        when (not cdata_value(xml).blank?) then cdata_value(xml)
-        else ''
-      end
-    end
+      @element_nodes = xml.children.select { |c| c.elem? }
 
-    private ################################################################
+      @text_nodes = xml.children.select do |c|
+        c.text? && !c.is_a?(::Hpricot::CData)
+      end.map { |c| c.to_s }
 
-    def text_value(xml)
-      xml.children.select do |e|
-        (e.class == ::Hpricot::Text) && !e.to_s.blank?
-      end.join.to_s
-    end
+      @cdata_nodes = xml.children.select do |c|
+        c.is_a? ::Hpricot::CData
+      end.map { |c| c.to_s }
 
-    def cdata_value(xml)
-      xml.children.select do |e|
-        (e.class == ::Hpricot::CData) && !e.to_s.blank?
-      end.first.to_s
+      super
     end
   end
 end
