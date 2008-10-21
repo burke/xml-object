@@ -45,9 +45,7 @@ namespace :perf do
       begin_require_rescue 'xmlsimple', 'to benchmark XmlSimple'
       begin_require_rescue 'hpricot',   'to benchmark using Hpricot'
 
-      if defined?(JRUBY_VERSION)
-        begin_require_rescue 'jrexml', 'to benchmark using JREXML'
-      else
+      unless defined?(JRUBY_VERSION)
         begin_require_rescue 'libxml', 'to benchmark using LibXML'
       end
     end
@@ -96,16 +94,6 @@ namespace :perf do
             n.times { XMLObject.new(open_sample_xml(:recipe)) }
           end
         end if defined?(LibXML)
-
-        begin
-          require 'adapters/jrexml'
-
-          x.report('XMLObject (JREXML):') do
-            ::XMLObject.adapter = ::XMLObject::Adapters::JREXML
-
-            n.times { XMLObject.new(open_sample_xml(:recipe)) }
-          end
-        end if defined?(JREXML)
       end
     end
 
