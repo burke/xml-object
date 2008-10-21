@@ -8,3 +8,4 @@
 * Test more real-world examples
 * Test invalid method name element/attribute/array access
 * Fix benchmarks
+* Fix documentation now that we've removed features
