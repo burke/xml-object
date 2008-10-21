@@ -10,7 +10,6 @@ require 'blankish_slate'
 require 'collection_proxy'
 require 'element'
 require 'method_missing_dispatchers'
-require 'string'
 
 module XMLObject
   # Returns a String or Array object representing the given XML, decorated
@@ -34,7 +33,7 @@ module XMLObject
       CollectionProxy.new new(xml.children)
     else
       # Teach our string to behave like and XML Element
-      xml.value.extend String, Element
+      xml.value.extend Element
     end
 
     obj.instance_variable_set :@__adapted_element, xml
