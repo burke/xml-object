@@ -33,7 +33,14 @@ module XMLObject::MethodMissingDispatchers # :nodoc:
       instance_eval %{ def #{meth}; @__attributes[%s|#{meth}|]; end }
       @__attributes[meth]
 
-    elsif @__children.has_key?(singular = meth.to_s.singularize.to_sym) &&
+    elsif @__children.has_key?(naive_sing = meth.to_s.chomp('s').to_sym) &&
+          @__children[naive_sing].is_a?(Array)
+
+      instance_eval %{ def #{meth}; @__children[%s|#{naive_sing}|]; end }
+      @__children[naive_sing]
+
+    elsif defined?(ActiveSupport::Inflector)                            &&
+          @__children.has_key?(singular = meth.to_s.singularize.to_sym) &&
           @__children[singular].is_a?(Array)
 
       instance_eval %{ def #{meth}; @__children[%s|#{singular}|]; end }
