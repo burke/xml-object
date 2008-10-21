@@ -1,1 +1,2 @@
 * Refactor so as to not do things recursively
+* Better (more granular) specification tests
