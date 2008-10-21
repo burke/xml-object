@@ -33,12 +33,9 @@ module XMLObject::ArrayNotation
     raise 'one and only one key allowed' if name.size != 1
 
     case (param = name.keys.first.to_sym)
-      when :element   then @__children[name.values.first.to_sym]
-      when :child     then @__children[name.values.first.to_sym]
-      when :attr      then @__attributes[name.values.first.to_sym]
-      when :attribute then @__attributes[name.values.first.to_sym]
-      else raise %{ Invalid key :#{param.to_s}.
-        Use one of :element, :child, :attr, or :attribute }.squish!
+      when :elem then @__children[name.values.first.to_sym]
+      when :attr then @__attributes[name.values.first.to_sym]
+      else raise "Invalid key :#{param.to_s}. Use :elem or :attr"
     end
   end
 end
