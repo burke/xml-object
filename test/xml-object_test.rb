@@ -36,7 +36,7 @@ describe_shared 'An XMLObject Adapter' do
   end
 
   describe 'An XML "Array"' do
-    before(:each) { @plurals = XMLObject.new(xml_file(:plurals)) }
+    before(:each) { @plurals = XMLObject.new(open_sample_xml(:plurals)) }
 
     it 'should be an Array' do
       @plurals.octopus.is_a?(Array).should.be true
@@ -62,19 +62,19 @@ describe_shared 'An XMLObject Adapter' do
 
     it 'should not raise exceptions' do
       should.not.raise(Exception) do
-        @xml = XMLObject.new xml_file(:characters)
+        @xml = XMLObject.new open_sample_xml(:characters)
       end
     end
 
     it 'should allow access to attributes with dashes in the name' do
       XMLObject.new(
-        xml_file(:characters))['attr-with-dashes'].should == 'lame'
+        open_sample_xml(:characters))['attr-with-dashes'].should == 'lame'
     end
   end
 
   describe 'README Recipe' do
 
-    before(:each) { @recipe = XMLObject.new(xml_file(:recipe)) }
+    before(:each) { @recipe = XMLObject.new(open_sample_xml(:recipe)) }
 
     it 'should have name and title as "bread" and "Basic bread"' do
       @recipe.name.should  == "bread"
@@ -96,7 +96,7 @@ describe_shared 'An XMLObject Adapter' do
 
   describe 'XMLObject' do
 
-    before(:each) { @lorem = XMLObject.new(xml_file(:lorem)) }
+    before(:each) { @lorem = XMLObject.new(open_sample_xml(:lorem)) }
 
     it 'should be an instance of XMLObject::String' do
       @lorem.should.be.an.instance_of ::String
@@ -221,7 +221,7 @@ describe 'REXML Adapter' do
   it_should_behave_like 'An XMLObject Adapter'
 
   it 'should return REXML::Element objects when #raw_xml is called' do
-    @rexml_recipe = XMLObject.new(xml_file(:recipe))
+    @rexml_recipe = XMLObject.new(open_sample_xml(:recipe))
     @rexml_recipe.raw_xml.is_a?(::REXML::Element).should.be true
   end
 end
@@ -233,7 +233,7 @@ describe 'Hpricot Adapter' do
     it_should_behave_like 'An XMLObject Adapter'
 
     it 'should return Hpricot::Elem objects when #raw_xml is called' do
-      @hpricot_recipe = XMLObject.new(xml_file(:recipe))
+      @hpricot_recipe = XMLObject.new(open_sample_xml(:recipe))
       @hpricot_recipe.raw_xml.is_a?(::Hpricot::Elem).should.be true
     end
   else
@@ -249,7 +249,7 @@ if defined?(JRUBY_VERSION)
       it_should_behave_like 'An XMLObject Adapter'
 
       it 'should return REXML::Element objects when #raw_xml is called' do
-        @jrexml_recipe = XMLObject.new(xml_file(:recipe))
+        @jrexml_recipe = XMLObject.new(open_sample_xml(:recipe))
         @jrexml_recipe.raw_xml.is_a?(::REXML::Element).should.be true
       end
     else
@@ -264,7 +264,7 @@ else
       it_should_behave_like 'An XMLObject Adapter'
 
       it 'should return LibXML::XML::Node objects when #raw_xml is called' do
-        @libxml_recipe = XMLObject.new(xml_file(:recipe))
+        @libxml_recipe = XMLObject.new(open_sample_xml(:recipe))
         @libxml_recipe.raw_xml.is_a?(::LibXML::XML::Node).should.be true
       end
     else
