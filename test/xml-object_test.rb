@@ -1,278 +1,216 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
-describe_shared 'An XMLObject Adapter' do
-  it 'should know how start with something that knows #to_s' do
-    should.not.raise do
-      @foo = XMLObject.new '<foo bar="true"><baz>Boo</baz></foo>'
-    end
+describe_shared 'any other XMLObject adapter' do
 
-    @foo.bar?.should.be true
-    @foo.baz.should == 'Boo'
-  end
-
-  it 'should know how start with something that knows #read' do
-    should.not.raise do
-
-      knows_read = StringIO.new('<foo bar="true"><baz>Boo</baz></foo>')
-      class << knows_read
-        undef_method :to_s
+  describe 'Element' do
+    describe 'with no attributes, children, text or CDATA' do
+      before(:each) do
+        @blank_extended_strings = XMLObject.new '<x><one> </one> <two /></x>'
       end
 
-      @foo = XMLObject.new(knows_read)
-    end
-
-    @foo.bar?.should.be true
-    @foo.baz.should == 'Boo'
-  end
-
-  it 'should raise hell at something that does not know #read or #to_s' do
-    dumb = lambda {}
-    class << dumb
-      undef_method(:to_s) rescue nil
-      undef_method(:read) rescue nil
-    end
-
-    should.raise { XMLObject.new(dumb) }
-  end
-
-  describe 'An XML "Array"' do
-    before(:each) { @plurals = XMLObject.new(open_sample_xml(:plurals)) }
-
-    it 'should be an Array' do
-      @plurals.octopus.is_a?(Array).should.be true
-      @plurals.people.is_a?(Array).should.be true
-      @plurals.cat.is_a?(Array).should.be true
-    end
-
-    it 'should allow regular plural form access to collections' do
-      @plurals.cats.should == @plurals.cat
-    end
-
-    if defined?(ActiveSupport::Inflector)
-      it 'should allow irregular plural form access to collections' do
-        @plurals.octopi.should == @plurals.octopus
-        @plurals.people.people.should == @plurals.people.person
-      end
-    else
-      xit "'activesupport' not found, irregular plural form testing"
-    end
-  end
-
-  describe 'An XML file with weird characters' do
-
-    it 'should not raise exceptions' do
-      should.not.raise(Exception) do
-        @xml = XMLObject.new open_sample_xml(:characters)
+      it 'should look like an empty string' do
+        @blank_extended_strings.should == ''
       end
     end
 
-    it 'should allow access to attributes with dashes in the name' do
-      XMLObject.new(
-        open_sample_xml(:characters))['attr-with-dashes'].should == 'lame'
-    end
-  end
+    describe 'with a child element named "age" valued "19"' do
+      before(:each) do
+        @string_with_age_child = XMLObject.new '<x><age>19</age></x>'
+      end
 
-  describe 'README Recipe' do
+      it 'should have "19" for an "age"' do
+        @string_with_age_child.age.should == "19"
 
-    before(:each) { @recipe = XMLObject.new(open_sample_xml(:recipe)) }
+        @string_with_age_child['age'].should == "19"
+        @string_with_age_child[:age].should  == "19"
 
-    it 'should have name and title as "bread" and "Basic bread"' do
-      @recipe.name.should  == "bread"
-      @recipe.title.should == "Basic bread"
-    end
-
-    it 'should treat "recipe.ingredient" as an Array' do
-      @recipe.ingredient.is_a?(Array).should.be true
-      @recipe.ingredient.first.amount.to_i.should == 8
-    end
-
-    it 'should have 7 easy instructions' do
-      @recipe.instructions.easy?.should.be true
-      @recipe.instructions.step.size.should == 7
-      @recipe.instructions.first.upcase.should ==
-        "MIX ALL INGREDIENTS TOGETHER."
-    end
-  end
-
-  describe 'XMLObject' do
-
-    before(:each) { @lorem = XMLObject.new(open_sample_xml(:lorem)) }
-
-    it 'should be an instance of XMLObject::String' do
-      @lorem.should.be.an.instance_of ::String
-    end
-
-    it 'be blank if devoid of children, attributes and value' do
-      @lorem.ipsum.should.be.blank?
-    end
-
-    it 'not be blank when value, children, or attributes are present' do
-      @lorem.dolor.blank?.should.not.be true
-      @lorem.sit.blank?.should.not.be true
-      @lorem.ut.blank?.should.not.be true
-    end
-
-    it 'should allow access to attributes named like invalid methods' do
-      @lorem['_tempor'].should == 'incididunt'
-    end
-
-    it 'should allow access to elements named like invalid methods' do
-      @lorem['_minim'].should == 'veniam'
-    end
-
-    it 'should provide unambiguous access to elements over attributes' do
-      @lorem.sed[:element => 'do'].should == 'eiusmod elementus'
-    end
-
-    it 'should provide unambiguous access to attributes over elements' do
-      @lorem.sed[:attribute => 'do'].should == 'eiusmod attributus'
-    end
-
-    it 'should return elements first when using dot notation' do
-      @lorem.sed.do.should == @lorem.sed[:element => 'do']
-    end
-
-    it 'should return elements first when using [] with string key' do
-      @lorem.sed['do'].should == @lorem.sed[:element => 'do']
-    end
-
-    it 'should return elements first when using [] with symbol key' do
-      @lorem.sed[:do].should == @lorem.sed[:element => 'do']
-    end
-
-    it 'should raise exception when unkown keys are used in [{}] mode' do
-      should.raise(RuntimeError) { @lorem[:foo => 'bar'] }
-    end
-
-    it 'should group multiple parallel namesake elements in arrays' do
-      @lorem.consectetur.is_a?(Array).should.be true
-    end
-
-    it 'should treat single-item collections as Array' do
-      @lorem.culpas.is_a?(Array).should.be true
-    end
-
-    it 'should convert integer-looking attribute strings to integers' do
-      @lorem.consectetur.each do |c|
-        c['id'].rb.is_a?(Numeric).should.be true
+        @string_with_age_child[:elem  => 'age'].should == "19"
+        @string_with_age_child[:elem  => :age].should  == "19"
+        @string_with_age_child['elem' => 'age'].should == "19"
+        @string_with_age_child['elem' => :age].should  == "19"
       end
     end
 
-    it 'should convert float-looking attribute strings to floats' do
-      @lorem.consectetur.each do |c|
-        c.capacity.rb.is_a?(Float).should.be true
+    describe 'with an attribute "Rope" called "name"' do
+      before(:each) do
+        @string_with_name_attr = XMLObject.new '<x name="Rope" />'
+      end
+
+      it 'should have a name called "Rope"' do
+        @string_with_name_attr.name.should == "Rope"
+
+        @string_with_name_attr['name'].should == "Rope"
+        @string_with_name_attr[:name].should  == "Rope"
+
+        @string_with_name_attr[:attr  => 'name'].should == "Rope"
+        @string_with_name_attr[:attr  => :name].should  == "Rope"
+        @string_with_name_attr['attr' => 'name'].should == "Rope"
+        @string_with_name_attr['attr' => :name].should  == "Rope"
       end
     end
 
-    it 'should not convert strings with more than numbers to Fixnum' do
-      @lorem.sed.do.price.rb.should == @lorem.sed.do.price
-      @lorem.sed.do.price.rb.should.not == 8
+    describe 'with other parallel same-named XML elements' do
+      before(:each) do
+        @xml = XMLObject.new '<x><sheep></sheep><sheep></sheep></x>'
+      end
+
+      it 'should fold with its namesakes into an Element Array' do
+        @xml.sheep.is_a?(Array).should.be true
+      end
     end
 
-    it 'should not return bools when asked for non-boolish strings' do
-      @lorem.dolor.foo?.should.not.be true
-      @lorem.dolor.foo?.should.not.be false
+    describe 'with no text, no CDATA, with attrs, with one Array child' do
+      before(:each) do
+        @container = XMLObject.new %| <x alpha="a" beta="b">
+                                        <sheep number="0">?</sheep>
+                                        <sheep number="1">Dolly</sheep>
+                                      </x> |
+      end
+
+      it 'should pass forth missing methods to its single child' do
+        numbers = @container.collect { |sheep| sheep.number }
+        numbers.should == @container.sheep.collect { |sheep| sheep.number }
+      end
     end
 
-    it 'should convert bool-looking attribute strings to bools when asked' do
-      @lorem.consectetur.each { |c| c.enabled?.should == !!(c.enabled?) }
+    describe 'with no text, no attrs, no CDATA, with one Array child' do
+      before(:each) do
+        @container = XMLObject.new %| <x>
+                                        <sheep number="0">?</sheep>
+                                        <sheep number="1">Dolly</sheep>
+                                      </x> |
+      end
+
+      it 'should pass forth missing methods to its single child' do
+        numbers = @container.collect { |sheep| sheep.number }
+        numbers.should == @container.sheep.collect { |sheep| sheep.number }
+      end
     end
 
-    it 'should convert to bool correctly when asked' do
-      @lorem.consectetur.first.enabled?.should.be true
-      @lorem.consectetur.last.enabled?.should.be false
+    describe 'with attributes that look like boolean' do
+      before(:each) do
+        @x = XMLObject.new %|
+          <x tall="Yes"   short="no"
+             cube="y"     round="N"
+             heavy="T"    light="f"
+             house="tRUE" ball="fAlSE"
+             hypercube="What?" /> |
+      end
+
+      it 'should convert boolish attributes to bool when asked' do
+        @x.tall?.should.be  true
+        @x.cube?.should.be  true
+        @x.heavy?.should.be true
+        @x.house?.should.be true
+
+        @x.short?.should.be false
+        @x.round?.should.be false
+        @x.light?.should.be false
+        @x.ball?.should.be  false
+      end
+
+      it 'should not convert non-boolish attributes to bool when asked' do
+        @x.hypercube?.should.not.be true
+        @x.hypercube?.should.not.be false
+      end
+    end
+  end
+
+  describe 'Element Array' do
+    before(:each) do
+      @xml = XMLObject.new '<x><man>One</man><man>Two</man></x>'
     end
 
-    it 'should pass forth methods to single array child when empty valued' do
-      @lorem.cupidatats[0].should == @lorem.cupidatats.cupidatat[0]
+    it 'should allow access to its elements by index' do
+      @xml.man[0].should == 'One'
+      @xml.man[1].should == 'Two'
     end
 
-    it 'should optimize collection proxies after first use' do
-      @lorem.cupidatats[0].should == @lorem.cupidatats[0]
+    it 'should be accessible by its naïve plural (mans)' do
+      @xml.mans.should == @xml.man
     end
 
-    it 'should not pass methods to single array child if not empty valued' do
-      should.raise(RuntimeError) { @lorem.voluptate[0] }
+    describe 'when ActiveSupport::Inflector is found' do
+      if defined?(ActiveSupport::Inflector)
+        it 'should be available by its correct plural (men)' do
+          @xml.men.should == @xml.man
+        end
+      else
+        xit 'ActiveSupport::Inflector NOT found'
+      end
+    end
+  end
+
+  describe '#new() function' do
+    before(:each) do
+      @xml_str = '<x>Bar</x>'
+      @duck    = StringIO.new(@xml_str)
     end
 
-    it 'should be valued as its text when text and CDATA exist' do
-      @lorem.ullamco.should == 'Laboris'
+    it 'should accept Strings with XML' do
+      XMLObject.new(@xml_str).should == 'Bar'
     end
 
-    it 'should have the value of its joined CDATAs when multiple exist' do
-      @lorem.deserunt.should == 'mollitanim'
+    it 'should accept things that respond to "to_s"' do
+      def @duck.respond_to?(m); (m == :'read') ? false : super; end
+      def @duck.to_s; self.read; end
+
+      XMLObject.new(@duck).should == 'Bar'
     end
 
-    it 'should squish whitespace in string attribute values' do
-      @lorem.irure.metadata.should == 'dolor'
+    it 'should accept things that respond to "read"' do
+      def @duck.respond_to?(m); (m == :'to_s') ? false : super; end
+
+      XMLObject.new(@duck).should == 'Bar'
     end
 
-    it 'should not squish whitespace in string element values' do
-      @lorem.irure.should == "  \n\t\t\treprehenderit  "
-    end
+    it "should raise exception at things that don't know #to_s or #read" do
+      # Take the "to_s" and "read" responses out:
+      def @duck.respond_to?(m)
+        ((m == :'to_s') || (:'read' == m)) ? false : super
+      end
 
-    it 'should not squish whitespace in CDATA values' do
-      @lorem.should == "\t foo\n"
+      should.raise { XMLObject.new(@duck) }
     end
+  end
 
-    it 'should have a working inspect function' do
-      should.not.raise { @lorem.inspect.is_a?(String) }
-    end
+  it 'should raise exception at [] notation used with invalid keys' do
+    should.raise { XMLObject.new('<x><z /></x>')[:invalid => 'foo'] }
   end
 end
 
-describe 'REXML Adapter' do
-  it_should_behave_like 'An XMLObject Adapter'
+describe 'XMLObject' do
 
-  it 'should return REXML::Element objects when #raw_xml is called' do
-    @rexml_recipe = XMLObject.new(open_sample_xml(:recipe))
-    @rexml_recipe.raw_xml.is_a?(::REXML::Element).should.be true
-  end
-end
+  describe 'REXML adapter' do
+    before(:all)  { require 'xml-object/adapters/rexml' }
+    before(:each) { XMLObject.adapter = XMLObject::Adapters::REXML }
 
-describe 'Hpricot Adapter' do
-  if defined?(Hpricot)
-    before(:all) { require('adapters/hpricot') }
+    it_should_behave_like 'any other XMLObject adapter'
 
-    it_should_behave_like 'An XMLObject Adapter'
-
-    it 'should return Hpricot::Elem objects when #raw_xml is called' do
-      @hpricot_recipe = XMLObject.new(open_sample_xml(:recipe))
-      @hpricot_recipe.raw_xml.is_a?(::Hpricot::Elem).should.be true
-    end
-  else
-    xit "'hpricot' not found, Hpricot adapter testing"
-  end
-end
-
-if defined?(JRUBY_VERSION)
-  describe 'JREXML Adapter' do
-    if defined?(JREXML)
-      before(:all) { require('adapters/jrexml') }
-
-      it_should_behave_like 'An XMLObject Adapter'
-
-      it 'should return REXML::Element objects when #raw_xml is called' do
-        @jrexml_recipe = XMLObject.new(open_sample_xml(:recipe))
-        @jrexml_recipe.raw_xml.is_a?(::REXML::Element).should.be true
-      end
-    else
-      xit "'jrexml' not found, JREXML adapter testing"
+    it 'should return unadapted XML objects when #raw_xml is called' do
+      XMLObject.new('<x/>').raw_xml.is_a?(::REXML::Element).should.be true
     end
   end
-else
-  describe 'LibXML Adapter' do
-    if defined?(LibXML)
-      before(:all) { require('adapters/libxml') }
 
-      it_should_behave_like 'An XMLObject Adapter'
+  describe 'Hpricot adapter' do
+    before(:all)  { require 'xml-object/adapters/hpricot' }
+    before(:each) { XMLObject.adapter = XMLObject::Adapters::Hpricot }
 
-      it 'should return LibXML::XML::Node objects when #raw_xml is called' do
-        @libxml_recipe = XMLObject.new(open_sample_xml(:recipe))
-        @libxml_recipe.raw_xml.is_a?(::LibXML::XML::Node).should.be true
-      end
-    else
-      xit "'libxml' not found, LibXML adapter testing"
+    it_should_behave_like 'any other XMLObject adapter'
+
+    it 'should return unadapted XML objects when #raw_xml is called' do
+      XMLObject.new('<x/>').raw_xml.is_a?(::Hpricot::Elem).should.be true
     end
-  end
+  end if defined?(Hpricot)
+
+  describe 'LibXML adapter' do
+    before(:all)  { require 'xml-object/adapters/libxml' }
+    before(:each) { XMLObject.adapter = XMLObject::Adapters::LibXML }
+
+    it_should_behave_like 'any other XMLObject adapter'
+
+    it 'should return unadapted XML objects when #raw_xml is called' do
+      XMLObject.new('<x/>').raw_xml.is_a?(::LibXML::XML::Node).should.be true
+    end
+  end if defined?(LibXML)
 end
