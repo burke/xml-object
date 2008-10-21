@@ -126,7 +126,7 @@ describe_shared 'any other XMLObject adapter' do
       @xml.man[1].should == 'Two'
     end
 
-    it 'should be accessible by its naïve plural (mans)' do
+    it 'should be accessible by its naive plural (mans)' do
       @xml.mans.should == @xml.man
     end
 
