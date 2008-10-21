@@ -3,7 +3,6 @@ begin; require 'activesupport'; rescue Exception, StandardError; nil; end
 
 $:.unshift File.join(File.dirname(__FILE__), 'xml-object')
 
-require 'core_ext'
 require 'adapters'
 require 'adapters/rexml'
 require 'array_notation'
@@ -71,7 +70,7 @@ module XMLObject
   def self.add_attribute(obj, name, attr_value) # :nodoc:
 
     attributes = obj.instance_variable_get :@__attributes
-    attributes[(key = name.to_sym)] = attr_value.squish.extend String
+    attributes[(key = name.to_sym)] = attr_value.strip.gsub(/\s+/, ' ')
 
     obj.instance_variable_set :@__attributes, attributes
     attr_value

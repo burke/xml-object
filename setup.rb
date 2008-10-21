@@ -6,7 +6,7 @@ require 'xml-object'
 
 def begin_require_rescue(gem, reason = nil)
   begin; require gem; rescue Exception, StandardError
-    puts "Install the '#{gem}' gem #{reason.squish!}" unless reason.nil?
+    puts "Install '#{gem}' #{reason.strip.gsub(/\s+/, ' ')}" if reason
   end
 end
 
