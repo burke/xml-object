@@ -78,40 +78,44 @@ namespace :perf do
 
     puts "XMLObject benchmark under #{platform}"
     puts "Reading whole file, #{n} times:"
-    Benchmark.bm(20) do |x|
+    Benchmark.bmbm do |x|
       x.report 'REXML (alone):' do
-        n.times { recipe = REXML::Document.new(File.open(xml_file)) }
+        n.times { rexml_alone = REXML::Document.new(File.open(xml_file)) }
       end
 
       if defined?(XmlSimple)
         x.report 'XmlSimple:' do
-          n.times { recipe = XmlSimple.xml_in(File.open(xml_file)) }
+          n.times { xml_simple = XmlSimple.xml_in(File.open(xml_file)) }
         end
       end
 
-      require 'xml-object/adapters/rexml'
       x.report('XMLObject (REXML):') do
-        n.times { recipe = XMLObject.new(File.open(xml_file)) }
+        require 'adapters/rexml'
+        ::XMLObject.adapter = ::XMLObject::Adapters::REXML
+        n.times { rexml = XMLObject.new(File.open(xml_file)) }
       end
 
       if defined?(Hpricot)
-        require 'adapters/hpricot'
         x.report('XMLObject (Hpricot):') do
-          n.times { recipe = XMLObject.new(File.open(xml_file)) }
+          require 'adapters/hpricot'
+          ::XMLObject.adapter = ::XMLObject::Adapters::Hpricot
+          n.times { hpricot = XMLObject.new(File.open(xml_file)) }
         end
       end
 
       if defined?(LibXML)
-        require 'adapters/libxml'
         x.report('XMLObject (LibXML):') do
-          n.times { recipe = XMLObject.new(File.open(xml_file)) }
+          require 'adapters/libxml'
+          ::XMLObject.adapter = ::XMLObject::Adapters::LibXML
+          n.times { libxml = XMLObject.new(File.open(xml_file)) }
         end
       end
 
       if defined?(JREXML)
-        require 'adapters/jrexml'
         x.report('XMLObject (JREXML):') do
-          n.times { recipe = XMLObject.new(File.open(xml_file)) }
+          require 'adapters/jrexml'
+          ::XMLObject.adapter = ::XMLObject::Adapters::JREXML
+          n.times { jrexml = XMLObject.new(File.open(xml_file)) }
         end
       end
     end
