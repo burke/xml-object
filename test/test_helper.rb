@@ -12,23 +12,6 @@ require 'test/spec'
 require 'digest/md5'
 require 'stringio'
 
-def xml_file(name_symbol)
-  File.open File.join(PROJECT_DIR,
-    'test', 'samples', "#{name_symbol.to_s}.xml")
-end
-
-def begin_require_rescue(gem, reason = nil)
-  begin; require gem; rescue Exception, StandardError
-    puts "Install the '#{gem}' gem #{reason.squish!}" unless reason.nil?
-  end
-end
-
-puts ":: Testing XMLObject under " + platform = if defined?(JRUBY_VERSION)
-  "Ruby #{RUBY_VERSION} (JRuby #{JRUBY_VERSION})"
-else
-  "Ruby #{RUBY_VERSION} (MRI)"
-end
-
 begin_require_rescue 'rubygems',      'to load additional gems'
 begin_require_rescue 'redgreen',      'to get color output'
 begin_require_rescue 'ruby-prof',     'to get profiling information'
@@ -47,7 +30,7 @@ end
   :plurals    => '1c22f96d00bc2277cece4d93154ad974',
   :recipe     => '6087ab42049273d123d473093b04ab12' }.each do |sample, md5|
 
-  unless Digest::MD5.hexdigest(xml_file(sample).read) == md5
+  unless Digest::MD5.hexdigest(open_sample_xml(sample).read) == md5
     puts "Warning: Sample file #{sample.to_s}.xml doesn't match expected MD5"
   end
 end
