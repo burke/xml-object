@@ -33,6 +33,4 @@ module XMLObject::Adapters::LibXML
   end
 end
 
-def XMLObject.adapter # :nodoc:
-  XMLObject::Adapters::LibXML
-end
+::XMLObject.adapter = ::XMLObject::Adapters::LibXML

@@ -5,6 +5,4 @@ module XMLObject::Adapters
   JREXML = REXML
 end
 
-def XMLObject.adapter # :nodoc:
-  XMLObject::Adapters::JREXML
-end
+::XMLObject.adapter = ::XMLObject::Adapters::JREXML
