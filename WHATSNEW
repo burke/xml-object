@@ -1,3 +1,6 @@
+* 0.9.8 (2008-10-??):
+  - The collection proxy behaviour is now a bit faster when called in a loop
+
 * 0.9.7 (2008-10-20):
   - LibXML adapter added
   - JREXML "adapter" added, as well as JREXML support during tests and

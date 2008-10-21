@@ -40,4 +40,16 @@ module XMLObject::MethodMissingDispatchers # :nodoc:
       @__children[singular]
     end
   end
+
+  def __target_dispatch(m, *a, &b)
+    if @__target && @__target.respond_to?(m)
+      dispatched = @__target.__send__(m, *a, &b)
+
+      unless dispatched.nil?
+        instance_eval %{ def #{m}(*a, &b) @__target.#{m}(*a, &b); end }
+      end
+
+      dispatched
+    end
+  end
 end

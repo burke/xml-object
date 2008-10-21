@@ -6,9 +6,9 @@ class XMLObject::CollectionProxy < XMLObject::BlankishSlate # :nodoc:
   private ##################################################################
 
   def method_missing(m, *a, &b) # :nodoc:
-    dp = __question_dispatch(m, *a, &b)
-    dp = __dot_notation_dispatch(m, *a, &b) if dp.nil?
-    dp = @__target.__send__(m, *a, &b) if @__target.respond_to?(m) && dp.nil?
-    dp
+    dispatched = __question_dispatch(m, *a, &b)
+    dispatched = __dot_notation_dispatch(m, *a, &b) if dispatched.nil?
+    dispatched = __target_dispatch(m, *a, &b)       if dispatched.nil?
+    dispatched
   end
 end

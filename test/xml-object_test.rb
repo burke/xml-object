@@ -187,6 +187,10 @@ describe_shared 'An XMLObject Adapter' do
       @lorem.cupidatats[0].should == @lorem.cupidatats.cupidatat[0]
     end
 
+    it 'should optimize collection proxies after first use' do
+      @lorem.cupidatats[0].should == @lorem.cupidatats[0]
+    end
+
     it 'should not pass methods to single array child if not empty valued' do
       should.raise(RuntimeError) { @lorem.voluptate[0] }
     end
