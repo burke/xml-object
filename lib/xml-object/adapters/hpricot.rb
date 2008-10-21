@@ -36,6 +36,4 @@ module XMLObject::Adapters::Hpricot
   end
 end
 
-def XMLObject.adapter # :nodoc:
-  XMLObject::Adapters::Hpricot
-end
+::XMLObject.adapter = ::XMLObject::Adapters::Hpricot
