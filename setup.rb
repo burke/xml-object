@@ -9,9 +9,3 @@ def begin_require_rescue(gem, reason = nil)
     puts "Install '#{gem}' #{reason.strip.gsub(/\s+/, ' ')}" if reason
   end
 end
-
-puts (if defined?(JRUBY_VERSION)
-  "Ruby #{RUBY_VERSION} (JRuby #{JRUBY_VERSION})"
-else
-  "Ruby #{RUBY_VERSION} (MRI)"
-end)
