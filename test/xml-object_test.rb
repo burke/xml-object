@@ -241,7 +241,7 @@ describe 'Hpricot Adapter' do
   end
 end
 
-if RUBY_PLATFORM =~ /java/
+if defined?(JRUBY_VERSION)
   describe 'JREXML Adapter' do
     if defined?(JREXML)
       before(:all) { require('adapters/jrexml') }

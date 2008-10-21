@@ -53,7 +53,7 @@ namespace :perf do
       puts 'Hpricot not found'
     end
 
-    if RUBY_PLATFORM =~ /java/
+    if defined?(JRUBY_VERSION)
       begin
         require 'jrexml'
       rescue LoadError
@@ -70,7 +70,7 @@ namespace :perf do
     xml_file = File.join(PROJECT_DIR, 'test', 'samples', 'recipe.xml')
 
     n = 500
-    platform = if RUBY_PLATFORM =~ /java/
+    platform = if defined?(JRUBY_VERSION)
       "Ruby #{RUBY_VERSION} (JRuby #{JRUBY_VERSION})"
     else
       "Ruby #{RUBY_VERSION} (MRI)"

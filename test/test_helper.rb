@@ -23,7 +23,7 @@ def begin_require_rescue(gem, reason = nil)
   end
 end
 
-puts ":: Testing XMLObject under " + platform = if RUBY_PLATFORM =~ /java/
+puts ":: Testing XMLObject under " + platform = if defined?(JRUBY_VERSION)
   "Ruby #{RUBY_VERSION} (JRuby #{JRUBY_VERSION})"
 else
   "Ruby #{RUBY_VERSION} (MRI)"
@@ -36,7 +36,7 @@ begin_require_rescue 'ruby-debug',    'to use the debugger during tests'
 begin_require_rescue 'activesupport', 'to test auto array pluralization'
 begin_require_rescue 'hpricot',       'to test the Hpricot adapter'
 
-if RUBY_PLATFORM =~ /java/
+if defined?(JRUBY_VERSION)
   begin_require_rescue 'jrexml', 'to test the JREXML adapter'
 else
   begin_require_rescue 'libxml', 'to test the LibXML adapter'
