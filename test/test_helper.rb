@@ -21,3 +21,9 @@ begin_require_rescue 'ruby-debug'
 unless defined?(JRUBY_VERSION)
   begin_require_rescue 'libxml', 'to test the LibXML adapter'
 end
+
+puts (if defined?(JRUBY_VERSION)
+  "Ruby #{RUBY_VERSION} (JRuby #{JRUBY_VERSION})"
+else
+  "Ruby #{RUBY_VERSION} (MRI)"
+end)

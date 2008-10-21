@@ -1,1 +1,10 @@
 * Refactor so as to not do things recursively
+* Test multiple CDATA joining
+* Test text+CDATA correct precedence
+* Test squishing of text/CDATA/attributes
+* Test dot-notation conflicts
+* Test pluralization conflicts
+* Test documentation recipe.xml
+* Test more real-world examples
+* Test invalid method name element/attribute/array access
+* Fix benchmarks
