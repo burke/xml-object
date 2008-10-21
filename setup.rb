@@ -10,11 +10,6 @@ def begin_require_rescue(gem, reason = nil)
   end
 end
 
-def open_sample_xml(name_symbol)
-  File.open(File.join(PROJECT_DIR,
-    'test', 'samples', "#{name_symbol.to_s}.xml"))
-end
-
 puts (if defined?(JRUBY_VERSION)
   "Ruby #{RUBY_VERSION} (JRuby #{JRUBY_VERSION})"
 else
