@@ -1,9 +1,9 @@
-require 'rubyforge'
-require 'rake/contrib/sshpublisher'
-
 namespace :rubyforge do
   desc 'Upload to RubyForge'
   task :release do |t|
+    require 'rubyforge'
+    require 'rake/contrib/sshpublisher'
+
     gemspec = eval(File.open("#{PROJECT_DIR}/xml-object.gemspec").read)
     gemfile = "#{gemspec.rubyforge_project}-#{gemspec.version}.gem"
     gemfile = "#{PROJECT_DIR}/pkg/#{gemfile}"
