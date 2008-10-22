@@ -52,7 +52,7 @@ namespace :perf do
 
     desc 'Measures parsing'
     task :parsing => :require_dependencies do
-      n = 100
+      n = 500
 
       puts "Benchmark initial parsing"
       puts "Reading whole file, #{n} times:"
@@ -62,7 +62,7 @@ namespace :perf do
           x.report 'XmlSimple:' do
             ::XMLObject.adapter = XmlSimple # Let's be fair
 
-            n.times { XmlSimple.xml_in(open_sample_xml(:recipe)) }
+            n.times { XmlSimple.xml_in(open_sample_xml(:playlist)) }
           end
         end if defined?(XmlSimple)
 
@@ -71,7 +71,7 @@ namespace :perf do
           x.report('XMLObject (REXML):') do
             ::XMLObject.adapter = ::XMLObject::Adapters::REXML
 
-            n.times { XMLObject.new(open_sample_xml(:recipe)) }
+            n.times { XMLObject.new(open_sample_xml(:playlist)) }
           end
         end
 
@@ -81,7 +81,7 @@ namespace :perf do
           x.report('XMLObject (Hpricot):') do
             ::XMLObject.adapter = ::XMLObject::Adapters::Hpricot
 
-            n.times { XMLObject.new(open_sample_xml(:recipe)) }
+            n.times { XMLObject.new(open_sample_xml(:playlist)) }
           end
         end if defined?(Hpricot)
 
@@ -91,7 +91,7 @@ namespace :perf do
           x.report('XMLObject (LibXML):') do
             ::XMLObject.adapter = ::XMLObject::Adapters::LibXML
 
-            n.times { XMLObject.new(open_sample_xml(:recipe)) }
+            n.times { XMLObject.new(open_sample_xml(:playlist)) }
           end
         end if defined?(LibXML)
       end
