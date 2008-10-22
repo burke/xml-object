@@ -18,24 +18,27 @@ module XMLObject::ArrayNotation
   #   article[:author]           => "J. Random Hacker" # <author> element
   #   article[:attr => 'author'] => "j-random"         # author attribute
   #
-  # Valid keys for the hash notation in the example above are +:attr+,
-  # +:attribute+, +:child+, and +:element+.
-  def [](name)
-    return @__target[name] if @__target && name.is_a?(Numeric)
+  # Valid keys for the hash notation are +:attr+ and +:elem+.
+  def [](duck)
+    if @target && duck.is_a?(Numeric)
+      @__target[duck]
 
-    unless name.is_a? Hash
-      key = name.to_s.to_sym
+    elsif duck.is_a?(Hash)
+      raise 'one and only one key allowed' if duck.keys.size != 1
 
-      return @__children[key]   if @__children.has_key?(key)
-      return @__attributes[key] if @__attributes.has_key?(key)
-    end
+      case param = duck.keys[0].to_sym
+        when :elem then @__children[duck.values[0].to_sym]
+        when :attr then @__attributes[duck.values[0].to_sym]
+        else raise "Invalid key :#{param.to_s}. Use :elem or :attr"
+      end
+    else
+      key = duck.to_s.to_sym
 
-    raise 'one and only one key allowed' if name.size != 1
-
-    case (param = name.keys.first.to_sym)
-      when :elem then @__children[name.values.first.to_sym]
-      when :attr then @__attributes[name.values.first.to_sym]
-      else raise "Invalid key :#{param.to_s}. Use :elem or :attr"
+      case
+        when @__children.has_key?(key)   then @__children[key]
+        when @__attributes.has_key?(key) then @__attributes[key]
+        else nil
+      end
     end
   end
 end
