@@ -8,7 +8,7 @@ module XMLObject::Element
   # The raw, unadapted XML object. Whatever this is, it really depends on
   # the currently chosen adapter.
   def raw_xml
-    @__adapted_element.raw if @__adapted_element
+    @__raw_xml
   end
 
   private ##################################################################
