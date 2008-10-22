@@ -7,10 +7,10 @@ module XMLObject::Adapters::LibXML
   def self.new(duck)
     case
       when duck.is_a?(::LibXML::XML::Node) then Element.new(duck)
-      when duck.is_a?(::String)
-        then new(::LibXML::XML::Parser.string(duck).parse.root)
-      when duck.respond_to?(:read) then new(duck.read)
-      when duck.respond_to?(:to_s) then new(duck.to_s)
+      when duck.respond_to?(:read)
+        then new(::LibXML::XML::Parser.string(duck.read).parse.root)
+      when duck.respond_to?(:to_s)
+        then new(::LibXML::XML::Parser.string(duck.to_s).parse.root)
       else raise "Don't know how to deal with '#{duck.class}' object"
     end
   end

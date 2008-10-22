@@ -7,9 +7,10 @@ module XMLObject::Adapters::REXML
   def self.new(duck)
     case
       when duck.is_a?(::REXML::Element) then Element.new(duck)
-      when duck.is_a?(::String)    then new(::REXML::Document.new(duck).root)
-      when duck.respond_to?(:read) then new(duck.read)
-      when duck.respond_to?(:to_s) then new(duck.to_s)
+      when duck.respond_to?(:read)
+        then new(::REXML::Document.new(duck.read).root)
+      when duck.respond_to?(:to_s)
+        then new(::REXML::Document.new(duck.to_s).root)
       else raise "Don't know how to deal with '#{duck.class}' object"
     end
   end
