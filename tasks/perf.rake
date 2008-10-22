@@ -7,7 +7,7 @@ namespace :perf do
     task :run do
       require 'ruby-prof'
 
-      xml_file = File.join(PROJECT_DIR, 'test', 'samples', 'lorem.xml')
+      xml_file = open_sample_xml :atom
 
       result = RubyProf.profile do
         xml_obj = XMLObject.new(File.open(xml_file))
