@@ -1,5 +1,4 @@
 * Refactor so as to not do things recursively
-* Test pluralization conflicts
 * Test documentation recipe.xml
 * Test more real-world examples
 * Test invalid method name element/attribute/array access

@@ -212,12 +212,129 @@ describe_shared 'any XMLObject adapter' do
       end
 
       it 'should prioritize element when called with [""] notation' do
-        @ambiguous['name'] == 'element name'
+        @ambiguous['name'].should == 'element name'
       end
 
       it 'should still allow unambigious access to both attr and element' do
         @ambiguous[:elem => 'name'].should == 'element name'
         @ambiguous[:attr => 'name'].should == 'attr name'
+      end
+    end
+
+    describe 'with a (+s) pluralized array and an element named the same' do
+      before(:each) do
+        @ambiguous = XMLObject.new %|
+          <x>
+            <houses>Element</houses>
+            <house>Array</house>
+            <house>Element</house>
+          </x> |
+      end
+
+      it 'should prioritize the element over the pluralized array' do
+        @ambiguous['houses'].should == 'Element'
+        @ambiguous[:elem => 'houses'].should == 'Element'
+        @ambiguous.houses.should == 'Element'
+      end
+
+      it 'should maintain access to the array by its original name' do
+        @ambiguous.house.join(' ').should == 'Array Element'
+        @ambiguous['house'].join(' ').should == 'Array Element'
+        @ambiguous[:elem => 'house'].join(' ').should == 'Array Element'
+      end
+    end
+
+    describe 'with a proper plural array and an element named the same' do
+      before(:each) do
+        @ambiguous = XMLObject.new %|
+          <x>
+            <octopi>Element</octopi>
+            <octopus>Array</octopus>
+            <octopus>Element</octopus>
+          </x> |
+      end
+
+      it 'should prioritize the element over the pluralized array' do
+        @ambiguous.octopi.should == 'Element'
+        @ambiguous['octopi'].should == 'Element'
+        @ambiguous[:elem => 'octopi'].should == 'Element'
+      end
+
+      it 'should maintain access to the array by its original name' do
+        @ambiguous.octopus.join(' ').should == 'Array Element'
+        @ambiguous['octopus'].join(' ').should == 'Array Element'
+        @ambiguous[:elem => 'octopus'].join(' ').should == 'Array Element'
+      end
+    end
+
+    describe 'with a (+s) pluralized array and an attr named the same' do
+      before(:each) do
+        @ambiguous = XMLObject.new %|
+          <x houses="Attribute">
+            <house>Array</house>
+            <house>Element</house>
+          </x> |
+      end
+
+      it 'should prioritize the attribute over the pluralized array' do
+        @ambiguous.houses.should == 'Attribute'
+        @ambiguous['houses'].should == 'Attribute'
+        @ambiguous[:attr => 'houses'].should == 'Attribute'
+      end
+
+      it 'should maintain access to the array by its original name' do
+        @ambiguous.house.join(' ').should == 'Array Element'
+        @ambiguous['house'].join(' ').should == 'Array Element'
+        @ambiguous[:elem => 'house'].join(' ').should == 'Array Element'
+      end
+    end
+
+    describe 'with a proper plural array and an attribute named the same' do
+      before(:each) do
+        @ambiguous = XMLObject.new %|
+          <x octopi="Attribute">
+            <octopus>Array</octopus>
+            <octopus>Element</octopus>
+          </x> |
+      end
+
+      it 'should prioritize the attribute over the pluralized array' do
+        @ambiguous.octopi.should == 'Attribute'
+        @ambiguous['octopi'].should == 'Attribute'
+        @ambiguous[:attr => 'octopi'].should == 'Attribute'
+      end
+
+      it 'should maintain access to the array by its original name' do
+        @ambiguous.octopus.join(' ').should == 'Array Element'
+        @ambiguous['octopus'].join(' ').should == 'Array Element'
+        @ambiguous[:elem => 'octopus'].join(' ').should == 'Array Element'
+      end
+    end
+
+    describe 'with ambiguously named plural array, attr and element' do
+      before(:each) do
+        @ambiguous = XMLObject.new %|
+          <x houses="Attribute">
+            <houses>Element</houses>
+            <house>Array</house>
+            <house>Element</house>
+          </x> |
+      end
+
+      it 'should prioritize the element over all others' do
+        @ambiguous['houses'].should == 'Element'
+        @ambiguous[:elem => 'houses'].should == 'Element'
+        @ambiguous.houses.should == 'Element'
+      end
+
+      it 'should allow unambiguous access to the attribute' do
+        @ambiguous[:attr => 'houses'].should == 'Attribute'
+      end
+
+      it 'should maintain access to the array by its original name' do
+        @ambiguous.house.join(' ').should == 'Array Element'
+        @ambiguous['house'].join(' ').should == 'Array Element'
+        @ambiguous[:elem => 'house'].join(' ').should == 'Array Element'
       end
     end
   end
