@@ -15,12 +15,7 @@ module XMLObject # :nodoc:
         def initialize(*args)
 
           @children = @element_nodes.map { |node| self.class.new(node) }
-
-          @value = case
-            when (not text_value.blank?)  then text_value
-            when (not cdata_value.blank?) then cdata_value
-            else ''
-          end
+          @value = (not (text_value !~ /\S/)) ? text_value : cdata_value
         end
 
         private ###########################################################
