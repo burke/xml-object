@@ -3,7 +3,7 @@
 desc '=> test:run'
 task :default => :'test:XMLObject'
 
-task :bench   => [ :'perf:benchmark:initial_parsing',
+task :bench   => [ :'perf:benchmark:parsing',
                    :'perf:benchmark:iteration' ]
 
 task :profile => :'perf:profile:rexml'

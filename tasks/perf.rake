@@ -50,9 +50,9 @@ namespace :perf do
       end
     end
 
-    desc 'Measures initial parsing performance'
-    task :initial_parsing => :require_dependencies do
-      n = 500
+    desc 'Measures parsing'
+    task :parsing => :require_dependencies do
+      n = 100
 
       puts "Benchmark initial parsing"
       puts "Reading whole file, #{n} times:"
@@ -97,9 +97,11 @@ namespace :perf do
       end
     end
 
-    desc 'Measures array iterating overhead'
-    task :iteration => :require_dependencies do
-      n = 150000
+    desc 'Measures iteration'
+    task :iteration => [ :iteration_overhead, :iteration_speed ]
+
+    task :iteration_overhead => :require_dependencies do
+      n = 100000
 
       puts "Benchmarking iteration overhead"
       puts "Iterating over instructions, #{n} times:"
@@ -179,6 +181,93 @@ namespace :perf do
           x.report('XMLObject (collection proxy):') do
             proxy.instructions.each do |s|
               n.times { s.upcase.size }
+            end
+          end
+        end
+      end
+    end
+
+    task :iteration_speed => :require_dependencies do
+      n = 100000
+
+      puts "Benchmarking iteration performance"
+      puts "Iterating over instructions, #{n} times:"
+      Benchmark.bmbm do |x|
+
+        begin
+          steps ||= [
+            'Mix all ingredients together.',
+            'Knead thoroughly.',
+            'Cover with a cloth, and leave for one hour in warm room.',
+            'Knead again.',
+            'Place in a bread baking tin.',
+            'Cover with a cloth, and leave for one hour in warm room.',
+            'Bake in the oven at 180(degrees)C for 30 minutes.'
+          ]
+
+          unless 'Knead again.' == steps[3]
+            raise 'Steps not read correctly'
+          end
+
+          x.report 'Baseline' do
+            n.times do
+              steps.sort.map { |s| s.upcase }
+            end
+          end
+        end
+
+        begin
+          simple ||= XmlSimple.xml_in(open_sample_xml(:recipe))
+
+          unless 7 == simple['instructions'][0]['step'].size
+            raise 'Steps not read correctly'
+          end
+
+          x.report 'XmlSimple (no opts):' do
+            n.times do
+              simple['instructions'][0]['step'].sort.map { |s| s.upcase }
+            end
+          end
+        end if defined?(XmlSimple)
+
+        begin
+          singular ||= XMLObject.new(open_sample_xml(:recipe))
+
+          unless 7 == singular.instructions.step.size
+            raise 'Steps not read correctly'
+          end
+
+          x.report('XMLObject (singular array):') do
+            n.times do
+              singular.instructions.step.sort.map { |s| s.upcase }
+            end
+          end
+        end
+
+        begin
+          plural ||= XMLObject.new(open_sample_xml(:recipe))
+
+          unless 7 == plural.instructions.step.size
+            raise 'Steps not read correctly'
+          end
+
+          x.report('XMLObject (plural array):') do
+            n.times do
+              plural.instructions.steps.sort.map { |s| s.upcase }
+            end
+          end
+        end
+
+        begin
+          proxy ||= XMLObject.new(open_sample_xml(:recipe))
+
+          unless 7 == proxy.instructions.step.size
+            raise 'Steps not read correctly'
+          end
+
+          x.report('XMLObject (collection proxy):') do
+            n.times do
+              proxy.instructions.sort.map { |s| s.upcase }
             end
           end
         end

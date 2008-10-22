@@ -1,0 +1,10 @@
+<vxml version="2.0" xmlns="http://www.w3.org/2001/vxml">
+  <form>
+    <block>
+      <prompt>
+        Hello world!
+      </prompt>
+    </block>
+  </form>
+<!-- From http://en.wikipedia.org/wiki/VoiceXML -->
+</vxml>
