@@ -1,5 +1,15 @@
 * 0.9.8 (2008-10-??):
-  - The collection proxy behaviour is now a bit faster when called in a loop
+  - Much improved test suite. More granular, better coverage, much faster
+  - The collection proxy behaviour is now a lot faster when called in a loop
+  - Collection Proxies are a lot more transparent
+  - Reduced memory footprint of instantiated XMLObject trees
+  - Calling elements, attributes, question methods or pluralized collections
+    (anything, really) that's not there raises NameError instead of just
+    returning nil
+  - Removed #rb (wasn't really all that useful)
+  - The [:sym => 'foo'] notation now only supports :attr and :elem
+  - The question method notation is a bit more strict
+  - JREXML adapter removed. It barely sped up REXML under JRuby
 
 * 0.9.7 (2008-10-20):
   - LibXML adapter added
