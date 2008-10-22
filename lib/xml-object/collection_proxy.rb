@@ -1,6 +1,6 @@
 class XMLObject::CollectionProxy < XMLObject::BlankishSlate # :nodoc:
-  def initialize(target)
-    @__children, @__attributes, @__target = {}, {}, target
+  def initialize(target_kid_key)
+    @__children, @__attributes, @__target_kid = {}, {}, target_kid_key
   end
 
   private ##################################################################
@@ -9,11 +9,12 @@ class XMLObject::CollectionProxy < XMLObject::BlankishSlate # :nodoc:
     dispatched = __question_dispatch(m, *a, &b)
     dispatched = __dot_notation_dispatch(m, *a, &b) if dispatched.nil?
 
-    if dispatched.nil? && @__target.respond_to?(m)
-      dispatched = @__target.__send__(m, *a, &b)
+    if dispatched.nil? && @__children[@__target_kid].respond_to?(m)
+      dispatched = @__children[@__target_kid].__send__(m, *a, &b)
 
       unless dispatched.nil?
-        instance_eval %{ def #{m}(*a, &b) @__target.#{m}(*a, &b); end }
+        instance_eval %{ def #{m}(*a, &b);
+          @__children[@__target_kid].#{m}(*a, &b); end }
       end
     end
 
