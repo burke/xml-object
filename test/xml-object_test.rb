@@ -125,6 +125,52 @@ describe_shared 'any XMLObject adapter' do
         @x.hypercube?.should.not.be false
       end
     end
+
+    describe 'without text and with multiple CDATA values' do
+      it 'should look like its CDATA values joined' do
+        @no_text_two_cdata = XMLObject.new %| <x>
+                                                <![CDATA[CDA]]>
+                                                <![CDATA[TA!]]>
+                                              </x> |
+        @no_text_two_cdata.should == 'CDATA!'
+      end
+    end
+
+    describe 'without text and CDATA' do
+      it 'should look like its CDATA' do
+        XMLObject.new('<x><![CDATA[Not Text]]></x>').should == 'Not Text'
+      end
+    end
+
+    describe 'with text and CDATA' do
+      it 'should look like its text' do
+        XMLObject.new('<x>Text<![CDATA[Not Text]]></x>').should == 'Text'
+      end
+    end
+
+    describe 'with only whitespace text' do
+      it 'should look like and empty string' do
+        XMLObject.new("<x>\t \n</x>").should == ''
+      end
+    end
+
+    describe 'with whitespace and non-whitespace text' do
+      it 'should retain its text verbatim' do
+        XMLObject.new("<x>\t a \n</x>").should == "\t a \n"
+      end
+    end
+
+    describe 'with only whitespace CDATA' do
+      it 'should retain its CDATA verbatim' do
+        XMLObject.new("<x><![CDATA[\t \n]]></x>").should == "\t \n"
+      end
+    end
+
+    describe 'with whitespace and non-whitespace CDATA' do
+      it 'should retain its CDATA verbatim' do
+        XMLObject.new("<x><![CDATA[\t a \n]]></x>").should == "\t a \n"
+      end
+    end
   end
 
   describe 'Element Array' do
