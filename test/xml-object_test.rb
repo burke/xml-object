@@ -2,20 +2,20 @@ require File.join(File.dirname(__FILE__), 'test_helper')
 
 describe_shared 'boolish string container' do
   it 'should convert boolish strings to bool when asked' do
-    @x.tall?.should.be  true
-    @x.cube?.should.be  true
-    @x.heavy?.should.be true
-    @x.house?.should.be true
+    @container.tall?.should.be  true
+    @container.cube?.should.be  true
+    @container.heavy?.should.be true
+    @container.house?.should.be true
 
-    @x.short?.should.be false
-    @x.round?.should.be false
-    @x.light?.should.be false
-    @x.ball?.should.be  false
+    @container.short?.should.be false
+    @container.round?.should.be false
+    @container.light?.should.be false
+    @container.ball?.should.be  false
   end
 
   it 'should not convert boolish strings to bool even when asked' do
-    @x.hypercube?.should.not.be true
-    @x.hypercube?.should.not.be false
+    @container.hypercube?.should.not.be true
+    @container.hypercube?.should.not.be false
   end
 end
 
@@ -128,7 +128,7 @@ describe_shared 'any XMLObject adapter' do
 
     describe 'with boolish attributes' do
       before(:each) do
-        @x = XMLObject.new %|
+        @container = XMLObject.new %|
           <x tall="Yes"   short="no"
              cube="y"     round="N"
              heavy="T"    light="f"
@@ -141,7 +141,7 @@ describe_shared 'any XMLObject adapter' do
 
     describe 'with boolish elements' do
       before(:each) do
-        @x = XMLObject.new %|
+        @container = XMLObject.new %|
           <x>
             <tall>yEs</tall>    <short>nO</short>
             <cube>Y</cube>      <round>n</round>
