@@ -41,6 +41,13 @@ describe_shared 'any XMLObject adapter' do
   end
 
   describe 'Element' do
+
+    it 'should raise exception at [] notation used with invalid keys' do
+      should.raise NameError do
+        XMLObject.new('<x><z /></x>')[:invalid => 'foo']
+      end
+    end
+
     describe 'with no attributes, children, text or CDATA' do
       before(:each) do
         @blank_extended_strings = XMLObject.new '<x><one> </one> <two /></x>'
@@ -478,9 +485,40 @@ describe_shared 'any XMLObject adapter' do
     end
   end
 
-  it 'should raise exception at [] notation used with invalid keys' do
-    should.raise NameError do
-      XMLObject.new('<x><z /></x>')[:invalid => 'foo']
+  describe 'Sample atom.xml' do
+    before(:each) { @feed = XMLObject.new(open_sample_xml(:atom)) }
+
+    it 'should behave accordingly' do
+      @feed.should          == ''
+
+      # LibXML eats up 'xmlns' from the attributes hash
+      unless XMLObject.adapter.to_s.match /LibXML$/
+        @feed.xmlns.should == 'http://www.w3.org/2005/Atom'
+      end
+
+      @feed.title.should    == 'Example Feed'
+      @feed.subtitle.should == 'A subtitle.'
+
+      @feed.link.is_a?(Array).should.be true
+      @feed.link.should == @feed.links
+
+      @feed.link.first.href.should == 'http://example.org/feed/'
+      @feed.link.first.rel.should  == 'self'
+      @feed.link.last.href.should  == 'http://example.org/'
+
+      @feed.updated.should == '2003-12-13T18:30:02Z'
+
+      @feed.author.should == ''
+      @feed.author.name.should == 'John Doe'
+      @feed.author.email.should == 'johndoe@example.com'
+
+      @feed['id'].should == 'urn:uuid:60a76c80-d399-11d9-b91C-0003939e0af6'
+
+      @feed.entry.should == ''
+      @feed.entry.title.should == 'Atom-Powered Robots Run Amok'
+      @feed.entry['id'].should == 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a'
+      @feed.entry.updated.should == '2003-12-13T18:30:02Z'
+      @feed.entry.summary.should == 'Some text.'
     end
   end
 end
