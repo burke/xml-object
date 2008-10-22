@@ -59,7 +59,7 @@ describe_shared 'any XMLObject adapter' do
       end
     end
 
-    describe 'with no text, no CDATA, with attrs, with one Array child' do
+    describe 'without text or CDATA, with attrs and one Array child' do
       before(:each) do
         @container = XMLObject.new %| <x alpha="a" beta="b">
                                         <sheep number="0">?</sheep>
@@ -73,7 +73,7 @@ describe_shared 'any XMLObject adapter' do
       end
     end
 
-    describe 'with no text, no attrs, no CDATA, with one Array child' do
+    describe 'without text, attrs, or CDATA, with one Array child' do
       before(:each) do
         @container = XMLObject.new %| <x>
                                         <sheep number="0">?</sheep>
@@ -87,7 +87,7 @@ describe_shared 'any XMLObject adapter' do
       end
     end
 
-    describe 'with text, no attrs, no CDATA, with one Array child' do
+    describe 'without attrs or CDATA, with text and one Array child' do
       before(:each) do
         @x = XMLObject.new %| <x>Text in "x"
                                 <sheep number="0">?</sheep>
@@ -101,7 +101,7 @@ describe_shared 'any XMLObject adapter' do
       end
     end
 
-    describe 'with no text, no attrs, with CDATA, with one Array child' do
+    describe 'without text or attrs, with CDATA and one Array child' do
       before(:each) do
         @x = XMLObject.new %| <x><![CDATA[Text in "x"]]>
                                 <sheep number="0">?</sheep>
@@ -115,7 +115,7 @@ describe_shared 'any XMLObject adapter' do
       end
     end
 
-    describe 'with attributes that look like boolean' do
+    describe 'with attributes that look like booleans' do
       before(:each) do
         @x = XMLObject.new %|
           <x tall="Yes"   short="no"
@@ -193,7 +193,6 @@ describe_shared 'any XMLObject adapter' do
     end
 
     it "should raise exception at things that don't know #to_s or #read" do
-      # Take the "to_s" and "read" responses out:
       def @duck.respond_to?(m)
         ((m == :'to_s') || (:'read' == m)) ? false : super
       end
