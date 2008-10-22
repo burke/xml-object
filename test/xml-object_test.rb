@@ -116,25 +116,23 @@ describe_shared 'any XMLObject adapter' do
                                         <sheep number="1">Dolly</sheep>
                                       </x> |
 
-        numbers = @container.collect { |sheep| sheep.number }
-        numbers.should == @container.sheep.collect { |sheep| sheep.number }
+        @container.should == @container.sheep
       end
     end
 
     describe 'without text, attrs, or CDATA, with one Array child' do
-      it 'should pass forth missing methods to its single child' do
+      it 'should become a Collection Proxy to its single child' do
         @container = XMLObject.new %| <x>
                                         <sheep number="0">?</sheep>
                                         <sheep number="1">Dolly</sheep>
                                       </x> |
 
-        numbers = @container.collect { |sheep| sheep.number }
-        numbers.should == @container.sheep.collect { |sheep| sheep.number }
+        @container.should == @container.sheep
       end
     end
 
     describe 'without attrs or CDATA, with text and one Array child' do
-      it 'should NOT pass forth missing methods to its single child' do
+      it 'should NOT become a Collection Proxy to its single child' do
         @x = XMLObject.new %| <x>Text in "x"
                                 <sheep number="0">?</sheep>
                                 <sheep number="1">Dolly</sheep>
@@ -146,7 +144,7 @@ describe_shared 'any XMLObject adapter' do
     end
 
     describe 'without text or attrs, with CDATA and one Array child' do
-      it 'should NOT pass forth missing methods to its single child' do
+      it 'should NOT become a Collection Proxy to its single child' do
         @x = XMLObject.new %| <x><![CDATA[Text in "x"]]>
                                 <sheep number="0">?</sheep>
                                 <sheep number="1">Dolly</sheep>
@@ -429,6 +427,22 @@ describe_shared 'any XMLObject adapter' do
       else
         xit 'ActiveSupport::Inflector NOT found'
       end
+    end
+  end
+
+  describe 'Collection Proxy Element' do
+    before(:each) do
+      @proxy = XMLObject.new '<x><dude>Peter</dude><dude>Paul</dude></x>'
+    end
+
+    it 'should be equal to the Array it targets' do
+      @proxy.should == @proxy.dudes
+    end
+
+    it 'should respond to the same methods of the Array it targets' do
+      @proxy.map { |d| d.upcase }.should == @proxy.dude.map { |d| d.upcase }
+      @proxy.first.downcase.should == @proxy.dude.first.downcase
+      @proxy[-1].should == @proxy.dude[-1]
     end
   end
 
