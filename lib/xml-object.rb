@@ -36,7 +36,7 @@ module XMLObject
       xml.value.extend Element
     end
 
-    obj.instance_variable_set :@__adapted_element, xml
+    obj.instance_variable_set :@__raw_xml, xml.raw
 
     xml.children.each   { |child| add_child(obj, child.name, new(child)) }
     xml.attributes.each { |name, value|  add_attribute(obj, name, value) }
