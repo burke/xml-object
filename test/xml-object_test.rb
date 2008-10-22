@@ -521,6 +521,32 @@ describe_shared 'any XMLObject adapter' do
       @feed.entry.summary.should == 'Some text.'
     end
   end
+
+  describe 'Sample function.xml' do
+    before(:each) { @function = XMLObject.new(open_sample_xml(:function)) }
+
+    it 'should behave accordingly' do
+      @function.should == ''
+      @function.name.should == 'Hello'
+      @function.description.should == 'Greets the indicated person.'
+
+      @function.input.should == ''
+      @function.input.param.should == ''
+      @function.input.param.name.should == 'name'
+      @function.input.param.required.should == 'true'
+      @function.input.param.required?.should.be true
+      @function.input.param.description.should ==
+        'The name of the person to be greeted.'
+
+      @function.output.should == ''
+      @function.output.param.should == ''
+      @function.output.param.name.should == 'greeting'
+      @function.output.param.required.should == 'true'
+      @function.output.param.required?.should.be true
+      @function.output.param.description.should ==
+        'The constructed greeting.'
+    end
+  end
 end
 
 describe 'XMLObject' do
