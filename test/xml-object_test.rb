@@ -19,6 +19,17 @@ describe_shared 'boolish string container' do
   end
 end
 
+describe_shared 'element containing XML named like methods' do
+  it 'should prioritize methods over XML' do
+    @with_methods.upcase.should.not == 'Bummer!'
+    @with_methods.upcase.should     == 'DUDE!'
+  end
+
+  it 'should still allow XML to be reached via [] notation' do
+    @with_methods['upcase'].should == 'Bummer!'
+  end
+end
+
 describe_shared 'any XMLObject adapter' do
 
   describe 'Attribute' do
@@ -335,6 +346,43 @@ describe_shared 'any XMLObject adapter' do
         @ambiguous.house.join(' ').should == 'Array Element'
         @ambiguous['house'].join(' ').should == 'Array Element'
         @ambiguous[:elem => 'house'].join(' ').should == 'Array Element'
+      end
+    end
+
+    describe 'with attributes named like existing methods' do
+      before(:each) do
+        @with_methods = XMLObject.new '<x upcase="Bummer!">dude!</x>'
+      end
+
+      it_should_behave_like 'element containing XML named like methods'
+    end
+
+    describe 'with elements named like existing methods' do
+      before(:each) do
+        @with_methods = XMLObject.new '<x><upcase>Bummer!</upcase>dude!</x>'
+      end
+
+      it_should_behave_like 'element containing XML named like methods'
+    end
+
+    describe 'with elements named like invalid method names' do
+      before(:each) do
+        @with_illegal_methods = XMLObject.new %|
+          <x><not-a-valid-method>XML!</not-a-valid-method></x> |
+      end
+
+      it 'should allow access to elements using [] notation' do
+        @with_illegal_methods['not-a-valid-method'].should == 'XML!'
+      end
+    end
+
+    describe 'with attributes named like invalid method names' do
+      before(:each) do
+        @with_illegal_methods = XMLObject.new %'<x attr-with-dashes="yep" />'
+      end
+
+      it 'should allow access to elements using [] notation' do
+        @with_illegal_methods['attr-with-dashes'].should == 'yep'
       end
     end
   end

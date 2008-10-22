@@ -1,6 +1,5 @@
 * Refactor so as to not do things recursively
 * Test documentation recipe.xml
 * Test more real-world examples
-* Test invalid method name element/attribute/array access
 * Fix benchmarks
 * Fix documentation now that we've removed features
