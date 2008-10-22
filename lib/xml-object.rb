@@ -30,7 +30,7 @@ module XMLObject
     obj = if (xml.value !~ /\S/) &&
              xml.children.collect { |e| e.name }.uniq.size == 1
 
-      CollectionProxy.new new(xml.children)
+      CollectionProxy.new xml.children[0].name.to_sym
     else
       # Teach our string to behave like and XML Element
       xml.value.extend Element
