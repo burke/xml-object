@@ -1,5 +1,24 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
+describe_shared 'boolish string container' do
+  it 'should convert boolish strings to bool when asked' do
+    @x.tall?.should.be  true
+    @x.cube?.should.be  true
+    @x.heavy?.should.be true
+    @x.house?.should.be true
+
+    @x.short?.should.be false
+    @x.round?.should.be false
+    @x.light?.should.be false
+    @x.ball?.should.be  false
+  end
+
+  it 'should not convert boolish strings to bool even when asked' do
+    @x.hypercube?.should.not.be true
+    @x.hypercube?.should.not.be false
+  end
+end
+
 describe_shared 'any XMLObject adapter' do
 
   describe 'Element' do
@@ -98,7 +117,7 @@ describe_shared 'any XMLObject adapter' do
       end
     end
 
-    describe 'with attributes that look like booleans' do
+    describe 'with boolish attributes' do
       before(:each) do
         @x = XMLObject.new %|
           <x tall="Yes"   short="no"
@@ -108,22 +127,23 @@ describe_shared 'any XMLObject adapter' do
              hypercube="What?" /> |
       end
 
-      it 'should convert boolish attributes to bool when asked' do
-        @x.tall?.should.be  true
-        @x.cube?.should.be  true
-        @x.heavy?.should.be true
-        @x.house?.should.be true
+      it_should_behave_like 'boolish string container'
+    end
 
-        @x.short?.should.be false
-        @x.round?.should.be false
-        @x.light?.should.be false
-        @x.ball?.should.be  false
+    describe 'with boolish elements' do
+      before(:each) do
+        @x = XMLObject.new %|
+          <x>
+            <tall>yEs</tall>    <short>nO</short>
+            <cube>Y</cube>      <round>n</round>
+            <heavy>t</heavy>    <light>F</light>
+            <house>tRue</house> <ball>FalsE</ball>
+
+            <hypercube>the hell?</hypercube>
+          </x> |
       end
 
-      it 'should not convert non-boolish attributes to bool when asked' do
-        @x.hypercube?.should.not.be true
-        @x.hypercube?.should.not.be false
-      end
+      it_should_behave_like 'boolish string container'
     end
 
     describe 'without text and with multiple CDATA values' do
