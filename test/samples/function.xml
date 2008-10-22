@@ -1,0 +1,14 @@
+<function name="Hello">
+  <description>Greets the indicated person.</description>
+  <input>
+    <param name="name" required="true">
+      <description>The name of the person to be greeted.</description>
+    </param>
+  </input>
+  <output>
+    <param name="greeting" required="true">
+      <description>The constructed greeting.</description>
+    </param>
+  </output>
+<!-- From http://en.wikipedia.org/wiki/XML_Interface_for_Network_Services -->
+</function>
