@@ -21,6 +21,15 @@ end
 
 describe_shared 'any XMLObject adapter' do
 
+  describe 'Attribute' do
+    describe 'with whitespace' do
+      it 'should be stripped of its whitespace' do
+        @xml = XMLObject.new(%'<x with_whitespace=" \n x \t " />')
+        @xml.with_whitespace.should == 'x'
+      end
+    end
+  end
+
   describe 'Element' do
     describe 'with no attributes, children, text or CDATA' do
       it 'should look like an empty string' do
