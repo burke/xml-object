@@ -27,7 +27,7 @@ module XMLObject
   # Takes any Element object, and converts it recursively into
   # the corresponding tree of decorated objects.
   def self.new_decorated_obj(xml) # :nodoc:
-    obj = if xml.value.blank? &&
+    obj = if (xml.value !~ /\S/) &&
              xml.children.collect { |e| e.name }.uniq.size == 1
 
       CollectionProxy.new new(xml.children)
