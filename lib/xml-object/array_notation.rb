@@ -20,24 +20,25 @@ module XMLObject::ArrayNotation
   #
   # Valid keys for the hash notation are +:attr+ and +:elem+.
   def [](duck)
-    if @target && duck.is_a?(Numeric)
-      @__target[duck]
-
+    if @__target_kid && duck.is_a?(Numeric)
+      @__children[@__target_kid][duck]
     elsif duck.is_a?(Hash)
-      raise 'one and only one key allowed' if duck.keys.size != 1
+      raise NameError.new('only one key allowed') if duck.keys.size != 1
+      key, name = duck.keys[0].to_sym, duck.values[0].to_sym
 
-      case param = duck.keys[0].to_sym
-        when :elem then @__children[duck.values[0].to_sym]
-        when :attr then @__attributes[duck.values[0].to_sym]
-        else raise "Invalid key :#{param.to_s}. Use :elem or :attr"
+      unless ( (key == :elem) || (:attr == key) )
+        raise NameError.new("Invalid key :#{key.to_s}. Use :elem or :attr")
       end
+
+      value = (key == :elem) ? @__children[name] : @__attributes[name]
+      value.nil? ? raise(NameError.new(name.to_s)) : value
     else
       key = duck.to_s.to_sym
 
       case
-        when @__children.has_key?(key)   then @__children[key]
-        when @__attributes.has_key?(key) then @__attributes[key]
-        else nil
+        when (not @__children[key].nil?)   then @__children[key]
+        when (not @__attributes[key].nil?) then @__attributes[key]
+        else raise NameError.new(key.to_s)
       end
     end
   end

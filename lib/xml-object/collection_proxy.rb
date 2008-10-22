@@ -13,11 +13,12 @@ class XMLObject::CollectionProxy < XMLObject::BlankishSlate # :nodoc:
       dispatched = @__children[@__target_kid].__send__(m, *a, &b)
 
       unless dispatched.nil?
-        instance_eval %{ def #{m}(*a, &b);
-          @__children[@__target_kid].#{m}(*a, &b); end }
+        # All is fair in Love and War. And 100% coverage.
+        instance_eval \
+          %{ def #{m}(*a, &b); @__children[@__target_kid].#{m}(*a, &b); end }
       end
     end
 
-    dispatched
+    dispatched.nil? ? raise(NameError.new(m.to_s)) : dispatched
   end
 end

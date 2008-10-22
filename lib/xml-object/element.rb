@@ -14,8 +14,9 @@ module XMLObject::Element
   private ##################################################################
 
   def method_missing(m, *a, &b) # :nodoc:
-    dp = __question_dispatch(m, *a, &b)
-    dp = __dot_notation_dispatch(m, *a, &b) if dp.nil?
-    dp
+    dispatched = __question_dispatch(m, *a, &b)
+    dispatched = __dot_notation_dispatch(m, *a, &b) if dispatched.nil?
+
+    dispatched.nil? ? raise(NameError.new(m.to_s)) : dispatched
   end
 end

@@ -14,8 +14,7 @@ describe_shared 'boolish string container' do
   end
 
   it 'should not convert boolish strings to bool even when asked' do
-    @container.hypercube?.should.not.be true
-    @container.hypercube?.should.not.be false
+    should.raise(NameError) { @container.hypercube? }
   end
 end
 
@@ -43,9 +42,30 @@ describe_shared 'any XMLObject adapter' do
 
   describe 'Element' do
     describe 'with no attributes, children, text or CDATA' do
-      it 'should look like an empty string' do
+      before(:each) do
         @blank_extended_strings = XMLObject.new '<x><one> </one> <two /></x>'
+      end
+
+      it 'should look like an empty string' do
         @blank_extended_strings.should == ''
+      end
+
+      it "should raise when asked for things it doesn't have" do
+        should.raise NameError do
+          @blank_extended_strings.foobared
+        end
+
+        should.raise NameError do
+          @blank_extended_strings['foobared']
+        end
+
+        should.raise NameError do
+          @blank_extended_strings[:elem => 'foobared']
+        end
+
+        should.raise NameError do
+          @blank_extended_strings[:attr => 'foobared']
+        end
       end
     end
 
@@ -445,7 +465,9 @@ describe_shared 'any XMLObject adapter' do
   end
 
   it 'should raise exception at [] notation used with invalid keys' do
-    should.raise { XMLObject.new('<x><z /></x>')[:invalid => 'foo'] }
+    should.raise NameError do
+      XMLObject.new('<x><z /></x>')[:invalid => 'foo']
+    end
   end
 end
 
