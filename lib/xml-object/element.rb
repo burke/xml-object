@@ -6,7 +6,7 @@ module XMLObject::Element
   end
 
   # The raw, unadapted XML object. Whatever this is, it really depends on
-  # the current_adapter.
+  # the currently chosen adapter.
   def raw_xml
     @__adapted_element.raw if @__adapted_element
   end
