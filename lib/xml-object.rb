@@ -6,7 +6,6 @@ $:.unshift File.join(File.dirname(__FILE__), 'xml-object')
 require 'adapters'
 require 'adapters/rexml'
 require 'array_notation'
-require 'blankish_slate'
 require 'collection_proxy'
 require 'element'
 require 'method_missing_dispatchers'
