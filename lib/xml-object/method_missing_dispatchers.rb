@@ -3,7 +3,7 @@ module XMLObject::MethodMissingDispatchers # :nodoc:
   private ##################################################################
 
   def __question_dispatch(meth, *args, &block)
-    return unless meth.to_s.match(/\?$/) && args.empty? && block.nil?
+    return nil unless meth.to_s.match(/\?$/) && args.empty? && block.nil?
 
     method_sans_question = meth.to_s.chomp('?').to_sym
 
@@ -11,10 +11,13 @@ module XMLObject::MethodMissingDispatchers # :nodoc:
       bool = case
         when %w[ true yes t y ].include?(boolish.downcase) then true
         when %w[ false no f n ].include?(boolish.downcase) then false
-        else raise NameError.new(meth.to_s)
+        else nil
       end
 
-      instance_eval %{ def #{meth}; #{bool ? 'true' : 'false'}; end }
+      unless bool.nil?
+        instance_eval %{ def #{meth}; #{bool ? 'true' : 'false'}; end }
+      end
+
       bool
     end
   end
