@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
-describe_shared 'any other XMLObject adapter' do
+describe_shared 'any XMLObject adapter' do
 
   describe 'Element' do
     describe 'with no attributes, children, text or CDATA' do
@@ -185,7 +185,7 @@ describe 'XMLObject' do
     before(:all)  { require 'xml-object/adapters/rexml' }
     before(:each) { XMLObject.adapter = XMLObject::Adapters::REXML }
 
-    it_should_behave_like 'any other XMLObject adapter'
+    it_should_behave_like 'any XMLObject adapter'
 
     it 'should return unadapted XML objects when #raw_xml is called' do
       XMLObject.new('<x/>').raw_xml.is_a?(::REXML::Element).should.be true
@@ -196,7 +196,7 @@ describe 'XMLObject' do
     before(:all)  { require 'xml-object/adapters/hpricot' }
     before(:each) { XMLObject.adapter = XMLObject::Adapters::Hpricot }
 
-    it_should_behave_like 'any other XMLObject adapter'
+    it_should_behave_like 'any XMLObject adapter'
 
     it 'should return unadapted XML objects when #raw_xml is called' do
       XMLObject.new('<x/>').raw_xml.is_a?(::Hpricot::Elem).should.be true
@@ -207,7 +207,7 @@ describe 'XMLObject' do
     before(:all)  { require 'xml-object/adapters/libxml' }
     before(:each) { XMLObject.adapter = XMLObject::Adapters::LibXML }
 
-    it_should_behave_like 'any other XMLObject adapter'
+    it_should_behave_like 'any XMLObject adapter'
 
     it 'should return unadapted XML objects when #raw_xml is called' do
       XMLObject.new('<x/>').raw_xml.is_a?(::LibXML::XML::Node).should.be true
