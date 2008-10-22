@@ -200,6 +200,26 @@ describe_shared 'any XMLObject adapter' do
         XMLObject.new("<x><![CDATA[\t a \n]]></x>").should == "\t a \n"
       end
     end
+
+    describe 'with attributes and child elements named the same' do
+      before(:each) do
+        @ambiguous = XMLObject.new %|
+          <x name="attr name"><name>element name</name></x> |
+      end
+
+      it 'should prioritize elements when called with dot notation' do
+        @ambiguous.name.should == 'element name'
+      end
+
+      it 'should prioritize element when called with [""] notation' do
+        @ambiguous['name'] == 'element name'
+      end
+
+      it 'should still allow unambigious access to both attr and element' do
+        @ambiguous[:elem => 'name'].should == 'element name'
+        @ambiguous[:attr => 'name'].should == 'attr name'
+      end
+    end
   end
 
   describe 'Element Array' do
