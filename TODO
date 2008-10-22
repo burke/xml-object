@@ -1,3 +1,6 @@
 * Refactor so as to not do things recursively
 * Test documentation recipe.xml
 * Test more real-world examples
+* Figure out a way to fix the 'xmlns' problem in LibXML, remove entry from
+  caveats in README.rdoc
+
