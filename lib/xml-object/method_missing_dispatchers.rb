@@ -11,19 +11,16 @@ module XMLObject::MethodMissingDispatchers # :nodoc:
       bool = case
         when %w[ true yes t y ].include?(boolish.downcase) then true
         when %w[ false no f n ].include?(boolish.downcase) then false
-        else nil
+        else raise NameError.new(meth.to_s)
       end
 
-      unless bool.nil? # Fun, eh?
-        instance_eval %{ def #{meth}; #{bool ? 'true' : 'false'}; end }
-      end
-
+      instance_eval %{ def #{meth}; #{bool ? 'true' : 'false'}; end }
       bool
     end
   end
 
   def __dot_notation_dispatch(meth, *args, &block)
-    return unless args.empty? && block.nil?
+    return nil unless args.empty? && block.nil?
 
     if @__children.has_key?(meth)
       instance_eval %{ def #{meth}; @__children[%s|#{meth}|]; end }
@@ -45,6 +42,8 @@ module XMLObject::MethodMissingDispatchers # :nodoc:
 
       instance_eval %{ def #{meth}; @__children[%s|#{singular}|]; end }
       @__children[singular]
+    else
+      nil
     end
   end
 end
