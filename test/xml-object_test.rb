@@ -18,7 +18,7 @@ describe_shared 'any XMLObject adapter' do
         @string_with_age_child = XMLObject.new '<x><age>19</age></x>'
       end
 
-      it 'should have "19" for an "age"' do
+      it 'should respond to "age" with "19"' do
         @string_with_age_child.age.should == "19"
 
         @string_with_age_child['age'].should == "19"
@@ -36,7 +36,7 @@ describe_shared 'any XMLObject adapter' do
         @string_with_name_attr = XMLObject.new '<x name="Rope" />'
       end
 
-      it 'should have a name called "Rope"' do
+      it 'should respond to "name" with "Rope"' do
         @string_with_name_attr.name.should == "Rope"
 
         @string_with_name_attr['name'].should == "Rope"
@@ -54,7 +54,7 @@ describe_shared 'any XMLObject adapter' do
         @xml = XMLObject.new '<x><sheep></sheep><sheep></sheep></x>'
       end
 
-      it 'should fold with its namesakes into an Element Array' do
+      it 'should fold-in with its namesakes into an Element Array' do
         @xml.sheep.is_a?(Array).should.be true
       end
     end
