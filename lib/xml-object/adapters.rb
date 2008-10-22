@@ -26,7 +26,7 @@ module XMLObject # :nodoc:
         private ###########################################################
 
         def text_value
-          @text_nodes.reject { |n| n.blank? }.join
+          @text_nodes.reject { |n| n !~ /\S/ }.join
         end
 
         def cdata_value
