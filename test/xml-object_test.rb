@@ -162,6 +162,26 @@ describe_shared 'any XMLObject adapter' do
       end
     end
 
+    describe 'without text or CDATA, with attrs and one non-Array child' do
+      it 'should pass forth missing methods to its single child' do
+        @container = XMLObject.new %| <x alpha="a" beta="b">
+                                        <sheep number="1">Dolly</sheep>
+                                      </x> |
+
+        @container.should.not == @container.sheep
+      end
+    end
+
+    describe 'without text, attrs, or CDATA, with one non-Array child' do
+      it 'should become a Collection Proxy to its single child' do
+        @container = XMLObject.new %| <x>
+                                        <sheep number="1">Dolly</sheep>
+                                      </x> |
+
+        @container.should.not == @container.sheep
+      end
+    end
+
     describe 'with boolish attributes' do
       before(:each) do
         @container = XMLObject.new %|
