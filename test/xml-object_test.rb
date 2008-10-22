@@ -87,6 +87,34 @@ describe_shared 'any XMLObject adapter' do
       end
     end
 
+    describe 'with text, no attrs, no CDATA, with one Array child' do
+      before(:each) do
+        @x = XMLObject.new %| <x>Text in "x"
+                                <sheep number="0">?</sheep>
+                                <sheep number="1">Dolly</sheep>
+                              </x> |
+      end
+
+      it 'should NOT pass forth missing methods to its single child' do
+        @x.strip.should == 'Text in "x"'
+        @x.sheep.is_a?(Array).should.be true
+      end
+    end
+
+    describe 'with no text, no attrs, with CDATA, with one Array child' do
+      before(:each) do
+        @x = XMLObject.new %| <x><![CDATA[Text in "x"]]>
+                                <sheep number="0">?</sheep>
+                                <sheep number="1">Dolly</sheep>
+                              </x> |
+      end
+
+      it 'should NOT pass forth missing methods to its single child' do
+        @x.strip.should == 'Text in "x"'
+        @x.sheep.is_a?(Array).should.be true
+      end
+    end
+
     describe 'with attributes that look like boolean' do
       before(:each) do
         @x = XMLObject.new %|
