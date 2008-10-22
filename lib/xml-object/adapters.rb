@@ -1,10 +1,7 @@
 module XMLObject # :nodoc:
-  def self.adapter # :nodoc:
-    @adapter
-  end
 
-  def self.adapter=(adapter_module) # :nodoc:
-    @adapter = adapter_module
+  class << self # :nodoc:
+    attr_accessor :adapter # :nodoc:
   end
 
   module Adapters # :nodoc:
