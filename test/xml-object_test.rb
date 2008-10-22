@@ -567,6 +567,28 @@ describe_shared 'any XMLObject adapter' do
         'The constructed greeting.'
     end
   end
+
+  describe 'Sample persons.xml' do
+    before(:each) { @persons = XMLObject.new(open_sample_xml(:persons)) }
+
+    it 'should behave accordingly' do
+      @persons.should == [ '', '' ]
+      @persons.should == @persons.person
+      @persons.should == @persons.persons
+      @persons.should == @persons.people if defined? ActiveSupport::Inflector
+
+      @persons[0].should  == ''
+      @persons[-1].should == ''
+
+      @persons.first.username.should == 'JS1'
+      @persons.first.name.should == 'John'
+      @persons.first['family-name'].should == 'Smith'
+
+      @persons.last.username.should == 'MI1'
+      @persons.last.name.should == 'Morka'
+      @persons.last[:'family-name'].should == 'Ismincius'
+    end
+  end
 end
 
 describe 'XMLObject' do
