@@ -4,21 +4,16 @@ describe_shared 'any XMLObject adapter' do
 
   describe 'Element' do
     describe 'with no attributes, children, text or CDATA' do
-      before(:each) do
-        @blank_extended_strings = XMLObject.new '<x><one> </one> <two /></x>'
-      end
-
       it 'should look like an empty string' do
+        @blank_extended_strings = XMLObject.new '<x><one> </one> <two /></x>'
         @blank_extended_strings.should == ''
       end
     end
 
     describe 'with a child element named "age" valued "19"' do
-      before(:each) do
-        @string_with_age_child = XMLObject.new '<x><age>19</age></x>'
-      end
-
       it 'should respond to "age" with "19"' do
+        @string_with_age_child = XMLObject.new '<x><age>19</age></x>'
+
         @string_with_age_child.age.should == "19"
 
         @string_with_age_child['age'].should == "19"
@@ -32,11 +27,9 @@ describe_shared 'any XMLObject adapter' do
     end
 
     describe 'with an attribute "Rope" called "name"' do
-      before(:each) do
-        @string_with_name_attr = XMLObject.new '<x name="Rope" />'
-      end
-
       it 'should respond to "name" with "Rope"' do
+        @string_with_name_attr = XMLObject.new '<x name="Rope" />'
+
         @string_with_name_attr.name.should == "Rope"
 
         @string_with_name_attr['name'].should == "Rope"
@@ -50,66 +43,56 @@ describe_shared 'any XMLObject adapter' do
     end
 
     describe 'with other parallel same-named XML elements' do
-      before(:each) do
-        @xml = XMLObject.new '<x><sheep></sheep><sheep></sheep></x>'
-      end
-
       it 'should fold-in with its namesakes into an Element Array' do
+        @xml = XMLObject.new '<x><sheep></sheep><sheep></sheep></x>'
+
         @xml.sheep.is_a?(Array).should.be true
       end
     end
 
     describe 'without text or CDATA, with attrs and one Array child' do
-      before(:each) do
+      it 'should pass forth missing methods to its single child' do
         @container = XMLObject.new %| <x alpha="a" beta="b">
                                         <sheep number="0">?</sheep>
                                         <sheep number="1">Dolly</sheep>
                                       </x> |
-      end
 
-      it 'should pass forth missing methods to its single child' do
         numbers = @container.collect { |sheep| sheep.number }
         numbers.should == @container.sheep.collect { |sheep| sheep.number }
       end
     end
 
     describe 'without text, attrs, or CDATA, with one Array child' do
-      before(:each) do
+      it 'should pass forth missing methods to its single child' do
         @container = XMLObject.new %| <x>
                                         <sheep number="0">?</sheep>
                                         <sheep number="1">Dolly</sheep>
                                       </x> |
-      end
 
-      it 'should pass forth missing methods to its single child' do
         numbers = @container.collect { |sheep| sheep.number }
         numbers.should == @container.sheep.collect { |sheep| sheep.number }
       end
     end
 
     describe 'without attrs or CDATA, with text and one Array child' do
-      before(:each) do
+      it 'should NOT pass forth missing methods to its single child' do
         @x = XMLObject.new %| <x>Text in "x"
                                 <sheep number="0">?</sheep>
                                 <sheep number="1">Dolly</sheep>
                               </x> |
-      end
 
-      it 'should NOT pass forth missing methods to its single child' do
         @x.strip.should == 'Text in "x"'
         @x.sheep.is_a?(Array).should.be true
       end
     end
 
     describe 'without text or attrs, with CDATA and one Array child' do
-      before(:each) do
+      it 'should NOT pass forth missing methods to its single child' do
         @x = XMLObject.new %| <x><![CDATA[Text in "x"]]>
                                 <sheep number="0">?</sheep>
                                 <sheep number="1">Dolly</sheep>
                               </x> |
-      end
 
-      it 'should NOT pass forth missing methods to its single child' do
         @x.strip.should == 'Text in "x"'
         @x.sheep.is_a?(Array).should.be true
       end
