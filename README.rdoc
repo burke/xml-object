@@ -3,22 +3,18 @@
 (This is inspired by Python's +xml_objectify+)
 
 XMLObject attempts to make the accessing of small, well-formed XML structures
-convenient, by using dot notation to represent both attributes and child
-elements whenever possible.
-
-XML parsing libraries (in general) have interfaces that are useful when one
-is using XML for its intended purpose, but cumbersome when one always sends
-the same XML structure, and always process all of it in the same way. This
-one aims to be a bit different.
-
-At the moment, I aim for compatibility with Ruby 1.8, 1.9, and JRuby 1.1.
+convenient, by providing a syntax that fits well in most Ruby programs.
 
 == Dependencies
 
 None outside of Ruby, though some optional gems add additional features. See
-below on "Adapters" and "Collection pluralization".
+more below.
+
+At the moment, I aim for compatibility with Ruby 1.8, 1.9, and JRuby 1.1.
 
 == Installation instructions
+
+From Rubyforge's gem server:
 
   gem install xml-object
 
@@ -31,6 +27,8 @@ Both are the same, and are loaded the same way:
   require 'xml-object'
 
 == Example usage
+
+  recipe.xml is as follows:
 
   <recipe name="bread" prep_time="5 mins" cook_time="3 hours">
     <title>Basic bread</title>
@@ -50,7 +48,7 @@ Both are the same, and are loaded the same way:
   </recipe>
 
   require 'xml-object'
-  recipe = XMLObject.new io_with_recipe_xml_shown_above
+  recipe = XMLObject.new(File.open('recipe.xml'))
 
   recipe.name                      => "bread"
   recipe.title                     => "Basic bread"
@@ -74,23 +72,6 @@ the issue of passing a data-structure over the network, and/or between two
 different languages. Tools like +JSON+ or +YAML+ are a much better fit for
 this kind of job, but one doesn't always have that luxury.
 
-== Caveats
-
-The dot notation is used as follows. For the given file:
-
-  <outer object_id="root" name="foo">
-    <name>Outer Element</name>
-  </outer>
-
-+outer.name+ is the +name+ *element*. Child elements are always looked up
-first, then attributes. To access the attribute in the case of ambiguity, use
-outer[:attr => 'name'].
-
-+outer.object_id+ is really Object#object_id, because all of the object
-methods are preserved (this is on purpose). To access the attribute +id+, use
-outer[:attr => 'object_id'], or outer['object_id'] since there's no
-element/attribute ambiguity.
-
 == Features & Problems
 
 === Adapters
@@ -102,61 +83,80 @@ adapter is used.
 To use a different adapter than the +REXML+ default:
 
   require 'xml-object'                  # Require XMLObject first
-  require 'xml-object/adapters/hpricot' # (Under MRI or JRuby)
-  require 'xml-object/adapters/libxml'  # (Under MRI only)
-  require 'xml-object/adapters/jrexml'  # (Under Jruby only)
+  require 'xml-object/adapters/hpricot'
+  require 'xml-object/adapters/libxml'
+
+=== Access to elements and attributes
+
+XMLObject uses dot notation (foo.bar) for both elements and attributes, with
+a few rules, and with an array notation fallback for invalid method names
+or other tricky situations. For example, with the given file:
+
+  <outer object_id="root" name="foo">
+    <name>Outer Element</name>
+  </outer>
+
++outer.name+ is the +name+ *element*. Child elements are always looked up
+first, then attributes. To access the attribute in case of ambiguity, use
+outer[:attr => 'name'].
+
++outer.object_id+ is really Object#object_id, because all of the object
+methods are preserved (this is on purpose). To access the attribute
++object_id+, use outer[:attr => 'object_id'] (or just outer['object_id'],
+since there's no element/attribute ambiguity there).
+
+=== Question notation
+
+Elements or attributes that look like booleans are "booleanized" if called by
+their question names (such as +enabled?+)
 
 === Collection auto-folding
 
-Similar to XmlSimple, XMLObject folds same named elements at the same level.
-For example:
+Like XmlSimple, XMLObject folds same-named elements found at the same level,
+like so:
 
   <student>
     <name>Bob</name>
-    <course>Math</course>
-    <course>Biology</course>
+    <course>Math</course>     |
+    <course>Biology</course>  | => 'course' becomes an Array
   </student>
 
   student = XMLObject.new(xml_file)
 
-  student.course.is_a? Array       => true
+  student.course.is_a?(Array)      => true
   student.course.first == 'Math'   => true
   student.course.last  == 'Biology => true
 
 === Collection pluralization
 
-With the same file from the +Collection auto-folding+ section above, you also
-get this:
+With the same file as in the example above:
 
   student.courses.first == student.course.first => true
 
 Note that the pluralization algorithm is just tacking an 's' at the end of
 the singular, unless +ActiveSupport+ is installed, in which case you get
-irregular plurals, as well as the ability to teach the +Inflector+ about
+proper plurals, as well as the ability to teach the +Inflector+ about
 new ones.
 
 === Collection proxy
 
 Sometimes, collections are expressed with a container element in XML:
 
-  <student>
-    <name>Bob</name>
-    <courses>
-      <course>Math</course>
-      <course>Biology</course>
-    </courses>
-  </student>
+  <author>
+    <name>John</name>
+    <publications>
+      <book>Math 101</book>
+      <book>Biology 101</book>
+    </publications>
+  </author>
 
 In this case, since the container element +courses+ has no text element of
-its own, and it only has elements of one name under it, it delegates all
-methods it doesn't contain to the collection below, so you get:
+its own (attributes are ok), and it only has elements of one name under it,
+it delegates all methods to the collection below, so you get:
 
-  student.courses.collect { |c| c.downcase.to_sym } => [:math, :biology]
+  author.publications == author.publications.books => true
 
-=== Question mark notation
-
-Strings that look like booleans are "booleanized" if called by their question
-mark names (such as +enabled?+)
+  author.publications.map { |b| b.downcase } => ['math 101', 'biology 101']
 
 === Recursive
 
@@ -170,6 +170,14 @@ on the TODO list.
 It most likely doesn't work with a ton of features of complex XML files. I'll
 always try to accomodate those, as long as they don't make the basic usage
 more complex. As usual, patches welcome.
+
+== Caveats
+
+=== Adapter specific
+
+==== LibXML adapter
+
+The LibXML adapter will not return the 'xmlns' attribute.
 
 == Legal
 
