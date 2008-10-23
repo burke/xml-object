@@ -452,7 +452,7 @@ describe_shared 'any XMLObject adapter' do
           @xml.men.should == @xml.man
         end
       else
-        xit 'ActiveSupport::Inflector NOT found'
+        xit 'ActiveSupport::Inflector not found, correct pluralization test'
       end
     end
   end
@@ -683,25 +683,34 @@ describe 'XMLObject' do
     end
   end
 
-  describe 'Hpricot adapter' do
-    before(:all)  { require 'xml-object/adapters/hpricot' }
-    before(:each) { XMLObject.adapter = XMLObject::Adapters::Hpricot }
+  if defined?(Hpricot)
+    describe 'Hpricot adapter' do
+      before(:all)  { require 'xml-object/adapters/hpricot' }
+      before(:each) { XMLObject.adapter = XMLObject::Adapters::Hpricot }
 
-    it_should_behave_like 'any XMLObject adapter'
+      it_should_behave_like 'any XMLObject adapter'
 
-    it 'should return unadapted XML objects when #raw_xml is called' do
-      XMLObject.new('<x/>').raw_xml.is_a?(::Hpricot::Elem).should.be true
+      it 'should return unadapted XML objects when #raw_xml is called' do
+        XMLObject.new('<x/>').raw_xml.is_a?(::Hpricot::Elem).should.be true
+      end
     end
-  end if defined?(Hpricot)
+  else
+    xit 'Hpricot not found, testing under Hpricot adapter'
+  end
 
-  describe 'LibXML adapter' do
-    before(:all)  { require 'xml-object/adapters/libxml' }
-    before(:each) { XMLObject.adapter = XMLObject::Adapters::LibXML }
+  if defined?(LibXML)
+    describe 'LibXML adapter' do
+      before(:all)  { require 'xml-object/adapters/libxml' }
+      before(:each) { XMLObject.adapter = XMLObject::Adapters::LibXML }
 
-    it_should_behave_like 'any XMLObject adapter'
+      it_should_behave_like 'any XMLObject adapter'
 
-    it 'should return unadapted XML objects when #raw_xml is called' do
-      XMLObject.new('<x/>').raw_xml.is_a?(::LibXML::XML::Node).should.be true
+      it 'should return unadapted XML objects when #raw_xml is called' do
+        XMLObject.new('<x/>').raw_xml.is_a?(
+          ::LibXML::XML::Node).should.be true
+      end
     end
-  end if defined?(LibXML)
+  else
+    xit 'LibXML not found, testing under LibXML adapter'
+  end
 end

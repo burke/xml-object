@@ -3,7 +3,6 @@ require 'rake/testtask'
 namespace :test do
   Rake::TestTask.new('XMLObject') do |t|
     t.libs << 'test'
-    t.options = '--runner=specdox' unless RUBY_VERSION >= '1.9'
     t.test_files = FileList["#{PROJECT_DIR}/test/*_test.rb"]
     t.verbose = true
   end
