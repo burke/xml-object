@@ -589,6 +589,36 @@ describe_shared 'any XMLObject adapter' do
       @persons.last[:'family-name'].should == 'Ismincius'
     end
   end
+
+  describe 'Sample playlist.xml' do
+    before(:each) { @playlist = XMLObject.new(open_sample_xml(:playlist)) }
+
+    it 'should behave accordingly' do
+      @playlist.should         == ''
+      @playlist.version.should == '1'
+
+      # LibXML eats up 'xmlns' from the attributes hash
+      unless XMLObject.adapter.to_s.match /LibXML$/
+        @playlist.xmlns.should == 'http://xspf.org/ns/0/'
+      end
+
+      @playlist.trackList.is_a?(Array).should.be true
+      @playlist.trackList.track.is_a?(Array).should.be true
+      @playlist.trackList.tracks.is_a?(Array).should.be true
+
+      @playlist.trackList.should == @playlist.trackList.track
+      @playlist.trackList.should == @playlist.trackList.tracks
+
+      @playlist.trackList.track.should == @playlist.trackList.tracks
+
+      @playlist.trackList.first.title.should == 'Internal Example'
+      @playlist.trackList.first.location.should == 'file:///C:/music/foo.mp3'
+
+      @playlist.trackList.last.title.should == 'External Example'
+      @playlist.trackList.last.location.should ==
+        'http://www.example.com/music/bar.ogg'
+    end
+  end
 end
 
 describe 'XMLObject' do
