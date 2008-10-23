@@ -619,6 +619,37 @@ describe_shared 'any XMLObject adapter' do
         'http://www.example.com/music/bar.ogg'
     end
   end
+
+  describe 'Sample recipe.xml' do
+    before(:each) { @recipe = XMLObject.new(open_sample_xml(:recipe)) }
+
+    it 'should behave accordingly' do
+      @recipe.should == ''
+      @recipe.name.should == 'bread'
+      @recipe.prep_time.should == '5 mins'
+      @recipe.cook_time.should == '3 hours'
+      @recipe.title.should == 'Basic bread'
+
+      @recipe.ingredient.is_a?(Array).should.be true
+      @recipe.ingredients.should == @recipe.ingredient
+      @recipe.ingredients.should == %w[ Flour Yeast Water Salt ]
+      @recipe.ingredients.map { |i| i.amount }.should == %w[ 8 10 4 1 ]
+      @recipe.ingredients.map { |i| i.unit }.should ==
+        %w[ dL grams dL teaspoon ]
+      @recipe.ingredients[2].state.should == 'warm'
+
+      @recipe.instructions.is_a?(Array).should.be true
+      @recipe.instructions.step.is_a?(Array).should.be true
+      @recipe.instructions.steps.is_a?(Array).should.be true
+
+      @recipe.instructions.should == @recipe.instructions.step
+      @recipe.instructions.should == @recipe.instructions.steps
+      @recipe.instructions.step.should == @recipe.instructions.steps
+
+      @recipe.instructions.map { |s| s.split(' ')[0] }.join(', ').should ==
+        'Mix, Knead, Cover, Knead, Place, Cover, Bake'
+    end
+  end
 end
 
 describe 'XMLObject' do
