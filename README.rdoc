@@ -167,13 +167,18 @@ on the TODO list.
 
 === Incomplete
 
-It most likely doesn't work with a ton of features of complex XML files. I'll
-always try to accomodate those, as long as they don't make the basic usage
-more complex. As usual, patches welcome.
+It most likely doesn't work with a ton of features of complex XML files (see
+the caveats section). I'll always try to accomodate those, as long as they
+don't make the basic usage more complex. As usual, patches welcome.
 
 == Caveats
 
 === Adapter specific
+
+==== Hpricot adapter
+
+While XMLObject doesn't yet aim to support namespaces, they seem to, for the
+most part, work. That is, unless you're using the Hpricot adapter.
 
 ==== LibXML adapter
 

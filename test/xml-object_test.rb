@@ -509,7 +509,7 @@ describe_shared 'any XMLObject adapter' do
     before(:each) { @feed = XMLObject.new(open_sample_xml(:atom)) }
 
     it 'should behave accordingly' do
-      @feed.should          == ''
+      @feed.should == ''
 
       # LibXML eats up 'xmlns' from the attributes hash
       unless XMLObject.adapter.to_s.match /LibXML$/
