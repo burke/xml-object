@@ -1,5 +1,5 @@
 * Refactor so as to not do things recursively
-* Test more real-world examples
+* See if namespaces are a possibility.
+* See if we can sort out Hpricot not folding namespaces.
 * Figure out a way to fix the 'xmlns' problem in LibXML, remove entry from
   caveats in README.rdoc
-
