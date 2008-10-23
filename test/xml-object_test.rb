@@ -650,6 +650,24 @@ describe_shared 'any XMLObject adapter' do
         'Mix, Knead, Cover, Knead, Place, Cover, Bake'
     end
   end
+
+  describe 'Sample voice.xml' do
+    before(:each) { @voice = XMLObject.new(open_sample_xml(:voice)) }
+
+    it 'should behave accordingly' do
+      @voice.should == ''
+      @voice.version.should == '2.0'
+
+      # LibXML eats up 'xmlns' from the attributes hash
+      unless XMLObject.adapter.to_s.match /LibXML$/
+        @voice.xmlns.should == 'http://www.w3.org/2001/vxml'
+      end
+
+      @voice.form.should == ''
+      @voice.form.block.should == ''
+      @voice.form.block.prompt.strip.should == 'Hello world!'
+    end
+  end
 end
 
 describe 'XMLObject' do
