@@ -14,14 +14,14 @@ namespace :bm do
 
     Benchmark.bm(34) do |x|
 
-      samples = Dir[File.join(PROJECT_DIR,
-        'test', 'samples', '*')].map { |f| File.basename(f, '.xml') }
-      just = samples.map { |s| s.size }.max
-
+      samples = Dir[File.join(PROJECT_DIR, 'test', 'samples', '*')]
+      samples = samples.sort_by { |sample_file| File.size(sample_file) }
+      samples = samples.map { |f| File.basename(f, '.xml') }
+      padding = samples.map { |s| s.size }.max
       samples.each do |xml_sample|
 
         begin
-          x.report "#{xml_sample.rjust(just)}.xml: XmlSimple" do
+          x.report "#{xml_sample.rjust(padding)}.xml: XmlSimple" do
             ::XMLObject.adapter = XmlSimple # Let's be fair
 
             n.times { XmlSimple.xml_in(open_sample_xml(xml_sample.to_sym)) }
@@ -30,7 +30,7 @@ namespace :bm do
 
         begin
           require 'adapters/rexml'
-          x.report "#{xml_sample.rjust(just)}.xml: XMLObject (REXML)" do
+          x.report "#{xml_sample.rjust(padding)}.xml: XMLObject (REXML)" do
             ::XMLObject.adapter = ::XMLObject::Adapters::REXML
 
             n.times { XMLObject.new(open_sample_xml(xml_sample.to_sym)) }
@@ -40,7 +40,7 @@ namespace :bm do
         begin
           require 'adapters/hpricot'
 
-          x.report "#{xml_sample.rjust(just)}.xml: XMLObject (Hpricot)" do
+          x.report "#{xml_sample.rjust(padding)}.xml: XMLObject (Hpricot)" do
             ::XMLObject.adapter = ::XMLObject::Adapters::Hpricot
 
             n.times { XMLObject.new(open_sample_xml(xml_sample.to_sym)) }
@@ -50,7 +50,7 @@ namespace :bm do
         begin
           require 'adapters/libxml'
 
-          x.report "#{xml_sample.rjust(just)}.xml: XMLObject (LibXML)" do
+          x.report "#{xml_sample.rjust(padding)}.xml: XMLObject (LibXML)" do
             ::XMLObject.adapter = ::XMLObject::Adapters::LibXML
 
             n.times { XMLObject.new(open_sample_xml(xml_sample.to_sym)) }
