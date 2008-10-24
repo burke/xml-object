@@ -22,20 +22,20 @@ module XMLObject
 
   private ##################################################################
 
-  # Takes any Element object, and converts it recursively into
+  # Takes any adapter Element object, and converts it recursively into
   # the corresponding tree of decorated objects.
   def self.new_decorated_obj(xml) # :nodoc:
-    obj = if ((xml.children.size > 1) && (xml.value !~ /\S/) &&
-               xml.children.map { |e| e.name }.uniq.size == 1)
+    # More than one child, empty value, and all children with the same name?
+    obj = if xml.children.size > 1 && xml.value !~ /\S/ &&
+             xml.children.map { |c| c.name }.uniq.size == 1
 
       CollectionProxy.new xml # This is an empty array wrap
     else
       Element.new xml # This one is an actual element
     end
 
-
-    xml.children.each   { |child| add_child(obj, child.name, new(child)) }
-    xml.attributes.each { |name, value|  add_attribute(obj, name, value) }
+    xml.children.each   { |child| add_child obj, child.name, new(child) }
+    xml.attributes.each { |name, value|  add_attribute obj, name, value }
 
     # Let's teach our object how to access its XML elements and attributes
     obj.extend Properties
@@ -62,12 +62,11 @@ module XMLObject
 
   # Decorates the given object 'obj' with a method 'name' that returns the
   # given 'attr_value'.
-  def self.add_attribute(obj, name, attr_value) # :nodoc:
-
+  def self.add_attribute(obj, name, value) # :nodoc:
     attributes = obj.instance_variable_get :@__attributes
-    attributes[(key = name.to_sym)] = attr_value.strip.gsub(/\s+/, ' ')
+    attributes[key = name.to_sym] = value.strip.gsub /\s+/, ' '
 
     obj.instance_variable_set :@__attributes, attributes
-    attr_value
+    value
   end
 end
