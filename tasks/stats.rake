@@ -111,9 +111,7 @@ class CodeStatistics #:nodoc: (totally stolen from Rails' railties)
   end
 end
 
-namespace :test do
-  desc 'Report code statistics (KLOCs, etc) from the application'
-  task :stats do
-    CodeStatistics.new(*STATS_DIRECTORIES).to_s
-  end
+desc 'Reports code/test ratio'
+task :stats do
+  CodeStatistics.new(*STATS_DIRECTORIES).to_s
 end
