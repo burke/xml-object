@@ -1,8 +1,10 @@
 module XMLObject::Element
-  def self.extended(obj) # :nodoc:
-    obj.instance_variable_set :@__children,   {}
-    obj.instance_variable_set :@__attributes, {}
-    obj
+  def self.new(xml) # :nodoc:
+    element = xml.value
+    element.instance_variable_set :@__raw_xml,    xml.raw
+    element.instance_variable_set :@__children,   {}
+    element.instance_variable_set :@__attributes, {}
+    element.extend self
   end
 
   # The raw, unadapted XML object. Whatever this is, it really depends on
