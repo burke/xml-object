@@ -5,15 +5,14 @@ $:.unshift File.join(File.dirname(__FILE__), 'xml-object')
 
 require 'adapters'
 require 'adapters/rexml'
-require 'array_notation'
+require 'properties'
 require 'collection_proxy'
 require 'element'
-require 'method_missing_dispatchers'
 
 module XMLObject
   # Returns a String or Array object representing the given XML, decorated
   # with methods to access attributes and/or child elements.
-  def self.new(duck)
+  def self.new(duck) # :nodoc:
     case duck
       when adapter::Element then new_decorated_obj(duck)
       when Array            then duck.map { |d| new_decorated_obj(d) }
@@ -40,8 +39,8 @@ module XMLObject
     xml.children.each   { |child| add_child(obj, child.name, new(child)) }
     xml.attributes.each { |name, value|  add_attribute(obj, name, value) }
 
-    # Let's teach our object some new tricks:
-    obj.extend ArrayNotation, MethodMissingDispatchers
+    # Let's teach our object how to access its XML elements and attributes
+    obj.extend Properties
   end
 
   # Decorates the given object 'obj' with a method 'name' that returns the
