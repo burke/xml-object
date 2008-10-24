@@ -6,11 +6,10 @@ module XMLObject::Adapters::LibXML
   # either +read+ or +to_s+.
   def self.new(duck)
     case
-      when duck.is_a?(::LibXML::XML::Node) then Element.new(duck)
       when duck.respond_to?(:read)
-        then new(::LibXML::XML::Parser.string(duck.read).parse.root)
+        then Element.new(::LibXML::XML::Parser.string(duck.read).parse.root)
       when duck.respond_to?(:to_s)
-        then new(::LibXML::XML::Parser.string(duck.to_s).parse.root)
+        then Element.new(::LibXML::XML::Parser.string(duck.to_s).parse.root)
       else raise "Don't know how to deal with '#{duck.class}' object"
     end
   end
@@ -23,8 +22,8 @@ module XMLObject::Adapters::LibXML
 
       @element_nodes = xml.children.select { |c| c.element? }
 
-      @text_nodes  = xml.children.select { |c| c.text? }.map { |c| c.to_s }
-      @cdata_nodes = xml.children.select { |c| c.cdata? }.map do |c|
+      @text_nodes  = xml.children.select { |c| c.text? }.map! { |c| c.to_s }
+      @cdata_nodes = xml.children.select { |c| c.cdata? }.map! do |c|
         c.to_s.chomp(']]>').sub('<![CDATA[', '')
       end
 

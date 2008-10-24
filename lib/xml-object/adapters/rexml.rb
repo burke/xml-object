@@ -6,11 +6,10 @@ module XMLObject::Adapters::REXML
   # either +read+ or +to_s+.
   def self.new(duck)
     case
-      when duck.is_a?(::REXML::Element) then Element.new(duck)
       when duck.respond_to?(:read)
-        then new(::REXML::Document.new(duck.read).root)
+        then Element.new(::REXML::Document.new(duck.read).root)
       when duck.respond_to?(:to_s)
-        then new(::REXML::Document.new(duck.to_s).root)
+        then Element.new(::REXML::Document.new(duck.to_s).root)
       else raise "Don't know how to deal with '#{duck.class}' object"
     end
   end
@@ -25,11 +24,11 @@ module XMLObject::Adapters::REXML
 
       @text_nodes = xml.children.select do |child|
         child.class == ::REXML::Text
-      end.collect { |child| child.to_s }
+      end.map! { |child| child.to_s }
 
       @cdata_nodes = xml.children.select do |child|
         child.class == ::REXML::CData
-      end.collect { |child| child.to_s }
+      end.map! { |child| child.to_s }
 
       super
     end

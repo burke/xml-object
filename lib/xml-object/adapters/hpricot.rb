@@ -7,9 +7,10 @@ module XMLObject::Adapters::Hpricot
   # either +read+ or +to_s+.
   def self.new(duck)
     case
-      when duck.is_a?(::Hpricot::Elem) then Element.new(duck)
-      when duck.respond_to?(:read) then new(::Hpricot::XML(duck.read).root)
-      when duck.respond_to?(:to_s) then new(::Hpricot::XML(duck.to_s).root)
+      when duck.respond_to?(:read)
+        then Element.new(::Hpricot::XML(duck.read).root)
+      when duck.respond_to?(:to_s)
+        then Element.new(::Hpricot::XML(duck.to_s).root)
       else raise "Don't know how to deal with '#{duck.class}' object"
     end
   end
@@ -24,11 +25,11 @@ module XMLObject::Adapters::Hpricot
 
       @text_nodes = xml.children.select do |c|
         c.text? && !c.is_a?(::Hpricot::CData)
-      end.map { |c| c.to_s }
+      end.map! { |c| c.to_s }
 
       @cdata_nodes = xml.children.select do |c|
         c.is_a? ::Hpricot::CData
-      end.map { |c| c.to_s }
+      end.map! { |c| c.to_s }
 
       super
     end
