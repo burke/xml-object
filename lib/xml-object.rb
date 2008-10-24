@@ -28,13 +28,11 @@ module XMLObject
     obj = if ((xml.children.size > 1) && (xml.value !~ /\S/) &&
                xml.children.map { |e| e.name }.uniq.size == 1)
 
-      CollectionProxy.new xml.children[0].name.to_sym
+      CollectionProxy.new xml # This is an empty array wrap
     else
-      # Teach our string to behave like and XML Element
-      xml.value.extend Element
+      Element.new xml # This one is an actual element
     end
 
-    obj.instance_variable_set :@__raw_xml, xml.raw
 
     xml.children.each   { |child| add_child(obj, child.name, new(child)) }
     xml.attributes.each { |name, value|  add_attribute(obj, name, value) }

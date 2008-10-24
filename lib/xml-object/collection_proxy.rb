@@ -10,8 +10,9 @@ class XMLObject::CollectionProxy # :nodoc:
                                    (meth_sym == :object_id) )
   end
 
-  def initialize(target_kid_key) # :nodoc:
-    @__children, @__attributes, @__target_kid = {}, {}, target_kid_key
+  def initialize(xml) # :nodoc:
+    @__children, @__attributes = {}, {}
+    @__target_kid = xml.children[0].name.to_sym
   end
 
   private ##################################################################
