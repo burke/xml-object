@@ -1,4 +1,4 @@
-test/coverage/*
+coverage/*
 doc/*
 pkg/*
 profile_with_*.html
