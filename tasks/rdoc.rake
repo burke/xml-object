@@ -1,6 +1,6 @@
 desc 'Generate documentation using RDoc'
 task :rdoc do
-  hanna = File.join(PROJECT_DIR, 'test', 'vendor', 'hanna', 'bin', 'hanna')
+  hanna = File.join(PROJECT_DIR, 'vendor', 'hanna', 'bin', 'hanna')
 
   options = %{ --inline-source
                --main=README.rdoc

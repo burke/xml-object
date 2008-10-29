@@ -1,7 +1,7 @@
 require 'setup'
 
-# Include the "lib" folder of each test vendor:
-Dir[File.join(PROJECT_DIR, 'test', 'vendor', '*')].each do |vendor|
+# Include the "lib" folder of test vendor:
+Dir[File.join(PROJECT_DIR, 'vendor', '*')].each do |vendor|
 
   lib = File.join(vendor, 'lib')
   $:.unshift lib if File.directory?(lib)

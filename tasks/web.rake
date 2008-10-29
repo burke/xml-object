@@ -22,7 +22,7 @@ namespace :www do
   task :coverage => :rcov do
     host   = 'jordi@xml-object.rubyforge.org'
     remote = '/var/www/gforge-projects/xml-object/rcov/'
-    local  = File.join(PROJECT_DIR, 'test', 'coverage').chomp('/') + '/*'
+    local  = File.join(PROJECT_DIR, 'coverage').chomp('/') + '/*'
 
     system(%[ rsync -e 'ssh' -r --delete #{local} #{host}:#{remote}])
   end
