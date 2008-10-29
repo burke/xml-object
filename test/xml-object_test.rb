@@ -1,39 +1,39 @@
 require File.join(File.dirname(__FILE__), 'test_helper')
 
-describe_shared 'boolish string container' do
-  it 'converts boolish strings to bool when asked' do
-    @container.tall?.should.be  true
-    @container.cube?.should.be  true
-    @container.heavy?.should.be true
-    @container.house?.should.be true
+shared 'boolish string container' do
+  should 'convert boolish strings to bool when asked' do
+    @container.tall?.should.be.true
+    @container.cube?.should.be.true
+    @container.heavy?.should.be.true
+    @container.house?.should.be.true
 
-    @container.short?.should.be false
-    @container.round?.should.be false
-    @container.light?.should.be false
-    @container.ball?.should.be  false
+    @container.short?.should.be.false
+    @container.round?.should.be.false
+    @container.light?.should.be.false
+    @container.ball?.should.be.false
   end
 
-  it 'does NOT convert boolish strings to bool even when asked' do
+  should 'NOT convert boolish strings to bool even when asked' do
     should.raise(NameError) { @container.hypercube? }
   end
 end
 
-describe_shared 'element containing XML named like methods' do
-  it 'prioritizes methods over XML' do
+shared 'element containing XML named like methods' do
+  should 'prioritize methods over XML' do
     @with_methods.upcase.should.not == 'Bummer!'
     @with_methods.upcase.should     == 'DUDE!'
   end
 
-  it 'allows XML to be reached via [] notation' do
+  should 'allow XML to be reached via [] notation' do
     @with_methods['upcase'].should == 'Bummer!'
   end
 end
 
-describe_shared 'any XMLObject adapter' do
+shared 'any XMLObject adapter' do
 
   describe 'Attribute' do
     describe 'with whitespace' do
-      it 'is stripped of its whitespace' do
+      should 'be stripped of its whitespace' do
         @xml = XMLObject.new(%'<x with_whitespace=" \n x \t " />')
         @xml.with_whitespace.should == 'x'
       end
@@ -42,22 +42,22 @@ describe_shared 'any XMLObject adapter' do
 
   describe 'Element' do
 
-    it 'raises exception at [] notation used with invalid keys' do
+    should 'raise exception at [] notation used with invalid keys' do
       should.raise NameError do
         XMLObject.new('<x><z /></x>')[:invalid => 'foo']
       end
     end
 
     describe 'with no attributes, children, text or CDATA' do
-      before(:each) do
+      before do
         @blank_extended_strings = XMLObject.new '<x><one> </one> <two /></x>'
       end
 
-      it 'looks like an empty string' do
+      should 'look like an empty string' do
         @blank_extended_strings.should == ''
       end
 
-      it "raises when asked for things it doesn't have" do
+      should "raise when asked for things it doesn't have" do
         should.raise NameError do
           @blank_extended_strings.foobared
         end
@@ -77,7 +77,7 @@ describe_shared 'any XMLObject adapter' do
     end
 
     describe 'with a child element named "age" valued "19"' do
-      it 'responds to "age" with "19"' do
+      should 'respond to "age" with "19"' do
         @string_with_age_child = XMLObject.new '<x><age>19</age></x>'
 
         @string_with_age_child.age.should == "19"
@@ -93,7 +93,7 @@ describe_shared 'any XMLObject adapter' do
     end
 
     describe 'with an attribute "Rope" called "name"' do
-      it 'responds to "name" with "Rope"' do
+      should 'respond to "name" with "Rope"' do
         @string_with_name_attr = XMLObject.new '<x name="Rope" />'
 
         @string_with_name_attr.name.should == "Rope"
@@ -109,15 +109,15 @@ describe_shared 'any XMLObject adapter' do
     end
 
     describe 'with other parallel same-named XML elements' do
-      it 'auto-folds with its namesakes into an Element Array' do
+      should 'auto-fold with its namesakes into an Element Array' do
         @xml = XMLObject.new '<x><sheep></sheep><sheep></sheep></x>'
 
-        @xml.sheep.is_a?(Array).should.be true
+        @xml.sheep.should.be.instance_of(Array)
       end
     end
 
     describe 'without text or CDATA, with attrs and one Array child' do
-      it 'delegates missing methods to its single child' do
+      should 'delegate missing methods to its single child' do
         @container = XMLObject.new %| <x alpha="a" beta="b">
                                         <sheep number="0">?</sheep>
                                         <sheep number="1">Dolly</sheep>
@@ -128,7 +128,7 @@ describe_shared 'any XMLObject adapter' do
     end
 
     describe 'without text, attrs, or CDATA, with one Array child' do
-      it 'becomes a Collection Proxy to its single child' do
+      should 'act as a Collection Proxy to its single child' do
         @container = XMLObject.new %| <x>
                                         <sheep number="0">?</sheep>
                                         <sheep number="1">Dolly</sheep>
@@ -139,31 +139,31 @@ describe_shared 'any XMLObject adapter' do
     end
 
     describe 'without attrs or CDATA, with text and one Array child' do
-      it 'does NOT become a Collection Proxy to its single child' do
+      should 'NOT act as a Collection Proxy to its single child' do
         @x = XMLObject.new %| <x>Text in "x"
                                 <sheep number="0">?</sheep>
                                 <sheep number="1">Dolly</sheep>
                               </x> |
 
         @x.strip.should == 'Text in "x"'
-        @x.sheep.is_a?(Array).should.be true
+        @x.sheep.should.be.instance_of(Array)
       end
     end
 
     describe 'without text or attrs, with CDATA and one Array child' do
-      it 'does NOT become a Collection Proxy to its single child' do
+      should 'NOT act as a Collection Proxy to its single child' do
         @x = XMLObject.new %| <x><![CDATA[Text in "x"]]>
                                 <sheep number="0">?</sheep>
                                 <sheep number="1">Dolly</sheep>
                               </x> |
 
         @x.strip.should == 'Text in "x"'
-        @x.sheep.is_a?(Array).should.be true
+        @x.sheep.should.be.instance_of(Array)
       end
     end
 
     describe 'without text or CDATA, with attrs and one non-Array child' do
-      it 'delegates missing methods to its single child' do
+      should 'delegate missing methods to its single child' do
         @container = XMLObject.new %| <x alpha="a" beta="b">
                                         <sheep number="1">Dolly</sheep>
                                       </x> |
@@ -173,7 +173,7 @@ describe_shared 'any XMLObject adapter' do
     end
 
     describe 'without text, attrs, or CDATA, with one non-Array child' do
-      it 'acts as a Collection Proxy to its single child' do
+      should 'act as a Collection Proxy to its single child' do
         @container = XMLObject.new %| <x>
                                         <sheep number="1">Dolly</sheep>
                                       </x> |
@@ -183,7 +183,7 @@ describe_shared 'any XMLObject adapter' do
     end
 
     describe 'with boolish attributes' do
-      before(:each) do
+      before do
         @container = XMLObject.new %|
           <x tall="Yes"   short="no"
              cube="y"     round="N"
@@ -196,7 +196,7 @@ describe_shared 'any XMLObject adapter' do
     end
 
     describe 'with boolish elements' do
-      before(:each) do
+      before do
         @container = XMLObject.new %|
           <x>
             <tall>yEs</tall>    <short>nO</short>
@@ -212,7 +212,7 @@ describe_shared 'any XMLObject adapter' do
     end
 
     describe 'without text and with multiple CDATA values' do
-      it 'looks like its CDATA values joined' do
+      should 'look like its CDATA values joined' do
         @no_text_two_cdata = XMLObject.new %| <x>
                                                 <![CDATA[CDA]]>
                                                 <![CDATA[TA!]]>
@@ -222,63 +222,63 @@ describe_shared 'any XMLObject adapter' do
     end
 
     describe 'without text and CDATA' do
-      it 'looks like its CDATA' do
+      should 'look like its CDATA' do
         XMLObject.new('<x><![CDATA[Not Text]]></x>').should == 'Not Text'
       end
     end
 
     describe 'with text and CDATA' do
-      it 'looks like its text' do
+      should 'look like its text' do
         XMLObject.new('<x>Text<![CDATA[Not Text]]></x>').should == 'Text'
       end
     end
 
     describe 'with only whitespace text' do
-      it 'looks like and empty string' do
+      should 'look like and empty string' do
         XMLObject.new("<x>\t \n</x>").should == ''
       end
     end
 
     describe 'with whitespace and non-whitespace text' do
-      it 'retains its text verbatim' do
+      should 'retain its text verbatim' do
         XMLObject.new("<x>\t a \n</x>").should == "\t a \n"
       end
     end
 
     describe 'with only whitespace CDATA' do
-      it 'retains its CDATA verbatim' do
+      should 'retain its CDATA verbatim' do
         XMLObject.new("<x><![CDATA[\t \n]]></x>").should == "\t \n"
       end
     end
 
     describe 'with whitespace and non-whitespace CDATA' do
-      it 'retains its CDATA verbatim' do
+      should 'retain its CDATA verbatim' do
         XMLObject.new("<x><![CDATA[\t a \n]]></x>").should == "\t a \n"
       end
     end
 
     describe 'with attributes and child elements named the same' do
-      before(:each) do
+      before do
         @ambiguous = XMLObject.new %|
           <x name="attr name"><name>element name</name></x> |
       end
 
-      it 'prioritizes elements when called with dot notation' do
+      should 'prioritize elements when called with dot notation' do
         @ambiguous.name.should == 'element name'
       end
 
-      it 'prioritizes element when called with [""] notation' do
+      should 'prioritize element when called with [""] notation' do
         @ambiguous['name'].should == 'element name'
       end
 
-      it 'allows unambigious access to both attr and element' do
+      should 'allow unambigious access to both attr and element' do
         @ambiguous[:elem => 'name'].should == 'element name'
         @ambiguous[:attr => 'name'].should == 'attr name'
       end
     end
 
     describe 'with a (+s) pluralized array and an element named the same' do
-      before(:each) do
+      before do
         @ambiguous = XMLObject.new %|
           <x>
             <houses>Element</houses>
@@ -287,13 +287,13 @@ describe_shared 'any XMLObject adapter' do
           </x> |
       end
 
-      it 'prioritizes the element over the pluralized array' do
+      should 'prioritize the element over the pluralized array' do
         @ambiguous['houses'].should == 'Element'
         @ambiguous[:elem => 'houses'].should == 'Element'
         @ambiguous.houses.should == 'Element'
       end
 
-      it 'maintains access to the array by its original name' do
+      should 'maintain access to the array by its original name' do
         @ambiguous.house.join(' ').should == 'Array Element'
         @ambiguous['house'].join(' ').should == 'Array Element'
         @ambiguous[:elem => 'house'].join(' ').should == 'Array Element'
@@ -301,7 +301,7 @@ describe_shared 'any XMLObject adapter' do
     end
 
     describe 'with a proper plural array and an element named the same' do
-      before(:each) do
+      before do
         @ambiguous = XMLObject.new %|
           <x>
             <octopi>Element</octopi>
@@ -310,13 +310,13 @@ describe_shared 'any XMLObject adapter' do
           </x> |
       end
 
-      it 'prioritizes the element over the pluralized array' do
+      should 'prioritize the element over the pluralized array' do
         @ambiguous.octopi.should == 'Element'
         @ambiguous['octopi'].should == 'Element'
         @ambiguous[:elem => 'octopi'].should == 'Element'
       end
 
-      it 'maintains access to the array by its original name' do
+      should 'maintain access to the array by its original name' do
         @ambiguous.octopus.join(' ').should == 'Array Element'
         @ambiguous['octopus'].join(' ').should == 'Array Element'
         @ambiguous[:elem => 'octopus'].join(' ').should == 'Array Element'
@@ -324,7 +324,7 @@ describe_shared 'any XMLObject adapter' do
     end
 
     describe 'with a (+s) pluralized array and an attr named the same' do
-      before(:each) do
+      before do
         @ambiguous = XMLObject.new %|
           <x houses="Attribute">
             <house>Array</house>
@@ -332,13 +332,13 @@ describe_shared 'any XMLObject adapter' do
           </x> |
       end
 
-      it 'prioritizes the attribute over the pluralized array' do
+      should 'prioritize the attribute over the pluralized array' do
         @ambiguous.houses.should == 'Attribute'
         @ambiguous['houses'].should == 'Attribute'
         @ambiguous[:attr => 'houses'].should == 'Attribute'
       end
 
-      it 'maintains access to the array by its original name' do
+      should 'maintain access to the array by its original name' do
         @ambiguous.house.join(' ').should == 'Array Element'
         @ambiguous['house'].join(' ').should == 'Array Element'
         @ambiguous[:elem => 'house'].join(' ').should == 'Array Element'
@@ -346,7 +346,7 @@ describe_shared 'any XMLObject adapter' do
     end
 
     describe 'with a proper plural array and an attribute named the same' do
-      before(:each) do
+      before do
         @ambiguous = XMLObject.new %|
           <x octopi="Attribute">
             <octopus>Array</octopus>
@@ -354,13 +354,13 @@ describe_shared 'any XMLObject adapter' do
           </x> |
       end
 
-      it 'prioritizes the attribute over the pluralized array' do
+      should 'prioritize the attribute over the pluralized array' do
         @ambiguous.octopi.should == 'Attribute'
         @ambiguous['octopi'].should == 'Attribute'
         @ambiguous[:attr => 'octopi'].should == 'Attribute'
       end
 
-      it 'maintains access to the array by its original name' do
+      should 'maintain access to the array by its original name' do
         @ambiguous.octopus.join(' ').should == 'Array Element'
         @ambiguous['octopus'].join(' ').should == 'Array Element'
         @ambiguous[:elem => 'octopus'].join(' ').should == 'Array Element'
@@ -368,7 +368,7 @@ describe_shared 'any XMLObject adapter' do
     end
 
     describe 'with ambiguously named plural array, attr and element' do
-      before(:each) do
+      before do
         @ambiguous = XMLObject.new %|
           <x houses="Attribute">
             <houses>Element</houses>
@@ -377,17 +377,17 @@ describe_shared 'any XMLObject adapter' do
           </x> |
       end
 
-      it 'prioritizes the element over all others' do
+      should 'prioritize the element over all others' do
         @ambiguous['houses'].should == 'Element'
         @ambiguous[:elem => 'houses'].should == 'Element'
         @ambiguous.houses.should == 'Element'
       end
 
-      it 'allows unambiguous access to the attribute' do
+      should 'allow unambiguous access to the attribute' do
         @ambiguous[:attr => 'houses'].should == 'Attribute'
       end
 
-      it 'maintains access to the array by its original name' do
+      should 'maintain access to the array by its original name' do
         @ambiguous.house.join(' ').should == 'Array Element'
         @ambiguous['house'].join(' ').should == 'Array Element'
         @ambiguous[:elem => 'house'].join(' ').should == 'Array Element'
@@ -395,7 +395,7 @@ describe_shared 'any XMLObject adapter' do
     end
 
     describe 'with attributes named like existing methods' do
-      before(:each) do
+      before do
         @with_methods = XMLObject.new '<x upcase="Bummer!">dude!</x>'
       end
 
@@ -403,7 +403,7 @@ describe_shared 'any XMLObject adapter' do
     end
 
     describe 'with elements named like existing methods' do
-      before(:each) do
+      before do
         @with_methods = XMLObject.new '<x><upcase>Bummer!</upcase>dude!</x>'
       end
 
@@ -411,62 +411,58 @@ describe_shared 'any XMLObject adapter' do
     end
 
     describe 'with elements named like invalid method names' do
-      before(:each) do
+      before do
         @with_illegal_methods = XMLObject.new %|
           <x><not-a-valid-method>XML!</not-a-valid-method></x> |
       end
 
-      it 'allows access to elements using [] notation' do
+      should 'allow access to elements using [] notation' do
         @with_illegal_methods['not-a-valid-method'].should == 'XML!'
       end
     end
 
     describe 'with attributes named like invalid method names' do
-      before(:each) do
+      before do
         @with_illegal_methods = XMLObject.new %'<x attr-with-dashes="yep" />'
       end
 
-      it 'allows access to elements using [] notation' do
+      should 'allow access to elements using [] notation' do
         @with_illegal_methods['attr-with-dashes'].should == 'yep'
       end
     end
   end
 
   describe 'Element Array' do
-    before(:each) do
+    before do
       @xml = XMLObject.new '<x><man>One</man><man>Two</man></x>'
     end
 
-    it 'allows access to its elements by index' do
+    should 'allow access to its elements by index' do
       @xml.man[0].should == 'One'
       @xml.man[1].should == 'Two'
     end
 
-    it 'is accessible by its naive plural (mans)' do
+    should 'be accessible by its naive plural (mans)' do
       @xml.mans.should == @xml.man
     end
 
-    describe 'when ActiveSupport::Inflector is found' do
-      if defined?(ActiveSupport::Inflector)
-        it 'is available by its correct plural (men)' do
-          @xml.men.should == @xml.man
-        end
-      else
-        xit 'ActiveSupport::Inflector not found, correct pluralization test'
+    if defined?(ActiveSupport::Inflector)
+      should 'be available by its correct plural (men)' do
+        @xml.men.should == @xml.man
       end
     end
   end
 
   describe 'Collection Proxy Element' do
-    before(:each) do
+    before do
       @proxy = XMLObject.new '<x><dude>Peter</dude><dude>Paul</dude></x>'
     end
 
-    it 'is equal to the Array it targets' do
+    should 'be equal to the Array it targets' do
       @proxy.should == @proxy.dudes
     end
 
-    it 'responds to the same methods of the Array it targets' do
+    should 'respond to the same methods of the Array it targets' do
       @proxy.map { |d| d.upcase }.should == @proxy.dude.map { |d| d.upcase }
       @proxy.first.downcase.should == @proxy.dude.first.downcase
       @proxy[-1].should == @proxy.dude[-1]
@@ -474,29 +470,29 @@ describe_shared 'any XMLObject adapter' do
   end
 
   describe '#new() function' do
-    before(:each) do
+    before do
       @xml_str = '<x>Bar</x>'
       @duck    = StringIO.new(@xml_str)
     end
 
-    it 'accepts Strings with XML' do
+    should 'accept Strings with XML' do
       XMLObject.new(@xml_str).should == 'Bar'
     end
 
-    it 'accepts things that respond to "to_s"' do
+    should 'accept things that respond to "to_s"' do
       def @duck.respond_to?(m); (m == :'read') ? false : super; end
       def @duck.to_s; self.read; end
 
       XMLObject.new(@duck).should == 'Bar'
     end
 
-    it 'accepts things that respond to "read"' do
+    should 'accept things that respond to "read"' do
       def @duck.respond_to?(m); (m == :'to_s') ? false : super; end
 
       XMLObject.new(@duck).should == 'Bar'
     end
 
-    it "raises exception at things that don't know #to_s or #read" do
+    should "raise exception at things that don't know #to_s or #read" do
       def @duck.respond_to?(m)
         ((m == :'to_s') || (:'read' == m)) ? false : super
       end
@@ -506,9 +502,9 @@ describe_shared 'any XMLObject adapter' do
   end
 
   describe 'Sample atom.xml' do
-    before(:each) { @feed = XMLObject.new(open_sample_xml(:atom)) }
+    before { @feed = XMLObject.new(open_sample_xml(:atom)) }
 
-    it 'behaves as follows' do
+    should 'behave as follows' do
       @feed.should == ''
 
       # LibXML eats up 'xmlns' from the attributes hash
@@ -519,7 +515,7 @@ describe_shared 'any XMLObject adapter' do
       @feed.title.should    == 'Example Feed'
       @feed.subtitle.should == 'A subtitle.'
 
-      @feed.link.is_a?(Array).should.be true
+      @feed.link.should.be.instance_of(Array)
       @feed.link.should == @feed.links
 
       @feed.link.first.href.should == 'http://example.org/feed/'
@@ -543,9 +539,9 @@ describe_shared 'any XMLObject adapter' do
   end
 
   describe 'Sample function.xml' do
-    before(:each) { @function = XMLObject.new(open_sample_xml(:function)) }
+    before { @function = XMLObject.new(open_sample_xml(:function)) }
 
-    it 'behaves as follows' do
+    should 'behave as follows' do
       @function.should == ''
       @function.name.should == 'Hello'
       @function.description.should == 'Greets the indicated person.'
@@ -554,24 +550,24 @@ describe_shared 'any XMLObject adapter' do
       @function.input.param.should == ''
       @function.input.param.name.should == 'name'
       @function.input.param.required.should == 'true'
-      @function.input.param.required?.should.be true
-      @function.input.param.description.should ==
+      @function.input.param.required?.should.be.true
+      @function.input.param.description.should == \
         'The name of the person to be greeted.'
 
       @function.output.should == ''
       @function.output.param.should == ''
       @function.output.param.name.should == 'greeting'
       @function.output.param.required.should == 'true'
-      @function.output.param.required?.should.be true
-      @function.output.param.description.should ==
+      @function.output.param.required?.should.be.true
+      @function.output.param.description.should == \
         'The constructed greeting.'
     end
   end
 
   describe 'Sample persons.xml' do
-    before(:each) { @persons = XMLObject.new(open_sample_xml(:persons)) }
+    before { @persons = XMLObject.new(open_sample_xml(:persons)) }
 
-    it 'behaves as follows' do
+    should 'behave as follows' do
       @persons.should == [ '', '' ]
       @persons.should == @persons.person
       @persons.should == @persons.persons
@@ -591,9 +587,9 @@ describe_shared 'any XMLObject adapter' do
   end
 
   describe 'Sample playlist.xml' do
-    before(:each) { @playlist = XMLObject.new(open_sample_xml(:playlist)) }
+    before { @playlist = XMLObject.new(open_sample_xml(:playlist)) }
 
-    it 'behaves as follows' do
+    should 'behave as follows' do
       @playlist.should         == ''
       @playlist.version.should == '1'
 
@@ -602,9 +598,9 @@ describe_shared 'any XMLObject adapter' do
         @playlist.xmlns.should == 'http://xspf.org/ns/0/'
       end
 
-      @playlist.trackList.is_a?(Array).should.be true
-      @playlist.trackList.track.is_a?(Array).should.be true
-      @playlist.trackList.tracks.is_a?(Array).should.be true
+      @playlist.trackList.should.be.instance_of Array
+      @playlist.trackList.track.should.be.instance_of Array
+      @playlist.trackList.tracks.should.be.instance_of Array
 
       @playlist.trackList.should == @playlist.trackList.track
       @playlist.trackList.should == @playlist.trackList.tracks
@@ -615,46 +611,46 @@ describe_shared 'any XMLObject adapter' do
       @playlist.trackList.first.location.should == 'file:///C:/music/foo.mp3'
 
       @playlist.trackList.last.title.should == 'External Example'
-      @playlist.trackList.last.location.should ==
+      @playlist.trackList.last.location.should == \
         'http://www.example.com/music/bar.ogg'
     end
   end
 
   describe 'Sample recipe.xml' do
-    before(:each) { @recipe = XMLObject.new(open_sample_xml(:recipe)) }
+    before { @recipe = XMLObject.new(open_sample_xml(:recipe)) }
 
-    it 'behaves as follows' do
-      @recipe.should == ''
-      @recipe.name.should == 'bread'
+    should 'behave as follows' do
+      @recipe.should           == ''
+      @recipe.name.should      == 'bread'
       @recipe.prep_time.should == '5 mins'
       @recipe.cook_time.should == '3 hours'
-      @recipe.title.should == 'Basic bread'
+      @recipe.title.should     == 'Basic bread'
 
-      @recipe.ingredient.is_a?(Array).should.be true
+      @recipe.ingredient.should.be.instance_of Array
       @recipe.ingredients.should == @recipe.ingredient
       @recipe.ingredients.should == %w[ Flour Yeast Water Salt ]
       @recipe.ingredients.map { |i| i.amount }.should == %w[ 8 10 4 1 ]
-      @recipe.ingredients.map { |i| i.unit }.should ==
-        %w[ dL grams dL teaspoon ]
+      @recipe.ingredients.map { |i| i.unit }.should == %w[
+        dL grams dL teaspoon ]
       @recipe.ingredients[2].state.should == 'warm'
 
-      @recipe.instructions.is_a?(Array).should.be true
-      @recipe.instructions.step.is_a?(Array).should.be true
-      @recipe.instructions.steps.is_a?(Array).should.be true
+      @recipe.instructions.should.be.instance_of Array
+      @recipe.instructions.step.should.be.instance_of Array
+      @recipe.instructions.steps.should.be.instance_of Array
 
-      @recipe.instructions.should == @recipe.instructions.step
-      @recipe.instructions.should == @recipe.instructions.steps
+      @recipe.instructions.should      == @recipe.instructions
+      @recipe.instructions.should      == @recipe.instructions.steps
       @recipe.instructions.step.should == @recipe.instructions.steps
 
-      @recipe.instructions.map { |s| s.split(' ')[0] }.join(', ').should ==
-        'Mix, Knead, Cover, Knead, Place, Cover, Bake'
+      @recipe.instructions.map { |s| s.split(' ')[0] }.join(
+        ', ').should == 'Mix, Knead, Cover, Knead, Place, Cover, Bake'
     end
   end
 
   describe 'Sample voice.xml' do
-    before(:each) { @voice = XMLObject.new(open_sample_xml(:voice)) }
+    before { @voice = XMLObject.new(open_sample_xml(:voice)) }
 
-    it 'behaves as follows' do
+    should 'behave as follows' do
       @voice.should == ''
       @voice.version.should == '2.0'
 
@@ -673,44 +669,45 @@ end
 describe 'XMLObject' do
 
   describe 'REXML adapter' do
-    before(:all)  { require 'xml-object/adapters/rexml' }
-    before(:each) { XMLObject.adapter = XMLObject::Adapters::REXML }
+    before do
+      require 'xml-object/adapters/rexml'
+      XMLObject.adapter = XMLObject::Adapters::REXML
+    end
 
     behaves_like 'any XMLObject adapter'
 
-    it 'returns unadapted XML objects when #raw_xml is called' do
-      XMLObject.new('<x/>').raw_xml.is_a?(::REXML::Element).should.be true
+    should 'return unadapted XML objects when #raw_xml is called' do
+      XMLObject.new('<x/>').raw_xml.should.be.kind_of(::REXML::Element)
     end
   end
 
   if defined?(Hpricot)
     describe 'Hpricot adapter' do
-      before(:all)  { require 'xml-object/adapters/hpricot' }
-      before(:each) { XMLObject.adapter = XMLObject::Adapters::Hpricot }
+      before do
+        require 'xml-object/adapters/hpricot'
+        XMLObject.adapter = XMLObject::Adapters::Hpricot
+      end
 
       behaves_like 'any XMLObject adapter'
 
-      it 'returns unadapted XML objects when #raw_xml is called' do
-        XMLObject.new('<x/>').raw_xml.is_a?(::Hpricot::Elem).should.be true
+      should 'return unadapted XML objects when #raw_xml is called' do
+        XMLObject.new('<x/>').raw_xml.should.be.kind_of(::Hpricot::Elem)
       end
     end
-  else
-    xit 'Hpricot not found, testing under Hpricot adapter'
   end
 
   if defined?(LibXML)
     describe 'LibXML adapter' do
-      before(:all)  { require 'xml-object/adapters/libxml' }
-      before(:each) { XMLObject.adapter = XMLObject::Adapters::LibXML }
+      before do
+        require 'xml-object/adapters/libxml'
+        XMLObject.adapter = XMLObject::Adapters::LibXML
+      end
 
       behaves_like 'any XMLObject adapter'
 
-      it 'returns unadapted XML objects when #raw_xml is called' do
-        XMLObject.new('<x/>').raw_xml.is_a?(
-          ::LibXML::XML::Node).should.be true
+      should 'return unadapted XML objects when #raw_xml is called' do
+        XMLObject.new('<x/>').raw_xml.should.be.kind_of(::LibXML::XML::Node)
       end
     end
-  else
-    xit 'LibXML not found, testing under LibXML adapter'
   end
 end
