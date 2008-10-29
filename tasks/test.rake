@@ -2,8 +2,8 @@ require 'rake/testtask'
 
 task :default => :test
 
-Rake::TestTask.new do |t|
-  t.libs << 'test'
-  t.test_files = FileList["#{PROJECT_DIR}/test/*_test.rb"]
-  t.verbose = true
+desc 'Run the specification tests'
+task :test do
+  ruby "#{PROJECT_DIR}/test/vendor/bacon/bin/bacon " +
+       "#{PROJECT_DIR}/test/*_test.rb"
 end

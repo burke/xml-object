@@ -24,13 +24,13 @@ class XMLObject::CollectionProxy # :nodoc:
     if dispatched.nil? && @__children[@__target_kid].respond_to?(m)
       dispatched = @__children[@__target_kid].__send__(m, *a, &b)
 
-      unless dispatched.nil?
+      unless nil == dispatched
         # All is fair in Love and War. And 100% coverage.
         instance_eval \
           %{ def #{m}(*a, &b); @__children[@__target_kid].#{m}(*a, &b); end }
       end
     end
 
-    dispatched.nil? ? raise(NameError.new(m.to_s)) : dispatched
+    (nil == dispatched) ? raise(NameError.new(m.to_s)) : dispatched
   end
 end
