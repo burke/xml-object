@@ -669,10 +669,8 @@ end
 describe 'XMLObject' do
 
   describe 'REXML adapter' do
-    before do
-      require 'xml-object/adapters/rexml'
-      XMLObject.adapter = XMLObject::Adapters::REXML
-    end
+    require 'xml-object/adapters/rexml'
+    XMLObject.adapter = XMLObject::Adapters::REXML
 
     behaves_like 'any XMLObject adapter'
 
@@ -683,10 +681,8 @@ describe 'XMLObject' do
 
   if defined?(Hpricot)
     describe 'Hpricot adapter' do
-      before do
-        require 'xml-object/adapters/hpricot'
-        XMLObject.adapter = XMLObject::Adapters::Hpricot
-      end
+      require 'xml-object/adapters/hpricot'
+      XMLObject.adapter = XMLObject::Adapters::Hpricot
 
       behaves_like 'any XMLObject adapter'
 
@@ -698,10 +694,8 @@ describe 'XMLObject' do
 
   if defined?(LibXML)
     describe 'LibXML adapter' do
-      before do
-        require 'xml-object/adapters/libxml'
-        XMLObject.adapter = XMLObject::Adapters::LibXML
-      end
+      require 'xml-object/adapters/libxml'
+      XMLObject.adapter = XMLObject::Adapters::LibXML
 
       behaves_like 'any XMLObject adapter'
 
