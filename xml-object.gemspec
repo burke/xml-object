@@ -1,17 +1,19 @@
-Gem::Specification.new do |gem|
-  gem.rubyforge_project = 'xml-object'
+XMLOBJECT_GEMSPEC = Gem::Specification.new do |gem|
+  gem.name     = gem.rubyforge_project = 'xml-object'
+  gem.homepage = 'http://xml-object.rubyforge.org'
 
-  gem.name     = 'xml-object'
-  gem.homepage = 'http://github.com/jordi/xml-object'
-
-  gem.version, gem.date = '0.9.8', '2008-10-23'
-  gem.author, gem.email = 'Jordi Bunster', 'jordi@bunster.org'
+  gem.version, gem.date  = '0.9.8', '2008-10-23'
+  gem.author,  gem.email = 'Jordi Bunster', 'jordi@bunster.org'
 
   gem.summary     = "The Rubyista's way to do quick XML sit-ups"
   gem.description = %{ XMLObject is a library for reading (not writing) XML.
     It is particularly suited for cases where one is dealing with small
     documents of a known structure. While not devoid of caveats, it does
     have a very pleasant, idiomatic Ruby syntax. }.strip!.gsub! /\s+/, ' '
+
+  gem.has_rdoc = !!(gem.extra_rdoc_files = %w[ README.rdoc ])
+  gem.rdoc_options += %w[
+    --title XMLObject --main README.rdoc --inline-source ]
 
   gem.files = %w[
     MIT-LICENSE
@@ -33,9 +35,4 @@ Gem::Specification.new do |gem|
     lib/xml-object.rb
     xml-object.gemspec
   ]
-
-  gem.has_rdoc = !!(gem.extra_rdoc_files = %w[ README.rdoc ])
-  gem.rdoc_options << '--title' << 'XMLObject'   <<
-                      '--main'  << 'README.rdoc' <<
-                      '--inline-source'
 end
