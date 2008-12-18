@@ -1,3 +1,6 @@
+* 0.9.9 (2008-12-18):
+  - Bugfix for the new faster-than-nokogiri Hpricot version (broke the API)
+
 * 0.9.8 (2008-10-23):
   - Much improved test suite. More granular, better coverage, much faster
   - The collection proxy behaviour is now a lot faster when called in a loop
