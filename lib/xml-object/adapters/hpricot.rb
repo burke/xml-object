@@ -19,7 +19,8 @@ module XMLObject::Adapters::Hpricot
 
   class Element < XMLObject::Adapters::Base::Element # :nodoc:
     def initialize(xml)
-      @raw, @name, @attributes = xml, xml.name, xml.attributes
+      @raw, @name = xml, xml.name
+      @attributes = xml.attributes || {}
 
       @element_nodes = xml.children.select { |c| c.elem? }
 
