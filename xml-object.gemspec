@@ -2,7 +2,7 @@ XMLOBJECT_GEMSPEC = Gem::Specification.new do |gem|
   gem.name     = gem.rubyforge_project = 'xml-object'
   gem.homepage = 'http://xml-object.rubyforge.org'
 
-  gem.version, gem.date  = '0.9.8', '2008-10-23'
+  gem.version, gem.date  = '0.9.9', '2008-12-18'
   gem.author,  gem.email = 'Jordi Bunster', 'jordi@bunster.org'
 
   gem.summary     = "The Rubyista's way to do quick XML sit-ups"
@@ -28,10 +28,9 @@ XMLOBJECT_GEMSPEC = Gem::Specification.new do |gem|
     lib/xml-object/adapters/libxml.rb
     lib/xml-object/adapters/rexml.rb
     lib/xml-object/adapters.rb
-    lib/xml-object/array_notation.rb
     lib/xml-object/collection_proxy.rb
     lib/xml-object/element.rb
-    lib/xml-object/method_missing_dispatchers.rb
+    lib/xml-object/properties.rb
     lib/xml-object.rb
     xml-object.gemspec
   ]
