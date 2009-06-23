@@ -15,7 +15,6 @@ puts "Ruby #{RUBY_VERSION}#{" (JRuby #{JRUBY_VERSION})" rescue ''}"
 
 begin_require_rescue 'rubygems'
 begin_require_rescue 'activesupport', 'to test proper pluralization'
-begin_require_rescue 'hpricot',       'to test the Hpricot adapter'
 begin_require_rescue 'libxml',        'to test the LibXML adapter'
 begin_require_rescue 'ruby-debug'
 

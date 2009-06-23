@@ -679,19 +679,6 @@ describe 'XMLObject' do
     end
   end
 
-  if defined?(Hpricot)
-    describe 'Hpricot adapter' do
-      require 'xml-object/adapters/hpricot'
-      XMLObject.adapter = XMLObject::Adapters::Hpricot
-
-      behaves_like 'any XMLObject adapter'
-
-      should 'return unadapted XML objects when #raw_xml is called' do
-        XMLObject.new('<x/>').raw_xml.should.be.kind_of(::Hpricot::Elem)
-      end
-    end
-  end
-
   if defined?(LibXML)
     describe 'LibXML adapter' do
       require 'xml-object/adapters/libxml'

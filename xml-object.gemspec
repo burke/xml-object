@@ -24,7 +24,6 @@ XMLOBJECT_GEMSPEC = Gem::Specification.new do |gem|
     lib/jordi-xml-object.rb
     lib/xml-object
     lib/xml-object/adapters
-    lib/xml-object/adapters/hpricot.rb
     lib/xml-object/adapters/libxml.rb
     lib/xml-object/adapters/rexml.rb
     lib/xml-object/adapters.rb

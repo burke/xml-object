@@ -3,7 +3,6 @@ namespace :bm do
     require 'benchmark'
 
     begin_require_rescue 'xmlsimple', 'to benchmark XmlSimple'
-    begin_require_rescue 'hpricot',   'to benchmark using Hpricot'
     begin_require_rescue 'libxml',    'to benchmark using LibXML'
   end
 
@@ -36,16 +35,6 @@ namespace :bm do
             n.times { XMLObject.new(open_sample_xml(xml_sample.to_sym)) }
           end
         end
-
-        begin
-          require 'adapters/hpricot'
-
-          x.report "#{xml_sample.rjust(padding)}.xml: XMLObject (Hpricot)" do
-            ::XMLObject.adapter = ::XMLObject::Adapters::Hpricot
-
-            n.times { XMLObject.new(open_sample_xml(xml_sample.to_sym)) }
-          end
-        end if defined?(Hpricot)
 
         begin
           require 'adapters/libxml'

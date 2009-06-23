@@ -1,3 +1,7 @@
+* 0.9.91 (????-??-??):
+  - Dropped the Hpricot support. Not worth it, API changes too often, and
+    libxml-ruby now rocks more than ever.
+
 * 0.9.9 (2008-12-18):
   - Bugfix for the new faster-than-nokogiri Hpricot version (broke the API)
 

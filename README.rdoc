@@ -77,13 +77,11 @@ this kind of job, but one doesn't always have that luxury.
 === Adapters
 
 XMLObject supports different adapters to do the actual XML parsing. It ships
-with +REXML+, +Hpricot+, and +LibXML+ adapters. By default, the +REXML+
-adapter is used.
+with +REXML+, and +LibXML+ adapters. By default, the +REXML+ adapter is used.
 
 To use a different adapter than the +REXML+ default:
 
   require 'xml-object'                  # Require XMLObject first
-  require 'xml-object/adapters/hpricot'
   require 'xml-object/adapters/libxml'
 
 === Access to elements and attributes
@@ -174,11 +172,6 @@ don't make the basic usage more complex. As usual, patches welcome.
 == Caveats
 
 === Adapter specific
-
-==== Hpricot adapter
-
-While XMLObject doesn't yet aim to support namespaces, they seem to, for the
-most part, work. That is, unless you're using the Hpricot adapter.
 
 ==== LibXML adapter
 
