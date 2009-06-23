@@ -13,7 +13,7 @@ namespace :bm do
 
     Benchmark.bm(34) do |x|
 
-      samples = Dir[File.join(PROJECT_DIR, 'test', 'samples', '*')]
+      samples = Dir[File.join(PROJECT_DIR, 'test', 'samples', '*.xml')]
       samples = samples.sort_by { |sample_file| File.size(sample_file) }
       samples = samples.map { |f| File.basename(f, '.xml') }
       padding = samples.map { |s| s.size }.max
