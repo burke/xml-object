@@ -1,4 +1,6 @@
 * 0.9.91 (????-??-??):
+  - Fixes a bug where consecutive collection proxies confused XMLObject
+    mid-parsing (Thanks to Josef Spillner)
   - Dropped the Hpricot support. Not worth it, API changes too often, and
     libxml-ruby now rocks more than ever.
 

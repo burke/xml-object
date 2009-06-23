@@ -664,6 +664,19 @@ shared 'any XMLObject adapter' do
       @voice.form.block.prompt.strip.should == 'Hello world!'
     end
   end
+
+  describe 'Sample Bug rating.xml' do
+    before do
+      @rating = XMLObject.new(open_sample_xml('bugs/rating'))
+    end
+
+    should 'behave as follows' do
+      @rating.should.be.instance_of Array
+      @rating.size.should                == 3
+      @rating.category.size.should       == 3
+      @rating.category.first.size.should == 3
+    end
+  end
 end
 
 describe 'XMLObject' do

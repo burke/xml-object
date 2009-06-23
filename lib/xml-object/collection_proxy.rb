@@ -5,6 +5,7 @@ class XMLObject::CollectionProxy # :nodoc:
 
     undef_method meth_sym unless meth_str =~ /^__/        ||
                                  meth_str =~ /^instance_/ ||
+                                 meth_sym == :is_a?       ||
                                  meth_sym == :extend      ||
                                  meth_sym == :nil?        ||
                                  meth_sym == :object_id
