@@ -1,8 +1,7 @@
-require 'setup'
+require 'project_helper'
 
 # Include the "lib" folder of test vendor:
-Dir[File.join(PROJECT_DIR, 'vendor', '*')].each do |vendor|
-
+Dir[XMLObject::Helper.dir.join('vendor', '*')].each do |vendor|
   lib = File.join(vendor, 'lib')
   $:.unshift lib if File.directory?(lib)
 end
@@ -13,10 +12,9 @@ require 'stringio'
 
 puts "Ruby #{RUBY_VERSION}#{" (JRuby #{JRUBY_VERSION})" rescue ''}"
 
-begin_require_rescue 'rubygems'
-begin_require_rescue 'activesupport', 'to test proper pluralization'
-begin_require_rescue 'libxml',        'to test the LibXML adapter'
-begin_require_rescue 'ruby-debug'
+XMLObject::Helper.dependency 'activesupport', 'to test proper pluralization'
+XMLObject::Helper.dependency 'libxml',        'to test the LibXML adapter'
+XMLObject::Helper.dependency 'ruby-debug'
 
 puts
 puts

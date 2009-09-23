@@ -1,5 +1,4 @@
 module XMLObject # :nodoc:
-
   class << self # :nodoc:
     attr_accessor :adapter # :nodoc:
   end

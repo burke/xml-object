@@ -1,5 +1,4 @@
 class XMLObject::CollectionProxy # :nodoc:
-
   instance_methods.each do |m|
     meth_str, meth_sym = m.to_s, m.to_sym # Ruby 1.8 and 1.9 differ, so...
 

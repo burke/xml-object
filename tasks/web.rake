@@ -6,7 +6,7 @@ namespace :www do
 
     host   = 'jordi@xml-object.rubyforge.org'
     remote = '/var/www/gforge-projects/xml-object'
-    index  = File.join(PROJECT_DIR, 'www', 'index.html')
+    index  = XMLObject::Helper.dir.join('www', 'index.html')
 
     system(%[ scp #{index} #{host}:#{remote}/index.html ])
   end
@@ -14,7 +14,7 @@ namespace :www do
   task :docs => :rdoc do
     host   = 'jordi@xml-object.rubyforge.org'
     remote = '/var/www/gforge-projects/xml-object/doc/'
-    local  = File.join(PROJECT_DIR, 'doc').chomp('/') + '/*'
+    local  = XMLObject::Helper.dir.join('doc').chomp('/') + '/*'
 
     system(%[ rsync -e 'ssh' -r --delete #{local} #{host}:#{remote}])
   end
@@ -22,7 +22,7 @@ namespace :www do
   task :coverage => :rcov do
     host   = 'jordi@xml-object.rubyforge.org'
     remote = '/var/www/gforge-projects/xml-object/rcov/'
-    local  = File.join(PROJECT_DIR, 'coverage').chomp('/') + '/*'
+    local  = XMLObject::Helper.dir.join('coverage').chomp('/') + '/*'
 
     system(%[ rsync -e 'ssh' -r --delete #{local} #{host}:#{remote}])
   end

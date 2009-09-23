@@ -1,5 +1,4 @@
 module XMLObject::Properties
-
   # Array-bracket (+[]+) notation access to elements and attributes. Use
   # when the element or attribute you need to reach is not reachable via dot
   # notation (because it's not a valid method name, or because the method

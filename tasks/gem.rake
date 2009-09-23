@@ -1,6 +1,6 @@
-gemspec  = "#{PROJECT_DIR}/xml-object.gemspec"
-gem      = eval(File.open(gemspec).read)
-gem_file = "#{gem.rubyforge_project}-#{gem.version}.gem"
+gemspec  = XMLObject::Helper.dir.join('xml-object.gemspec')
+gem_obj  = eval(File.open(gemspec).read)
+gem_file = "#{gem_obj.rubyforge_project}-#{gem_obj.version}.gem"
 
 desc "Builds #{gem_file}"
 task :gem do

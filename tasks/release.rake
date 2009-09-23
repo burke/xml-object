@@ -3,9 +3,11 @@ task :release => :gem do |t|
   require 'rubyforge'
   require 'rake/contrib/sshpublisher'
 
-  gemspec = eval(File.open("#{PROJECT_DIR}/xml-object.gemspec").read)
+  gemspec = XMLObject::Helper.dir.join('xml-object.gemspec')
+  gemspec = eval(File.open(gemspec).read)
+
   gemfile = "#{gemspec.rubyforge_project}-#{gemspec.version}.gem"
-  gemfile = "#{PROJECT_DIR}/#{gemfile}"
+  gemfile = XMLObject::Helper.dir.join(gemfile)
 
   rf = RubyForge.new
   rf.configure rescue nil

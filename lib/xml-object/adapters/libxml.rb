@@ -1,7 +1,6 @@
 require 'libxml'
 
 module XMLObject::Adapters::LibXML
-
   # Can take a String of XML data, or anything that responds to
   # either +read+ or +to_s+.
   def self.new(duck)

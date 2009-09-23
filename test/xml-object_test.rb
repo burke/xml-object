@@ -502,7 +502,7 @@ shared 'any XMLObject adapter' do
   end
 
   describe 'Sample atom.xml' do
-    before { @feed = XMLObject.new(open_sample_xml(:atom)) }
+    before { @feed = XMLObject.new(XMLObject::Helper.sample(:atom)) }
 
     should 'behave as follows' do
       @feed.should == ''
@@ -539,7 +539,7 @@ shared 'any XMLObject adapter' do
   end
 
   describe 'Sample function.xml' do
-    before { @function = XMLObject.new(open_sample_xml(:function)) }
+    before { @function = XMLObject.new(XMLObject::Helper.sample(:function)) }
 
     should 'behave as follows' do
       @function.should == ''
@@ -565,7 +565,7 @@ shared 'any XMLObject adapter' do
   end
 
   describe 'Sample persons.xml' do
-    before { @persons = XMLObject.new(open_sample_xml(:persons)) }
+    before { @persons = XMLObject.new(XMLObject::Helper.sample(:persons)) }
 
     should 'behave as follows' do
       @persons.should == [ '', '' ]
@@ -587,7 +587,7 @@ shared 'any XMLObject adapter' do
   end
 
   describe 'Sample playlist.xml' do
-    before { @playlist = XMLObject.new(open_sample_xml(:playlist)) }
+    before { @playlist = XMLObject.new(XMLObject::Helper.sample(:playlist)) }
 
     should 'behave as follows' do
       @playlist.should         == ''
@@ -617,7 +617,7 @@ shared 'any XMLObject adapter' do
   end
 
   describe 'Sample recipe.xml' do
-    before { @recipe = XMLObject.new(open_sample_xml(:recipe)) }
+    before { @recipe = XMLObject.new(XMLObject::Helper.sample(:recipe)) }
 
     should 'behave as follows' do
       @recipe.should           == ''
@@ -648,7 +648,7 @@ shared 'any XMLObject adapter' do
   end
 
   describe 'Sample voice.xml' do
-    before { @voice = XMLObject.new(open_sample_xml(:voice)) }
+    before { @voice = XMLObject.new(XMLObject::Helper.sample(:voice)) }
 
     should 'behave as follows' do
       @voice.should == ''
@@ -667,7 +667,7 @@ shared 'any XMLObject adapter' do
 
   describe 'Sample Bug rating.xml' do
     before do
-      @rating = XMLObject.new(open_sample_xml('bugs/rating'))
+      @rating = XMLObject.new(XMLObject::Helper.sample('bugs/rating'))
     end
 
     should 'behave as follows' do

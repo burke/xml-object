@@ -1,13 +1,10 @@
-begin; require 'rubygems';      rescue Exception, StandardError; nil; end
 begin; require 'activesupport'; rescue Exception, StandardError; nil; end
 
-$:.unshift File.join(File.dirname(__FILE__), 'xml-object')
-
-require 'adapters'
-require 'adapters/rexml'
-require 'properties'
-require 'collection_proxy'
-require 'element'
+require 'xml-object/adapters'
+require 'xml-object/adapters/rexml'
+require 'xml-object/properties'
+require 'xml-object/collection_proxy'
+require 'xml-object/element'
 
 module XMLObject
   # Returns a String or Array object representing the given XML, decorated

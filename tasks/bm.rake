@@ -2,8 +2,8 @@ namespace :bm do
   task :dependencies do
     require 'benchmark'
 
-    begin_require_rescue 'xmlsimple', 'to benchmark XmlSimple'
-    begin_require_rescue 'libxml',    'to benchmark using LibXML'
+    XMLObject::Helper.dependency 'xmlsimple', 'to benchmark XmlSimple'
+    XMLObject::Helper.dependency 'libxml',    'to benchmark using LibXML'
   end
 
   desc 'Benchmarks initial parsing'
@@ -12,8 +12,7 @@ namespace :bm do
     puts "Reading each whole file, #{n} times:"
 
     Benchmark.bm(34) do |x|
-
-      samples = Dir[File.join(PROJECT_DIR, 'test', 'samples', '*.xml')]
+      samples = Dir[XMLObject::Helper.dir.join('test', 'samples', '*.xml')]
       samples = samples.sort_by { |sample_file| File.size(sample_file) }
       samples = samples.map { |f| File.basename(f, '.xml') }
       padding = samples.map { |s| s.size }.max
@@ -23,30 +22,34 @@ namespace :bm do
           x.report "#{xml_sample.rjust(padding)}.xml: XmlSimple" do
             ::XMLObject.adapter = XmlSimple # Let's be fair
 
-            n.times { XmlSimple.xml_in(open_sample_xml(xml_sample.to_sym)) }
+            n.times do
+              XmlSimple.xml_in(XMLObject::Helper.sample(xml_sample.to_sym))
+            end
           end
         end if defined?(XmlSimple)
 
         begin
-          require 'adapters/rexml'
+          require 'xml-object/adapters/rexml'
           x.report "#{xml_sample.rjust(padding)}.xml: XMLObject (REXML)" do
             ::XMLObject.adapter = ::XMLObject::Adapters::REXML
 
-            n.times { XMLObject.new(open_sample_xml(xml_sample.to_sym)) }
+            n.times do
+              XMLObject.new(XMLObject::Helper.sample(xml_sample.to_sym))
+            end
           end
         end
 
         begin
-          require 'adapters/libxml'
+          require 'xml-object/adapters/libxml'
 
           x.report "#{xml_sample.rjust(padding)}.xml: XMLObject (LibXML)" do
             ::XMLObject.adapter = ::XMLObject::Adapters::LibXML
 
-            n.times { XMLObject.new(open_sample_xml(xml_sample.to_sym)) }
+            n.times do
+              XMLObject.new(XMLObject::Helper.sample(xml_sample.to_sym))
+            end
           end
         end if defined?(LibXML)
-
-        puts "\n"
       end
     end
   end
@@ -63,7 +66,7 @@ namespace :bm do
     Benchmark.bmbm do |x|
       begin
         x.report 'XmlSimple' do
-          @xml_simple = XmlSimple.xml_in(open_sample_xml(:recipe))
+          @xml_simple = XmlSimple.xml_in(XMLObject::Helper.sample(:recipe))
 
           n.times do
             recipe       = Recipe.new
@@ -81,7 +84,7 @@ namespace :bm do
 
       begin
         x.report 'XMLObject (singular)' do
-          @singular = XMLObject.new(open_sample_xml(:recipe))
+          @singular = XMLObject.new(XMLObject::Helper.sample(:recipe))
 
           n.times do
             recipe             = Recipe.new
@@ -99,7 +102,7 @@ namespace :bm do
 
       begin
         x.report 'XMLObject (plural)' do
-          @plural = XMLObject.new(open_sample_xml(:recipe))
+          @plural = XMLObject.new(XMLObject::Helper.sample(:recipe))
 
           n.times do
             recipe             = Recipe.new
@@ -117,7 +120,7 @@ namespace :bm do
 
       begin
         x.report 'XMLObject (proxy)' do
-          @proxy = XMLObject.new(open_sample_xml(:recipe))
+          @proxy = XMLObject.new(XMLObject::Helper.sample(:recipe))
 
           n.times do
             recipe             = Recipe.new
