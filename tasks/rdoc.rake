@@ -1,6 +1,7 @@
 begin
   require 'hanna/rdoctask'
 rescue LoadError
+  require 'rake'
   require 'rake/rdoctask'
 end
 
