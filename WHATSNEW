@@ -1,4 +1,4 @@
-* 0.9.91 (????-??-??):
+* 0.9.91 (2009-06-23):
   - Fixes a bug where consecutive collection proxies confused XMLObject
     mid-parsing (Thanks to Josef Spillner)
   - Dropped the Hpricot support. Not worth it, API changes too often, and
