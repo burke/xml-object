@@ -1,5 +1,3 @@
-begin; require 'activesupport'; rescue Exception, StandardError; nil; end
-
 require 'xml-object/version'
 require 'xml-object/adapters'
 require 'xml-object/adapters/rexml'

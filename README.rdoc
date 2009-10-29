@@ -7,8 +7,8 @@ convenient, by providing a syntax that fits well in most Ruby programs.
 
 == Dependencies
 
-None outside of Ruby, though some optional gems add additional features. See
-more below.
+None outside of Ruby, though some optional gems add additional features and
+speedups. See more below.
 
 At the moment, I aim for compatibility with Ruby 1.8, 1.9, and JRuby 1.1.
 
@@ -16,9 +16,10 @@ At the moment, I aim for compatibility with Ruby 1.8, 1.9, and JRuby 1.1.
 
 From Rubyforge's gem server:
 
-  gem install xml-object
+And with the following optionals:
 
-Or from Github's gem server:
+  version 1.1.3 of libxml-ruby   (for faster execution)
+  version 2.3.4 of activesupport (for inflected plurals)
 
 == Installation instructions
 
@@ -132,9 +133,8 @@ With the same file as in the example above:
   student.courses.first == student.course.first => true
 
 Note that the pluralization algorithm is just tacking an 's' at the end of
-the singular, unless +ActiveSupport+ is installed, in which case you get
-proper plurals, as well as the ability to teach the +Inflector+ about
-new ones.
+the singular, unless +ActiveSupport+ is required, in which case you get
+inflected plurals.
 
 === Collection proxy
 
