@@ -20,11 +20,11 @@ From Rubyforge's gem server:
 
 Or from Github's gem server:
 
-  gem install jordi-xml-object --source http://gems.github.com
+== Installation instructions
 
-Both are the same, and are loaded the same way:
+From Gemcutter's gem server (soon to be the new Rubyforge):
 
-  require 'xml-object'
+  gem install xml-object --source http://gemcutter.org
 
 == Example usage
 
