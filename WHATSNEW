@@ -1,3 +1,13 @@
+* ???? (????-??-??):
+  - [API CHANGE!] No longer requires rubygems (ooops)
+  - [API CHANGE!] No longer attempts to require 'activesupport', you must
+    do it yourself to use inflections and such.
+  - [API CHANGE!] Removed 'jordi-xml-object' since Github gem serving is
+    going away, you must require 'xml-object' now.
+  - Added VERSION constant
+  - Changing gemspec to take advantage Gemcutter workflow
+  - Better global namespace hygiene
+
 * 0.9.91 (2009-06-23):
   - Fixes a bug where consecutive collection proxies confused XMLObject
     mid-parsing (Thanks to Josef Spillner)
