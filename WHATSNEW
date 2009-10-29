@@ -1,4 +1,4 @@
-* ???? (????-??-??):
+* 0.9.92 (2009-10-29):
   - Tested under 1.9.1, 1.8.7, 1.8.6, and JRuby 1.4.0RC3
   - [API CHANGE!] No longer requires rubygems (ooops)
   - [API CHANGE!] No longer attempts to require 'activesupport', you must
