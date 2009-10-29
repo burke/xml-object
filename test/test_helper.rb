@@ -1,16 +1,26 @@
-require 'project_helper'
 require 'test/unit'
+require 'xml-object'
+
+%w[ activesupport libxml ruby-debug leftright ].each do |library|
+  begin; require library; rescue LoadError; nil; end
+end
 
 puts
-puts "XMLObject #{XMLObject::VERSION} (from #{XMLObject::LOCATION})"
+puts "  XMLObject #{XMLObject::VERSION} (from #{XMLObject::LOCATION})"
 puts
-puts "Testing under Ruby #{RUBY_VERSION}"
-puts "(JRuby #{JRUBY_VERSION})\n" if defined?(::JRUBY_VERSION)
 
-XMLObject::Helper.dependency 'activesupport', 'to test proper pluralization'
-XMLObject::Helper.dependency 'libxml',        'to test the LibXML adapter'
-XMLObject::Helper.dependency 'ruby-debug',    'to debug during testing'
-XMLObject::Helper.dependency 'leftright',     'to get colorful tests :)'
+if defined? JRUBY_VERSION
+  puts "  Using JRuby #{JRUBY_VERSION} (in #{RUBY_VERSION} mode)"
+else
+  puts "  Using Ruby #{RUBY_VERSION}"
+end
 
-puts
+unless defined? ActiveSupport
+  puts "    ** Install 'activesupport' to test inflected plurals"
+end
+
+unless defined?(LibXML) || defined?(JRUBY_VERSION)
+  puts "    ** Install 'libxml-ruby' to test the LibXML adapter"
+end
+
 puts

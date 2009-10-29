@@ -1,7 +1,3 @@
-require 'project_helper'
-require 'rake'
-
-# Import all of the rake task files:
-Dir[XMLObject::Helper.dir.join('tasks', '*.rake').to_s].each do |task_file|
-  import task_file.to_s
-end
+$LOAD_PATH.unshift 'lib' # this is more than OK here.
+require 'xml-object'
+require 'rake' ; FileList['tasks/*.rake'].each { |file| import file }

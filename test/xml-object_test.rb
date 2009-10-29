@@ -1,707 +1,664 @@
-require File.join(File.dirname(__FILE__), 'test_helper')
+require File.dirname(__FILE__) + '/test_helper'
 
-shared 'boolish string container' do
-  should 'convert boolish strings to bool when asked' do
-    @container.tall?.should.be.true
-    @container.cube?.should.be.true
-    @container.heavy?.should.be.true
-    @container.house?.should.be.true
-
-    @container.short?.should.be.false
-    @container.round?.should.be.false
-    @container.light?.should.be.false
-    @container.ball?.should.be.false
+module XMLObjectAdapterBehavior
+  def test_whitespace_stripping_of_attribute_values
+    dude = XMLObject.new %'<dude name=" \n bob \t" />'
+    assert_equal 'bob', dude.name
   end
 
-  should 'NOT convert boolish strings to bool even when asked' do
-    should.raise(NameError) { @container.hypercube? }
-  end
-end
-
-shared 'element containing XML named like methods' do
-  should 'prioritize methods over XML' do
-    @with_methods.upcase.should.not == 'Bummer!'
-    @with_methods.upcase.should     == 'DUDE!'
-  end
-
-  should 'allow XML to be reached via [] notation' do
-    @with_methods['upcase'].should == 'Bummer!'
-  end
-end
-
-shared 'any XMLObject adapter' do
-
-  describe 'Attribute' do
-    describe 'with whitespace' do
-      should 'be stripped of its whitespace' do
-        @xml = XMLObject.new(%'<x with_whitespace=" \n x \t " />')
-        @xml.with_whitespace.should == 'x'
-      end
+  def test_for_invalid_keys_when_using_hash_on_array_notation
+    assert_raise(NameError) do
+      foo = XMLObject.new '<foo><bar /></foo>'
+      foo[:not_a_valid_key => 'whatever']
     end
   end
 
-  describe 'Element' do
-
-    should 'raise exception at [] notation used with invalid keys' do
-      should.raise NameError do
-        XMLObject.new('<x><z /></x>')[:invalid => 'foo']
-      end
-    end
-
-    describe 'with no attributes, children, text or CDATA' do
-      before do
-        @blank_extended_strings = XMLObject.new '<x><one> </one> <two /></x>'
-      end
-
-      should 'look like an empty string' do
-        @blank_extended_strings.should == ''
-      end
-
-      should "raise when asked for things it doesn't have" do
-        should.raise NameError do
-          @blank_extended_strings.foobared
-        end
-
-        should.raise NameError do
-          @blank_extended_strings['foobared']
-        end
-
-        should.raise NameError do
-          @blank_extended_strings[:elem => 'foobared']
-        end
-
-        should.raise NameError do
-          @blank_extended_strings[:attr => 'foobared']
-        end
-      end
-    end
-
-    describe 'with a child element named "age" valued "19"' do
-      should 'respond to "age" with "19"' do
-        @string_with_age_child = XMLObject.new '<x><age>19</age></x>'
-
-        @string_with_age_child.age.should == "19"
-
-        @string_with_age_child['age'].should == "19"
-        @string_with_age_child[:age].should  == "19"
-
-        @string_with_age_child[:elem  => 'age'].should == "19"
-        @string_with_age_child[:elem  => :age].should  == "19"
-        @string_with_age_child['elem' => 'age'].should == "19"
-        @string_with_age_child['elem' => :age].should  == "19"
-      end
-    end
-
-    describe 'with an attribute "Rope" called "name"' do
-      should 'respond to "name" with "Rope"' do
-        @string_with_name_attr = XMLObject.new '<x name="Rope" />'
-
-        @string_with_name_attr.name.should == "Rope"
-
-        @string_with_name_attr['name'].should == "Rope"
-        @string_with_name_attr[:name].should  == "Rope"
-
-        @string_with_name_attr[:attr  => 'name'].should == "Rope"
-        @string_with_name_attr[:attr  => :name].should  == "Rope"
-        @string_with_name_attr['attr' => 'name'].should == "Rope"
-        @string_with_name_attr['attr' => :name].should  == "Rope"
-      end
-    end
-
-    describe 'with other parallel same-named XML elements' do
-      should 'auto-fold with its namesakes into an Element Array' do
-        @xml = XMLObject.new '<x><sheep></sheep><sheep></sheep></x>'
-
-        @xml.sheep.should.be.instance_of(Array)
-      end
-    end
-
-    describe 'without text or CDATA, with attrs and one Array child' do
-      should 'delegate missing methods to its single child' do
-        @container = XMLObject.new %| <x alpha="a" beta="b">
-                                        <sheep number="0">?</sheep>
-                                        <sheep number="1">Dolly</sheep>
-                                      </x> |
-
-        @container.should == @container.sheep
-      end
-    end
-
-    describe 'without text, attrs, or CDATA, with one Array child' do
-      should 'act as a Collection Proxy to its single child' do
-        @container = XMLObject.new %| <x>
-                                        <sheep number="0">?</sheep>
-                                        <sheep number="1">Dolly</sheep>
-                                      </x> |
-
-        @container.should == @container.sheep
-      end
-    end
-
-    describe 'without attrs or CDATA, with text and one Array child' do
-      should 'NOT act as a Collection Proxy to its single child' do
-        @x = XMLObject.new %| <x>Text in "x"
-                                <sheep number="0">?</sheep>
-                                <sheep number="1">Dolly</sheep>
-                              </x> |
-
-        @x.strip.should == 'Text in "x"'
-        @x.sheep.should.be.instance_of(Array)
-      end
-    end
-
-    describe 'without text or attrs, with CDATA and one Array child' do
-      should 'NOT act as a Collection Proxy to its single child' do
-        @x = XMLObject.new %| <x><![CDATA[Text in "x"]]>
-                                <sheep number="0">?</sheep>
-                                <sheep number="1">Dolly</sheep>
-                              </x> |
-
-        @x.strip.should == 'Text in "x"'
-        @x.sheep.should.be.instance_of(Array)
-      end
-    end
-
-    describe 'without text or CDATA, with attrs and one non-Array child' do
-      should 'delegate missing methods to its single child' do
-        @container = XMLObject.new %| <x alpha="a" beta="b">
-                                        <sheep number="1">Dolly</sheep>
-                                      </x> |
-
-        @container.should.not == @container.sheep
-      end
-    end
-
-    describe 'without text, attrs, or CDATA, with one non-Array child' do
-      should 'act as a Collection Proxy to its single child' do
-        @container = XMLObject.new %| <x>
-                                        <sheep number="1">Dolly</sheep>
-                                      </x> |
-
-        @container.should.not == @container.sheep
-      end
-    end
-
-    describe 'with boolish attributes' do
-      before do
-        @container = XMLObject.new %|
-          <x tall="Yes"   short="no"
-             cube="y"     round="N"
-             heavy="T"    light="f"
-             house="tRUE" ball="fAlSE"
-             hypercube="What?" /> |
-      end
-
-      behaves_like 'boolish string container'
-    end
-
-    describe 'with boolish elements' do
-      before do
-        @container = XMLObject.new %|
-          <x>
-            <tall>yEs</tall>    <short>nO</short>
-            <cube>Y</cube>      <round>n</round>
-            <heavy>t</heavy>    <light>F</light>
-            <house>tRue</house> <ball>FalsE</ball>
-
-            <hypercube>the hell?</hypercube>
-          </x> |
-      end
-
-      behaves_like 'boolish string container'
-    end
-
-    describe 'without text and with multiple CDATA values' do
-      should 'look like its CDATA values joined' do
-        @no_text_two_cdata = XMLObject.new %| <x>
-                                                <![CDATA[CDA]]>
-                                                <![CDATA[TA!]]>
-                                              </x> |
-        @no_text_two_cdata.should == 'CDATA!'
-      end
-    end
-
-    describe 'without text and CDATA' do
-      should 'look like its CDATA' do
-        XMLObject.new('<x><![CDATA[Not Text]]></x>').should == 'Not Text'
-      end
-    end
-
-    describe 'with text and CDATA' do
-      should 'look like its text' do
-        XMLObject.new('<x>Text<![CDATA[Not Text]]></x>').should == 'Text'
-      end
-    end
-
-    describe 'with only whitespace text' do
-      should 'look like and empty string' do
-        XMLObject.new("<x>\t \n</x>").should == ''
-      end
-    end
-
-    describe 'with whitespace and non-whitespace text' do
-      should 'retain its text verbatim' do
-        XMLObject.new("<x>\t a \n</x>").should == "\t a \n"
-      end
-    end
-
-    describe 'with only whitespace CDATA' do
-      should 'retain its CDATA verbatim' do
-        XMLObject.new("<x><![CDATA[\t \n]]></x>").should == "\t \n"
-      end
-    end
-
-    describe 'with whitespace and non-whitespace CDATA' do
-      should 'retain its CDATA verbatim' do
-        XMLObject.new("<x><![CDATA[\t a \n]]></x>").should == "\t a \n"
-      end
-    end
-
-    describe 'with attributes and child elements named the same' do
-      before do
-        @ambiguous = XMLObject.new %|
-          <x name="attr name"><name>element name</name></x> |
-      end
-
-      should 'prioritize elements when called with dot notation' do
-        @ambiguous.name.should == 'element name'
-      end
-
-      should 'prioritize element when called with [""] notation' do
-        @ambiguous['name'].should == 'element name'
-      end
-
-      should 'allow unambigious access to both attr and element' do
-        @ambiguous[:elem => 'name'].should == 'element name'
-        @ambiguous[:attr => 'name'].should == 'attr name'
-      end
-    end
-
-    describe 'with a (+s) pluralized array and an element named the same' do
-      before do
-        @ambiguous = XMLObject.new %|
-          <x>
-            <houses>Element</houses>
-            <house>Array</house>
-            <house>Element</house>
-          </x> |
-      end
-
-      should 'prioritize the element over the pluralized array' do
-        @ambiguous['houses'].should == 'Element'
-        @ambiguous[:elem => 'houses'].should == 'Element'
-        @ambiguous.houses.should == 'Element'
-      end
-
-      should 'maintain access to the array by its original name' do
-        @ambiguous.house.join(' ').should == 'Array Element'
-        @ambiguous['house'].join(' ').should == 'Array Element'
-        @ambiguous[:elem => 'house'].join(' ').should == 'Array Element'
-      end
-    end
-
-    describe 'with a proper plural array and an element named the same' do
-      before do
-        @ambiguous = XMLObject.new %|
-          <x>
-            <octopi>Element</octopi>
-            <octopus>Array</octopus>
-            <octopus>Element</octopus>
-          </x> |
-      end
-
-      should 'prioritize the element over the pluralized array' do
-        @ambiguous.octopi.should == 'Element'
-        @ambiguous['octopi'].should == 'Element'
-        @ambiguous[:elem => 'octopi'].should == 'Element'
-      end
-
-      should 'maintain access to the array by its original name' do
-        @ambiguous.octopus.join(' ').should == 'Array Element'
-        @ambiguous['octopus'].join(' ').should == 'Array Element'
-        @ambiguous[:elem => 'octopus'].join(' ').should == 'Array Element'
-      end
-    end
-
-    describe 'with a (+s) pluralized array and an attr named the same' do
-      before do
-        @ambiguous = XMLObject.new %|
-          <x houses="Attribute">
-            <house>Array</house>
-            <house>Element</house>
-          </x> |
-      end
-
-      should 'prioritize the attribute over the pluralized array' do
-        @ambiguous.houses.should == 'Attribute'
-        @ambiguous['houses'].should == 'Attribute'
-        @ambiguous[:attr => 'houses'].should == 'Attribute'
-      end
-
-      should 'maintain access to the array by its original name' do
-        @ambiguous.house.join(' ').should == 'Array Element'
-        @ambiguous['house'].join(' ').should == 'Array Element'
-        @ambiguous[:elem => 'house'].join(' ').should == 'Array Element'
-      end
-    end
-
-    describe 'with a proper plural array and an attribute named the same' do
-      before do
-        @ambiguous = XMLObject.new %|
-          <x octopi="Attribute">
-            <octopus>Array</octopus>
-            <octopus>Element</octopus>
-          </x> |
-      end
-
-      should 'prioritize the attribute over the pluralized array' do
-        @ambiguous.octopi.should == 'Attribute'
-        @ambiguous['octopi'].should == 'Attribute'
-        @ambiguous[:attr => 'octopi'].should == 'Attribute'
-      end
-
-      should 'maintain access to the array by its original name' do
-        @ambiguous.octopus.join(' ').should == 'Array Element'
-        @ambiguous['octopus'].join(' ').should == 'Array Element'
-        @ambiguous[:elem => 'octopus'].join(' ').should == 'Array Element'
-      end
-    end
-
-    describe 'with ambiguously named plural array, attr and element' do
-      before do
-        @ambiguous = XMLObject.new %|
-          <x houses="Attribute">
-            <houses>Element</houses>
-            <house>Array</house>
-            <house>Element</house>
-          </x> |
-      end
-
-      should 'prioritize the element over all others' do
-        @ambiguous['houses'].should == 'Element'
-        @ambiguous[:elem => 'houses'].should == 'Element'
-        @ambiguous.houses.should == 'Element'
-      end
-
-      should 'allow unambiguous access to the attribute' do
-        @ambiguous[:attr => 'houses'].should == 'Attribute'
-      end
-
-      should 'maintain access to the array by its original name' do
-        @ambiguous.house.join(' ').should == 'Array Element'
-        @ambiguous['house'].join(' ').should == 'Array Element'
-        @ambiguous[:elem => 'house'].join(' ').should == 'Array Element'
-      end
-    end
-
-    describe 'with attributes named like existing methods' do
-      before do
-        @with_methods = XMLObject.new '<x upcase="Bummer!">dude!</x>'
-      end
-
-      behaves_like 'element containing XML named like methods'
-    end
-
-    describe 'with elements named like existing methods' do
-      before do
-        @with_methods = XMLObject.new '<x><upcase>Bummer!</upcase>dude!</x>'
-      end
-
-      behaves_like 'element containing XML named like methods'
-    end
-
-    describe 'with elements named like invalid method names' do
-      before do
-        @with_illegal_methods = XMLObject.new %|
-          <x><not-a-valid-method>XML!</not-a-valid-method></x> |
-      end
-
-      should 'allow access to elements using [] notation' do
-        @with_illegal_methods['not-a-valid-method'].should == 'XML!'
-      end
-    end
-
-    describe 'with attributes named like invalid method names' do
-      before do
-        @with_illegal_methods = XMLObject.new %'<x attr-with-dashes="yep" />'
-      end
-
-      should 'allow access to elements using [] notation' do
-        @with_illegal_methods['attr-with-dashes'].should == 'yep'
-      end
-    end
+  def test_object_without_attributes_text_or_cdata
+    rock = XMLObject.new '<rock><color> </color> <mass /></rock>'
+    assert_equal '', rock
+
+    assert_raise(NameError) { rock.not_an_attribute_or_element    }
+    assert_raise(NameError) { rock['not_an_attribute_or_element'] }
+    assert_raise(NameError) { rock[:elem => 'not_an_element']     }
+    assert_raise(NameError) { rock[:attr => 'not_an_attribute']   }
   end
 
-  describe 'Element Array' do
-    before do
-      @xml = XMLObject.new '<x><man>One</man><man>Two</man></x>'
-    end
+  def test_object_with_child_element
+    car = XMLObject.new '<car><wheels>4</wheels></car>'
 
-    should 'allow access to its elements by index' do
-      @xml.man[0].should == 'One'
-      @xml.man[1].should == 'Two'
-    end
-
-    should 'be accessible by its naive plural (mans)' do
-      @xml.mans.should == @xml.man
-    end
-
-    if defined?(ActiveSupport::Inflector)
-      should 'be available by its correct plural (men)' do
-        @xml.men.should == @xml.man
-      end
-    end
+    assert_equal '4', car.wheels
+    assert_equal '4', car['wheels']
+    assert_equal '4', car[:wheels]
+    assert_equal '4', car[:elem  => 'wheels']
+    assert_equal '4', car[:elem  => :wheels]
+    assert_equal '4', car['elem' => 'wheels']
+    assert_equal '4', car['elem' => :wheels]
   end
 
-  describe 'Collection Proxy Element' do
-    before do
-      @proxy = XMLObject.new '<x><dude>Peter</dude><dude>Paul</dude></x>'
-    end
+  def test_object_with_attribute
+    student = XMLObject.new '<student name="Carla" />'
 
-    should 'be equal to the Array it targets' do
-      @proxy.should == @proxy.dudes
-    end
-
-    should 'respond to the same methods of the Array it targets' do
-      @proxy.map { |d| d.upcase }.should == @proxy.dude.map { |d| d.upcase }
-      @proxy.first.downcase.should == @proxy.dude.first.downcase
-      @proxy[-1].should == @proxy.dude[-1]
-    end
+    assert_equal 'Carla', student.name
+    assert_equal 'Carla', student['name']
+    assert_equal 'Carla', student[:name]
+    assert_equal 'Carla', student[:attr  => 'name']
+    assert_equal 'Carla', student[:attr  => :name]
+    assert_equal 'Carla', student['attr' => 'name']
+    assert_equal 'Carla', student['attr' => :name]
   end
 
-  describe '#new() function' do
-    before do
-      @xml_str = '<x>Bar</x>'
-      @duck    = StringIO.new(@xml_str)
-    end
-
-    should 'accept Strings with XML' do
-      XMLObject.new(@xml_str).should == 'Bar'
-    end
-
-    should 'accept things that respond to "to_s"' do
-      def @duck.respond_to?(m); (m == :'read') ? false : super; end
-      def @duck.to_s; self.read; end
-
-      XMLObject.new(@duck).should == 'Bar'
-    end
-
-    should 'accept things that respond to "read"' do
-      def @duck.respond_to?(m); (m == :'to_s') ? false : super; end
-
-      XMLObject.new(@duck).should == 'Bar'
-    end
-
-    should "raise exception at things that don't know #to_s or #read" do
-      def @duck.respond_to?(m)
-        ((m == :'to_s') || (:'read' == m)) ? false : super
-      end
-
-      should.raise { XMLObject.new(@duck) }
-    end
+  def test_array_auto_folding
+    herd = XMLObject.new('<herd><sheep></sheep><sheep></sheep></herd>')
+    assert_instance_of Array, herd.sheep
   end
 
-  describe 'Sample atom.xml' do
-    before { @feed = XMLObject.new(XMLObject::Helper.sample(:atom)) }
+  def test_collection_proxy
+    flock = XMLObject.new %| <flock>
+                               <sheep number="0">?</sheep>
+                               <sheep number="1">Dolly</sheep>
+                             </flock> |
 
-    should 'behave as follows' do
-      @feed.should == ''
+    # Empty elements with single array children act as proxies to the array
+    assert_equal flock,       flock.sheep
+    assert_equal flock.first, flock.sheep.first
 
-      # LibXML eats up 'xmlns' from the attributes hash
-      unless XMLObject.adapter.to_s.match /LibXML$/
-        @feed.xmlns.should == 'http://www.w3.org/2005/Atom'
-      end
+    assert_equal '0', flock.first.number
+    assert_equal '0', flock.sheep.first.number
 
-      @feed.title.should    == 'Example Feed'
-      @feed.subtitle.should == 'A subtitle.'
-
-      @feed.link.should.be.instance_of(Array)
-      @feed.link.should == @feed.links
-
-      @feed.link.first.href.should == 'http://example.org/feed/'
-      @feed.link.first.rel.should  == 'self'
-      @feed.link.last.href.should  == 'http://example.org/'
-
-      @feed.updated.should == '2003-12-13T18:30:02Z'
-
-      @feed.author.should == ''
-      @feed.author.name.should == 'John Doe'
-      @feed.author.email.should == 'johndoe@example.com'
-
-      @feed['id'].should == 'urn:uuid:60a76c80-d399-11d9-b91C-0003939e0af6'
-
-      @feed.entry.should == ''
-      @feed.entry.title.should == 'Atom-Powered Robots Run Amok'
-      @feed.entry['id'].should == 'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a'
-      @feed.entry.updated.should == '2003-12-13T18:30:02Z'
-      @feed.entry.summary.should == 'Some text.'
-    end
+    assert_equal 2, flock.size
+    assert_equal 2, flock.sheep.size
   end
 
-  describe 'Sample function.xml' do
-    before { @function = XMLObject.new(XMLObject::Helper.sample(:function)) }
+  def test_NOT_collection_proxy_due_to_text
+    mob = XMLObject.new %| <mob>Some text about the mob
+                             <sheep number="0">?</sheep>
+                             <sheep number="1">Dolly</sheep>
+                           </mob> |
 
-    should 'behave as follows' do
-      @function.should == ''
-      @function.name.should == 'Hello'
-      @function.description.should == 'Greets the indicated person.'
+    assert_instance_of String, mob
+    assert_equal 'Some text about the mob', mob.strip
 
-      @function.input.should == ''
-      @function.input.param.should == ''
-      @function.input.param.name.should == 'name'
-      @function.input.param.required.should == 'true'
-      @function.input.param.required?.should.be.true
-      @function.input.param.description.should == \
-        'The name of the person to be greeted.'
-
-      @function.output.should == ''
-      @function.output.param.should == ''
-      @function.output.param.name.should == 'greeting'
-      @function.output.param.required.should == 'true'
-      @function.output.param.required?.should.be.true
-      @function.output.param.description.should == \
-        'The constructed greeting.'
-    end
+    assert_instance_of Array, mob.sheep
   end
 
-  describe 'Sample persons.xml' do
-    before { @persons = XMLObject.new(XMLObject::Helper.sample(:persons)) }
+  def test_NOT_collection_proxy_due_to_CDATA
+    drove = XMLObject.new %| <drove><![CDATA[Sheep groups have many names]]>
+                               <sheep number="0">?</sheep>
+                               <sheep number="1">Dolly</sheep>
+                             </drove> |
 
-    should 'behave as follows' do
-      @persons.should == [ '', '' ]
-      @persons.should == @persons.person
-      @persons.should == @persons.persons
-      @persons.should == @persons.people if defined? ActiveSupport::Inflector
+    assert_instance_of String, drove
+    assert_equal 'Sheep groups have many names', drove
 
-      @persons[0].should  == ''
-      @persons[-1].should == ''
-
-      @persons.first.username.should == 'JS1'
-      @persons.first.name.should == 'John'
-      @persons.first['family-name'].should == 'Smith'
-
-      @persons.last.username.should == 'MI1'
-      @persons.last.name.should == 'Morka'
-      @persons.last[:'family-name'].should == 'Ismincius'
-    end
+    assert_instance_of Array, drove.sheep
   end
 
-  describe 'Sample playlist.xml' do
-    before { @playlist = XMLObject.new(XMLObject::Helper.sample(:playlist)) }
-
-    should 'behave as follows' do
-      @playlist.should         == ''
-      @playlist.version.should == '1'
-
-      # LibXML eats up 'xmlns' from the attributes hash
-      unless XMLObject.adapter.to_s.match /LibXML$/
-        @playlist.xmlns.should == 'http://xspf.org/ns/0/'
-      end
-
-      @playlist.trackList.should.be.instance_of Array
-      @playlist.trackList.track.should.be.instance_of Array
-      @playlist.trackList.tracks.should.be.instance_of Array
-
-      @playlist.trackList.should == @playlist.trackList.track
-      @playlist.trackList.should == @playlist.trackList.tracks
-
-      @playlist.trackList.track.should == @playlist.trackList.tracks
-
-      @playlist.trackList.first.title.should == 'Internal Example'
-      @playlist.trackList.first.location.should == 'file:///C:/music/foo.mp3'
-
-      @playlist.trackList.last.title.should == 'External Example'
-      @playlist.trackList.last.location.should == \
-        'http://www.example.com/music/bar.ogg'
-    end
+  def test_NOT_collection_proxy_due_to_non_array_single_child
+    trip = XMLObject.new '<trip><sheep number="1">Dolly</sheep></trip>'
+    assert_not_equal trip, trip.sheep
   end
 
-  describe 'Sample recipe.xml' do
-    before { @recipe = XMLObject.new(XMLObject::Helper.sample(:recipe)) }
+  def test_boolean_like_attributes
+    house = XMLObject.new %| <house tall="Yes"   short="no"
+                                    cubeish="y"  roundish="N"
+                                    heavy="T"    light="f"
+                                    house="tRUE" ball="fAlSE"
+                                    hypercube="What?" /> |
 
-    should 'behave as follows' do
-      @recipe.should           == ''
-      @recipe.name.should      == 'bread'
-      @recipe.prep_time.should == '5 mins'
-      @recipe.cook_time.should == '3 hours'
-      @recipe.title.should     == 'Basic bread'
+    assert house.tall?
+    assert house.cubeish?
+    assert house.heavy?
+    assert house.house?
 
-      @recipe.ingredient.should.be.instance_of Array
-      @recipe.ingredients.should == @recipe.ingredient
-      @recipe.ingredients.should == %w[ Flour Yeast Water Salt ]
-      @recipe.ingredients.map { |i| i.amount }.should == %w[ 8 10 4 1 ]
-      @recipe.ingredients.map { |i| i.unit }.should == %w[
-        dL grams dL teaspoon ]
-      @recipe.ingredients[2].state.should == 'warm'
+    assert !house.short?
+    assert !house.roundish?
+    assert !house.light?
+    assert !house.ball?
 
-      @recipe.instructions.should.be.instance_of Array
-      @recipe.instructions.step.should.be.instance_of Array
-      @recipe.instructions.steps.should.be.instance_of Array
-
-      @recipe.instructions.should      == @recipe.instructions
-      @recipe.instructions.should      == @recipe.instructions.steps
-      @recipe.instructions.step.should == @recipe.instructions.steps
-
-      @recipe.instructions.map { |s| s.split(' ')[0] }.join(
-        ', ').should == 'Mix, Knead, Cover, Knead, Place, Cover, Bake'
-    end
+    assert_raise(NameError) { house.hypercube? }
   end
 
-  describe 'Sample voice.xml' do
-    before { @voice = XMLObject.new(XMLObject::Helper.sample(:voice)) }
+  def test_boolean_like_elements
+    house = XMLObject.new %| <house>
+                               <tall>yEs</tall>     <short>nO</short>
+                               <cubeish>Y</cubeish> <roundish>n</roundish>
+                               <heavy>t</heavy>     <light>F</light>
+                               <house>tRue</house>  <ball>FalsE</ball>
 
-    should 'behave as follows' do
-      @voice.should == ''
-      @voice.version.should == '2.0'
+                               <hypercube>the hell?</hypercube>
+                             </house> |
 
-      # LibXML eats up 'xmlns' from the attributes hash
-      unless XMLObject.adapter.to_s.match /LibXML$/
-        @voice.xmlns.should == 'http://www.w3.org/2001/vxml'
-      end
+    assert house.tall?
+    assert house.cubeish?
+    assert house.heavy?
+    assert house.house?
 
-      @voice.form.should == ''
-      @voice.form.block.should == ''
-      @voice.form.block.prompt.strip.should == 'Hello world!'
-    end
+    assert !house.short?
+    assert !house.roundish?
+    assert !house.light?
+    assert !house.ball?
+
+    assert_raise(NameError) { house.hypercube? }
   end
 
-  describe 'Sample Bug rating.xml' do
-    before do
-      @rating = XMLObject.new(XMLObject::Helper.sample('bugs/rating'))
+  def test_multiple_CDATA_blocks
+    lots_of_data = XMLObject.new %| <lots_of_data>
+                                      <![CDATA[Lots of CDA]]>
+                                      <![CDATA[TA! here, man]]>
+                                    </lots_of_data> |
+
+    assert_equal 'Lots of CDATA! here, man', lots_of_data
+  end
+
+  def test_CDATA_without_text
+    no_text = XMLObject.new '<no_text><![CDATA[Not Text, CDATA]]></no_text>'
+    assert_equal 'Not Text, CDATA', no_text
+  end
+
+  def test_both_CDATA_and_text
+    two_face = XMLObject.new '<two_face>Text<![CDATA[Not Text]]></two_face>'
+    assert_equal 'Text', two_face
+  end
+
+  def test_whitespace_text_only
+    not_much = XMLObject.new "<not_much>\t \n </not_much>"
+    assert_equal '', not_much
+  end
+
+  def test_whitespace_and_non_whitespace_text
+    sloppy = XMLObject.new "<sloppy>\t a \n</sloppy>"
+    assert_equal "\t a \n", sloppy
+  end
+
+  def test_whitespace_CDATA_only
+    not_much = XMLObject.new "<not_much><![CDATA[\t \n]]></not_much>"
+    assert_equal "\t \n", not_much
+  end
+
+  def test_whitespace_and_non_whitespace_CDATA
+    sloppy = XMLObject.new "<x><![CDATA[\t a \n]]></x>"
+    assert_equal "\t a \n", sloppy
+  end
+
+  def test_ambiguity_of_element_and_attribute_name
+    toy = XMLObject.new %'<toy name="name attribute value">
+                            <name>name as element text</name>
+                          </toy>'
+
+    assert_equal 'name as element text', toy.name
+    assert_equal 'name as element text', toy['name']
+
+    assert_equal 'name as element text', toy[:elem => 'name']
+    assert_equal 'name attribute value', toy[:attr => 'name']
+  end
+
+  def test_ambiguity_of_s_pluralized_array_and_element_name
+    kennel = XMLObject.new %| <kennel>
+                                <dogs>Bruce, Muni, Charlie</dogs>
+                                <dog>Rex</dog>
+                                <dog>Roxy</dog>
+                              </kennel> |
+
+    assert_equal 'Bruce, Muni, Charlie', kennel['dogs']
+    assert_equal 'Bruce, Muni, Charlie', kennel[:elem => 'dogs']
+    assert_equal 'Bruce, Muni, Charlie', kennel.dogs
+
+    # We still maintain access to the array by its original name:
+    assert_equal 'Rex & Roxy', kennel.dog.join(' & ')
+    assert_equal 'Rex & Roxy', kennel['dog'].join(' & ')
+    assert_equal 'Rex & Roxy', kennel[:elem => 'dog'].join(' & ')
+  end
+
+  def test_ambiguity_of_inflector_pluralized_array_and_element_name
+    aquarium = XMLObject.new %| <aquarium>
+                                  <octopi>Mean, Ugly, Scary</octopi>
+                                  <octopus>Tasty</octopus>
+                                  <octopus>Chewy</octopus>
+                                </aquarium> |
+
+    assert_equal 'Mean, Ugly, Scary', aquarium['octopi']
+    assert_equal 'Mean, Ugly, Scary', aquarium[:elem => 'octopi']
+    assert_equal 'Mean, Ugly, Scary', aquarium.octopi
+
+    # We still maintain access to the array by its original name:
+    assert_equal 'Tasty & Chewy', aquarium.octopus.join(' & ')
+    assert_equal 'Tasty & Chewy', aquarium['octopus'].join(' & ')
+    assert_equal 'Tasty & Chewy', aquarium[:elem => 'octopus'].join(' & ')
+  end
+
+  def test_ambiguity_of_s_pluralized_array_and_attribute_name
+    book = XMLObject.new %|
+      <book chapters="2">
+        <chapter>Introduction</chapter>
+        <chapter>Some stuff</chapter>
+        <chapter>More stuff</chapter>
+      </book> |
+
+    assert_equal '2', book.chapters
+    assert_equal '2', book['chapters']
+    assert_equal '2', book[:attr => 'chapters']
+
+    assert_instance_of Array, book.chapter
+    assert_instance_of Array, book['chapter']
+    assert_instance_of Array, book[:elem => 'chapter']
+  end
+
+  def test_ambiguity_of_inflector_pluralized_array_and_attribute_name
+    dog = XMLObject.new %|
+      <dog feet="4">
+        <foot>A</foot>
+        <foot>B</foot>
+        <foot>C</foot>
+        <foot>D</foot>
+      </dog> |
+
+    assert_equal '4', dog.feet
+    assert_equal '4', dog['feet']
+    assert_equal '4', dog[:attr => 'feet']
+
+    assert_instance_of Array, dog.foot
+    assert_instance_of Array, dog['foot']
+    assert_instance_of Array, dog[:elem => 'foot']
+  end
+
+  def test_ambiguity_of_pluralized_array_and_attribute_and_element_name
+    file = XMLObject.new %|
+      <file bits="bits attribute">
+        <bits>bits element</bits>
+        <bit>0</bit>
+        <bit>1</bit>
+      </file> |
+
+    # prioritize the element over all others
+    assert_equal 'bits element', file.bits
+    assert_equal 'bits element', file['bits']
+
+    # allow respective unambiguous access
+    assert_equal 'bits element',   file[:elem => 'bits']
+    assert_equal 'bits attribute', file[:attr => 'bits']
+
+    # to the Array as well
+    assert_instance_of Array, file.bit
+    assert_instance_of Array, file['bit']
+    assert_instance_of Array, file[:elem => 'bit']
+  end
+
+  def test_ambiguity_of_attribute_and_method_name
+    string = XMLObject.new '<string upcase="upcase attribute">hello</string>'
+    assert_equal 'hello', string
+    assert_equal 'HELLO', string.upcase
+
+    assert_equal 'upcase attribute', string['upcase']
+    assert_equal 'upcase attribute', string[:attr => 'upcase']
+  end
+
+  def test_ambiguity_of_element_and_method_name
+    string = XMLObject.new '<string><upcase>Hi There</upcase></string>'
+    assert_equal '', string
+    assert_equal '', string.upcase
+
+    assert_equal 'Hi There', string['upcase']
+    assert_equal 'Hi There', string[:elem => 'upcase']
+  end
+
+  def test_elements_named_like_invalid_ruby_method_names
+    x = XMLObject.new '<x><invalid-method>XML!</invalid-method></x>'
+    assert_equal 'XML!', x['invalid-method']
+  end
+
+  def test_attributes_named_like_invalid_ruby_method_names
+    x = XMLObject.new '<x attr-with-dashes="XML too!" />'
+    assert_equal 'XML too!', x['attr-with-dashes']
+  end
+
+  def test_behavior_of_auto_folded_array
+    chart = XMLObject.new '<chart><axis>y</axis><axis>x</axis></chart>'
+
+    assert_equal 'y', chart.axis[0]
+    assert_equal 'y', chart.axis.first
+
+    assert_equal 'x', chart.axis[1]
+    assert_equal 'x', chart.axis.last
+
+    assert_equal chart.axis, chart.axiss # 's' plural (naïve)
+    assert_equal chart.axis, chart.axes if defined?(ActiveSupport::Inflector)
+  end
+
+  def test_behaviour_of_collection_proxy
+    two = XMLObject.new '<two><dude>Peter</dude><dude>Paul</dude></two>'
+
+    assert_equal two.dudes, two
+    assert_equal two.dudes[-1], two[-1]
+    assert_equal two.dudes.first.downcase, two.first.downcase
+    assert_equal two.dudes.map { |d| d.upcase }, two.map { |d| d.upcase }
+  end
+
+  def test_construction_from_strings
+    assert_equal 'bar', XMLObject.new('<foo>bar</foo>')
+  end
+
+  def test_construction_from_something_that_responds_to_to_s
+    duck = Class.new.new
+    duck.class.instance_eval { undef_method :read } if duck.respond_to? :read
+
+    def duck.to_s
+      '<foo>bar</foo>'
     end
 
-    should 'behave as follows' do
-      @rating.should.be.instance_of Array
-      @rating.size.should                == 3
-      @rating.category.size.should       == 3
-      @rating.category.first.size.should == 3
+    assert_equal 'bar', XMLObject.new(duck)
+  end
+
+  def test_construction_from_something_that_responds_to_read
+    duck = Class.new.new
+    duck.class.instance_eval { undef_method :to_s } if duck.respond_to? :to_s
+
+    def duck.read
+      '<foo>bar</foo>'
     end
+
+    assert_equal 'bar', XMLObject.new(duck)
+  end
+
+  def test_raise_exception_from_duck_that_responds_to_neither_to_s_or_read
+    duck = Class.new.new
+    duck.class.instance_eval { undef_method :read } if duck.respond_to? :read
+    duck.class.instance_eval { undef_method :to_s } if duck.respond_to? :to_s
+
+    assert_raise(RuntimeError) { XMLObject.new(duck) }
+  end
+
+  def test_behaviour_of_sample_atom_dot_xml
+    feed = XMLObject.new %'<?xml version="1.0" encoding="utf-8"?>
+      <feed xmlns="http://www.w3.org/2005/Atom">
+
+       <title>Example Feed</title>
+       <subtitle>A subtitle.</subtitle>
+       <link href="http://example.org/feed/" rel="self"/>
+       <link href="http://example.org/"/>
+       <updated>2003-12-13T18:30:02Z</updated>
+       <author>
+         <name>John Doe</name>
+         <email>johndoe@example.com</email>
+       </author>
+       <id>urn:uuid:60a76c80-d399-11d9-b91C-0003939e0af6</id>
+
+       <entry>
+         <title>Atom-Powered Robots Run Amok</title>
+         <link href="http://example.org/2003/12/13/atom03"/>
+         <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
+         <updated>2003-12-13T18:30:02Z</updated>
+         <summary>Some text.</summary>
+       </entry>
+      </feed>'
+
+    assert_equal '', feed
+
+    # LibXML eats up 'xmlns' from the attributes hash
+    unless XMLObject.adapter.to_s.match 'LibXML'
+      assert_equal 'http://www.w3.org/2005/Atom', feed.xmlns
+    end
+
+    assert_equal 'Example Feed', feed.title
+    assert_equal 'A subtitle.',  feed.subtitle
+
+    assert_instance_of Array, feed.link
+    assert_equal       feed.links, feed.link
+
+    assert_equal 'http://example.org/feed/', feed.link.first.href
+    assert_equal 'self',                     feed.link.first.rel
+    assert_equal 'http://example.org/',      feed.link.last.href
+
+    assert_equal '2003-12-13T18:30:02Z', feed.updated
+
+    assert_equal '',                    feed.author
+    assert_equal 'John Doe',            feed.author.name
+    assert_equal 'johndoe@example.com', feed.author.email
+
+    assert_equal 'urn:uuid:60a76c80-d399-11d9-b91C-0003939e0af6', feed['id']
+
+    assert_equal '', feed.entry
+    assert_equal 'Atom-Powered Robots Run Amok', feed.entry.title
+    assert_equal '2003-12-13T18:30:02Z',         feed.entry.updated
+    assert_equal 'Some text.',                   feed.entry.summary
+    assert_equal \
+      'urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a', feed.entry['id']
+  end
+
+  def test_behaviour_of_sample_function_dot_xml
+    function = XMLObject.new \
+      %'<function name="Hello">
+          <description>Greets the indicated person.</description>
+          <input>
+            <param name="name" required="true">
+              <description>The name of the greeted person.</description>
+            </param>
+          </input>
+          <output>
+            <param name="greeting" required="true">
+              <description>The constructed greeting.</description>
+            </param>
+          </output>
+        </function>'
+
+    assert_equal '', function
+    assert_equal 'Hello', function.name
+    assert_equal 'Greets the indicated person.', function.description
+
+    assert_equal '', function.input
+    assert_equal '', function.input.param
+    assert_equal 'name', function.input.param.name
+    assert_equal 'true', function.input.param.required
+    assert       function.input.param.required?
+    assert_equal 'The name of the greeted person.',
+                 function.input.param.description
+
+    assert_equal '', function.output
+    assert_equal '', function.output
+    assert_equal 'greeting', function.output.param.name
+    assert_equal 'true', function.output.param.required
+    assert       function.output.param.required?
+    assert_equal 'The constructed greeting.',
+                 function.output.param.description
+  end
+
+  def test_behaviour_of_sample_persons_dot_xml
+    persons = XMLObject.new %'<?xml version="1.0" ?>
+                              <persons>
+                                <person username="JS1">
+                                  <name>John</name>
+                                  <family-name>Smith</family-name>
+                                </person>
+                                <person username="MI1">
+                                  <name>Morka</name>
+                                  <family-name>Ismincius</family-name>
+                                </person>
+                              </persons>'
+
+    assert_equal [ '', '' ],      persons
+    assert_equal persons.person,  persons
+    assert_equal persons.persons, persons
+
+    if defined? ActiveSupport::Inflector
+      assert_equal persons.people, persons
+    end
+
+    assert_equal '', persons[0]
+    assert_equal '', persons[-1]
+
+    assert_equal 'JS1',   persons.first.username
+    assert_equal 'John',  persons.first.name
+    assert_equal 'Smith', persons.first['family-name']
+
+    assert_equal 'MI1',       persons.last.username
+    assert_equal 'Morka',     persons.last.name
+    assert_equal 'Ismincius', persons.last[:'family-name']
+  end
+
+  def test_behaviour_of_sample_playlist_dot_xml
+    playlist = XMLObject.new %'<?xml version="1.0" encoding="UTF-8"?>
+      <playlist version="1" xmlns="http://xspf.org/ns/0/">
+        <trackList>
+          <track>
+            <title>Internal Example</title>
+            <location>file:///C:/music/foo.mp3</location>
+          </track>
+          <track>
+            <title>External Example</title>
+            <location>http://www.example.com/music/bar.ogg</location>
+          </track>
+        </trackList>
+      </playlist>'
+
+    assert_equal '',  playlist
+    assert_equal '1', playlist.version
+
+    # LibXML eats up 'xmlns' from the attributes hash
+    unless XMLObject.adapter.to_s.match 'LibXML'
+      assert_equal 'http://xspf.org/ns/0/', playlist.xmlns
+    end
+
+    # can't use 'assert_instance_of' here, not yet anyway.
+    assert_equal Array, playlist.trackList.class
+
+    assert_instance_of Array, playlist.trackList.track
+    assert_instance_of Array, playlist.trackList.tracks
+
+    assert_equal playlist.trackList.track,  playlist.trackList
+    assert_equal playlist.trackList.tracks, playlist.trackList
+
+    assert_equal playlist.trackList, playlist.trackList.track
+
+    assert_equal 'Internal Example',         playlist.trackList.first.title
+    assert_equal 'file:///C:/music/foo.mp3', playlist.trackList.first.location
+
+    assert_equal 'External Example', playlist.trackList.last.title
+    assert_equal 'http://www.example.com/music/bar.ogg',
+                 playlist.trackList.last.location
+  end
+
+  def test_behaviour_of_sample_recipe_dot_xml
+    recipe = XMLObject.new \
+      %'<recipe name="bread" prep_time="5 mins" cook_time="3 hours">
+          <title>Basic bread</title>
+          <ingredient amount="8" unit="dL">Flour</ingredient>
+          <ingredient amount="10" unit="grams">Yeast</ingredient>
+          <ingredient amount="4" unit="dL" state="warm">Water</ingredient>
+          <ingredient amount="1" unit="teaspoon">Salt</ingredient>
+          <instructions>
+            <step>Mix all ingredients together.</step>
+            <step>Knead thoroughly.</step>
+            <step>Cover with a cloth, and leave for one hour.</step>
+            <step>Knead again.</step>
+            <step>Place in a bread baking tin.</step>
+            <step>Cover with a cloth, and leave for one hour.</step>
+            <step>Bake in the oven at 180(degrees)C for 30 minutes.</step>
+          </instructions>
+        </recipe>'
+
+    assert_equal '',            recipe
+    assert_equal 'bread',       recipe.name
+    assert_equal '5 mins',      recipe.prep_time
+    assert_equal '3 hours',     recipe.cook_time
+    assert_equal 'Basic bread', recipe.title
+
+    assert_instance_of Array, recipe.ingredient
+    assert_equal recipe.ingredient, recipe.ingredients
+    assert_equal %w[ Flour Yeast Water Salt ], recipe.ingredients
+    assert_equal %w[ 8 10 4 1 ], recipe.ingredients.map { |i| i.amount }
+    assert_equal 'warm', recipe.ingredients[2].state
+    assert_equal %w[ dL grams dL teaspoon ],
+                 recipe.ingredients.map { |i| i.unit }
+
+    # can't use instance_of? here
+    assert_equal Array, recipe.instructions.class
+
+    assert_instance_of Array, recipe.instructions.step
+    assert_instance_of Array, recipe.instructions.steps
+
+    assert_equal recipe.instructions.steps, recipe.instructions
+    assert_equal recipe.instructions.steps, recipe.instructions.step
+
+    assert_equal 'Mix, Knead, Cover, Knead, Place, Cover, Bake',
+                 recipe.instructions.map { |s| s.split(' ')[0] }.join(', ')
+  end
+
+  def test_behaviour_of_sample_voice_dot_xml
+    voice = XMLObject.new \
+      %'<vxml version="2.0" xmlns="http://www.w3.org/2001/vxml">
+          <form>
+            <block>
+              <prompt>
+                Hello world!
+              </prompt>
+            </block>
+          </form>
+        </vxml>'
+
+    assert_equal '',    voice
+    assert_equal '2.0', voice.version
+
+    # LibXML eats up 'xmlns' from the attributes hash
+    unless XMLObject.adapter.to_s.match 'LibXML'
+      assert_equal 'http://www.w3.org/2001/vxml', voice.xmlns
+    end
+
+    assert_equal '', voice.form
+    assert_equal '', voice.form.block
+    assert_equal 'Hello world!', voice.form.block.prompt.strip
+  end
+
+  def test_behaviour_of_bug_sample_rating_dot_xml
+    rating = XMLObject.new %'<rating>
+                               <category>
+                                 <property/>
+                                 <property/>
+                                 <property/>
+                               </category>
+                               <category>
+                                 <property/>
+                                 <property/>
+                                 <property/>
+                               </category>
+                               <category>
+                                 <property/>
+                                 <property/>
+                                 <property/>
+                               </category>
+                             </rating>'
+
+    # can't use instance_of? here
+    assert_equal Array, rating.class
+
+    assert_equal 3, rating.size
+    assert_equal 3, rating.category.size
+    assert_equal 3, rating.category.first.size
   end
 end
 
-describe 'XMLObject' do
+class REXMLAdapterTest < Test::Unit::TestCase
+  require 'xml-object/adapters/rexml'
+  include XMLObjectAdapterBehavior
 
-  describe 'REXML adapter' do
-    require 'xml-object/adapters/rexml'
+  def setup
     XMLObject.adapter = XMLObject::Adapters::REXML
-
-    behaves_like 'any XMLObject adapter'
-
-    should 'return unadapted XML objects when #raw_xml is called' do
-      XMLObject.new('<x/>').raw_xml.should.be.kind_of(::REXML::Element)
-    end
   end
 
-  if defined?(LibXML)
-    describe 'LibXML adapter' do
-      require 'xml-object/adapters/libxml'
+  def test_raw_xml_method
+    assert_kind_of REXML::Element, XMLObject.new('<x/>').raw_xml
+  end
+end
+
+if defined?(LibXML)
+  class LibXMLAdapterTest < Test::Unit::TestCase
+    require 'xml-object/adapters/libxml'
+    include XMLObjectAdapterBehavior
+
+    def setup
       XMLObject.adapter = XMLObject::Adapters::LibXML
+    end
 
-      behaves_like 'any XMLObject adapter'
-
-      should 'return unadapted XML objects when #raw_xml is called' do
-        XMLObject.new('<x/>').raw_xml.should.be.kind_of(::LibXML::XML::Node)
-      end
+    def test_raw_xml_method
+      assert_kind_of LibXML::XML::Node, XMLObject.new('<x/>').raw_xml
     end
   end
 end

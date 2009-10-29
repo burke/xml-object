@@ -2,8 +2,17 @@ namespace :bm do
   task :dependencies do
     require 'benchmark'
 
-    XMLObject::Helper.dependency 'xmlsimple', 'to benchmark XmlSimple'
-    XMLObject::Helper.dependency 'libxml',    'to benchmark using LibXML'
+    %w[ xmlsimple libxml ].each do |library|
+      begin; require library; rescue LoadError; nil; end
+    end
+
+    unless defined? XmlSimple
+      puts "  ** Install 'xmlsimple' to benchmark XmlSimple"
+    end
+
+    unless defined?(LibXML) || defined?(JRUBY_VERSION)
+      puts "  ** Install 'libxml-ruby' to benchmark using LibXML"
+    end
   end
 
   desc 'Benchmarks initial parsing'
@@ -11,50 +20,47 @@ namespace :bm do
     n = 200
     puts "Reading each whole file, #{n} times:"
 
-    Benchmark.bm(34) do |x|
-      samples = Dir[XMLObject::Helper.dir.join('test', 'samples', '*.xml')]
+    Benchmark.bm(35) do |x|
+      samples = FileList[File.dirname(__FILE__) + '/benchmarks/*.xml']
       samples = samples.sort_by { |sample_file| File.size(sample_file) }
-      samples = samples.map { |f| File.basename(f, '.xml') }
-      padding = samples.map { |s| s.size }.max
-      samples.each do |xml_sample|
-
+      padding = samples.map { |s| File.basename(s).size + 1 }.max
+      samples.each do |sample_file|
         begin
-          x.report "#{xml_sample.rjust(padding)}.xml: XmlSimple" do
-            ::XMLObject.adapter = XmlSimple # Let's be fair
-
-            n.times do
-              XmlSimple.xml_in(XMLObject::Helper.sample(xml_sample.to_sym))
-            end
+          report_name = File.basename(sample_file).rjust(padding)
+          sample_xml  = File.read(sample_file)
+          x.report " #{report_name}: XmlSimple" do
+            n.times { XmlSimple.xml_in(sample_xml) }
           end
         end if defined?(XmlSimple)
 
         begin
           require 'xml-object/adapters/rexml'
-          x.report "#{xml_sample.rjust(padding)}.xml: XMLObject (REXML)" do
+          report_name = File.basename(sample_file).rjust(padding)
+          sample_xml  = File.read(sample_file)
+          x.report " #{report_name}: XMLObject (REXML)" do
             ::XMLObject.adapter = ::XMLObject::Adapters::REXML
 
-            n.times do
-              XMLObject.new(XMLObject::Helper.sample(xml_sample.to_sym))
-            end
+            n.times { XMLObject.new(sample_xml) }
           end
         end
 
         begin
           require 'xml-object/adapters/libxml'
-
-          x.report "#{xml_sample.rjust(padding)}.xml: XMLObject (LibXML)" do
+          report_name = File.basename(sample_file).rjust(padding)
+          sample_xml  = File.read(sample_file)
+          x.report " #{report_name}: XMLObject (LibXML)" do
             ::XMLObject.adapter = ::XMLObject::Adapters::LibXML
 
-            n.times do
-              XMLObject.new(XMLObject::Helper.sample(xml_sample.to_sym))
-            end
+            n.times { XMLObject.new(sample_xml) }
           end
         end if defined?(LibXML)
+
+        puts
       end
     end
   end
 
-  desc 'Benchmarks reading recipe.xml'
+  desc 'Benchmarks object access to recipe.xml'
   task :recipe => :dependencies do
     n = 50000
 
@@ -63,28 +69,12 @@ namespace :bm do
                     :prep_time, :cook_time
     end
 
+    recipe_xml = File.read 'benchmarks/recipe.xml'
+
     Benchmark.bmbm do |x|
       begin
-        x.report 'XmlSimple' do
-          @xml_simple = XmlSimple.xml_in(XMLObject::Helper.sample(:recipe))
-
-          n.times do
-            recipe       = Recipe.new
-            recipe.name  = @xml_simple['name']
-            recipe.title = @xml_simple['title'][0]
-            recipe.steps = @xml_simple['instructions'][0]['step'].join(', ')
-            recipe.prep_time   = @xml_simple['prep_time']
-            recipe.cook_time   = @xml_simple['cook_time']
-            recipe.ingredients = @xml_simple['ingredient'].collect do |i|
-              "#{i['amount']} #{i['unit']} of #{i['content']}"
-            end
-          end
-        end
-      end if defined?(XmlSimple)
-
-      begin
         x.report 'XMLObject (singular)' do
-          @singular = XMLObject.new(XMLObject::Helper.sample(:recipe))
+          @singular = XMLObject.new(recipe_xml)
 
           n.times do
             recipe             = Recipe.new
@@ -102,7 +92,7 @@ namespace :bm do
 
       begin
         x.report 'XMLObject (plural)' do
-          @plural = XMLObject.new(XMLObject::Helper.sample(:recipe))
+          @plural = XMLObject.new(recipe_xml)
 
           n.times do
             recipe             = Recipe.new
@@ -120,7 +110,7 @@ namespace :bm do
 
       begin
         x.report 'XMLObject (proxy)' do
-          @proxy = XMLObject.new(XMLObject::Helper.sample(:recipe))
+          @proxy = XMLObject.new(recipe_xml)
 
           n.times do
             recipe             = Recipe.new
@@ -135,6 +125,24 @@ namespace :bm do
           end
         end
       end
+
+      begin
+        x.report 'XmlSimple' do
+          @xml_simple = XmlSimple.xml_in(recipe_xml)
+
+          n.times do
+            recipe       = Recipe.new
+            recipe.name  = @xml_simple['name']
+            recipe.title = @xml_simple['title'][0]
+            recipe.steps = @xml_simple['instructions'][0]['step'].join(', ')
+            recipe.prep_time   = @xml_simple['prep_time']
+            recipe.cook_time   = @xml_simple['cook_time']
+            recipe.ingredients = @xml_simple['ingredient'].collect do |i|
+              "#{i['amount']} #{i['unit']} of #{i['content']}"
+            end
+          end
+        end
+      end if defined?(XmlSimple)
     end
   end
 end

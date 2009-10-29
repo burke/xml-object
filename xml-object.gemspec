@@ -19,8 +19,7 @@ Gem::Specification.new do |gem|
   gem.rdoc_options +=
     %w[ --title XMLObject --main README.rdoc --inline-source ]
 
-  gem.test_files = Dir.glob('test/*.rb').collect { |p| p.to_s }
-  gem.files      = %w[
+  gem.files = %w[
     MIT-LICENSE
     README.rdoc
     TODO
@@ -37,5 +36,5 @@ Gem::Specification.new do |gem|
     lib/xml-object/properties.rb
     lib/xml-object.rb
     xml-object.gemspec
-  ] + gem.test_files
+  ]
 end
