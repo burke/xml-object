@@ -10,11 +10,14 @@ convenient, by providing a syntax that fits well in most Ruby programs.
 None outside of Ruby, though some optional gems add additional features and
 speedups. See more below.
 
-At the moment, I aim for compatibility with Ruby 1.8, 1.9, and JRuby 1.1.
+== Compatibility
 
-== Installation instructions
+I've tested this release under:
 
-From Rubyforge's gem server:
+  ruby  1.9.1
+  ruby  1.8.7
+  ruby  1.8.6
+  JRuby 1.4.0RC3 (REXML only)
 
 And with the following optionals:
 
