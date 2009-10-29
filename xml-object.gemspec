@@ -23,7 +23,6 @@ XMLOBJECT_GEMSPEC = Gem::Specification.new do |gem|
     TODO
     WHATSNEW
     lib
-    lib/jordi-xml-object.rb
     lib/xml-object
     lib/xml-object/adapters
     lib/xml-object/adapters/libxml.rb
