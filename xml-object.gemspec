@@ -12,10 +12,11 @@ Gem::Specification.new do |gem|
     documents of a known structure. While not devoid of caveats, it does
     have a very pleasant, idiomatic Ruby syntax. }.strip!.gsub! /\s+/, ' '
 
+  gem.required_ruby_version = '>= 1.8.6'
+
   gem.has_rdoc         = true
   gem.extra_rdoc_files = %w[ README.rdoc MIT-LICENSE WHATSNEW ]
-
-  gem.rdoc_options +=
+  gem.rdoc_options    +=
     %w[ --title XMLObject --main README.rdoc --inline-source ]
 
   gem.files = %w[
