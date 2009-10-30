@@ -3,7 +3,6 @@ require 'lib/xml-object/version'
 Gem::Specification.new do |gem|
   gem.name    = 'xml-object'
   gem.version = XMLObject::VERSION
-  gem.date    = Date.today
 
   gem.author, gem.email = 'Jordi Bunster', 'jordi@bunster.org'
 
