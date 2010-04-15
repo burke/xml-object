@@ -13,12 +13,17 @@ module XMLObject::Element
     @__raw_xml
   end
 
+  def has?(el, *a, &b)
+    dispatched = __question_dispatch(m, *a, &b)
+    dispatched = __dot_notation_dispatch(m, *a, &b) if dispatched.nil?
+    
+    return !!dispatched
+  end
+
   private ##################################################################
 
   def method_missing(m, *a, &b) # :nodoc:
     dispatched = __question_dispatch(m, *a, &b)
     dispatched = __dot_notation_dispatch(m, *a, &b) if dispatched.nil?
-
-    dispatched.nil? ? raise(NameError.new(m.to_s)) : dispatched
   end
 end
