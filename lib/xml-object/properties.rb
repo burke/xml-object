@@ -38,7 +38,7 @@ module XMLObject::Properties
       case
         when (not @__children[key].nil?)   then @__children[key]
         when (not @__attributes[key].nil?) then @__attributes[key]
-        else raise NameError.new(key.to_s)
+        else nil
       end
     end
   end
