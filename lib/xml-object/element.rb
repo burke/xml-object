@@ -20,6 +20,14 @@ module XMLObject::Element
     return !!dispatched
   end
 
+  def children
+    @__children.keys
+  end
+
+  def attributes
+    @__attributes.keys
+  end
+
   private ##################################################################
 
   def method_missing(m, *a, &b) # :nodoc:
