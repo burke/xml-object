@@ -69,24 +69,12 @@ module XMLObject::Properties
     return nil unless args.empty? && block.nil?
 
     if @__children.has_key?(meth)
-      instance_eval %{ def #{meth}; @__children[%s|#{meth}|]; end }
       @__children[meth]
-
     elsif @__attributes.has_key?(meth)
-      instance_eval %{ def #{meth}; @__attributes[%s|#{meth}|]; end }
       @__attributes[meth]
-
-    elsif @__children.has_key?(naive_sing = meth.to_s.chomp('s').to_sym) &&
-          @__children[naive_sing].is_a?(Array)
-
-      instance_eval %{ def #{meth}; @__children[%s|#{naive_sing}|]; end }
+    elsif @__children.has_key?(naive_sing = meth.to_s.chomp('s').to_sym) && @__children[naive_sing].is_a?(Array)
       @__children[naive_sing]
-
-    elsif defined?(ActiveSupport::Inflector)                            &&
-          @__children.has_key?(singular = meth.to_s.singularize.to_sym) &&
-          @__children[singular].is_a?(Array)
-
-      instance_eval %{ def #{meth}; @__children[%s|#{singular}|]; end }
+    elsif defined?(ActiveSupport::Inflector) and @__children.has_key?(singular = meth.to_s.singularize.to_sym) and @__children[singular].is_a?(Array)
       @__children[singular]
     else
       nil
