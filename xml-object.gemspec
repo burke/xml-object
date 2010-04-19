@@ -19,6 +19,9 @@ Gem::Specification.new do |gem|
   gem.rdoc_options    +=
     %w[ --title XMLObject --main README.rdoc --inline-source ]
 
+  gem.add_dependency('activesupport')
+  gem.add_dependency('libxml-ruby')
+  
   gem.files = %w[
     MIT-LICENSE
     README.rdoc
@@ -29,7 +32,6 @@ Gem::Specification.new do |gem|
     lib/xml-object/version.rb
     lib/xml-object/adapters
     lib/xml-object/adapters/libxml.rb
-    lib/xml-object/adapters/rexml.rb
     lib/xml-object/adapters.rb
     lib/xml-object/collection_proxy.rb
     lib/xml-object/element.rb

@@ -1,9 +1,11 @@
 require 'xml-object/version'
 require 'xml-object/adapters'
-require 'xml-object/adapters/rexml'
+require 'xml-object/adapters/libxml'
 require 'xml-object/properties'
 require 'xml-object/collection_proxy'
 require 'xml-object/element'
+
+require 'active_support/inflector'
 
 module XMLObject
   # Returns a String or Array object representing the given XML, decorated

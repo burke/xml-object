@@ -1,4 +1,4 @@
 module XMLObject
-  VERSION  = '0.9.96'
+  VERSION  = '0.9.97'
   LOCATION = File.dirname __FILE__ # :nodoc:
 end
